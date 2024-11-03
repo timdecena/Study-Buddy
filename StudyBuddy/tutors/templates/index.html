@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutors Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        input {
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        button {
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tutors Management</h1>
+    <form id="tutorForm">
+        <input type="hidden" id="tutorId" value="">
+        <input type="text" id="firstName" placeholder="First Name" required>
+        <input type="text" id="lastName" placeholder="Last Name" required>
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="text" id="subject" placeholder="Subject" required>
+        <button type="submit">Add Tutor</button>
+    </form>
+
+    <h2>All Tutors</h2>
+    <ul id="tutorList"></ul>
+
+    <script>
+        const apiUrl = 'http://127.0.0.1:8000/api/tutors/';
+
+        // Fetch and display tutors
+        async function fetchTutors() {
+            const response = await fetch(apiUrl);
+            const tutors = await response.json();
+            const tutorList = document.getElementById('tutorList');
+            tutorList.innerHTML = '';
+            tutors.forEach(tutor => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    ${tutor.first_name} ${tutor.last_name} - ${tutor.email} (${tutor.subject}) 
+                    <button onclick="editTutor(${tutor.id})">Edit</button>
+                    <button onclick="deleteTutor(${tutor.id})">Delete</button>
+                `;
+                tutorList.appendChild(li);
+            });
+        }
+
+        // Create or Update a tutor
+        document.getElementById('tutorForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const tutorId = document.getElementById('tutorId').value;
+            const method = tutorId ? 'PUT' : 'POST';
+            const url = tutorId ? `${apiUrl}${tutorId}/` : apiUrl;
+
+            const tutorData = {
+                first_name: document.getElementById('firstName').value,
+                last_name: document.getElementById('lastName').value,
+                email: document.getElementById('email').value,
+                subject: document.getElementById('subject').value,
+            };
+
+            await fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(tutorData),
+            });
+
+            // Reset the form and refresh the list of tutors
+            document.getElementById('tutorForm').reset();
+            document.getElementById('tutorId').value = '';
+            fetchTutors();
+        });
+
+        // Edit a tutor
+        function editTutor(id) {
+            fetch(`${apiUrl}${id}/`)
+                .then(response => response.json())
+                .then(tutor => {
+                    document.getElementById('tutorId').value = tutor.id;
+                    document.getElementById('firstName').value = tutor.first_name;
+                    document.getElementById('lastName').value = tutor.last_name;
+                    document.getElementById('email').value = tutor.email;
+                    document.getElementById('subject').value = tutor.subject;
+                });
+        }
+
+        // Delete a tutor
+        async function deleteTutor(id) {
+            await fetch(`${apiUrl}${id}/`, { method: 'DELETE' });
+            fetchTutors();
+        }
+
+        // Initial fetch to populate the list of tutors
+        fetchTutors();
+    </script>
+</body>
+</html>
