@@ -10,4 +10,5 @@ router.register(r'tutors', TutorViewSet)
 urlpatterns = [
     path('', TemplateView.as_view(template_name='index.html'), name='index'),  # Serve the main template at the root URL
     path('api/', include(router.urls)),  # Include API routes under /api/
+    path('course/', include('Course.urls'))
 ]

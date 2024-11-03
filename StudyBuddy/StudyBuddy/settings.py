@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'tutors',  # Register the tutors app
     'rest_framework',  # Include Django REST Framework for API support
-    'Subject' #add subject
+    'Subject', #add subject
+    'Course',
 ]
 
 MIDDLEWARE = [

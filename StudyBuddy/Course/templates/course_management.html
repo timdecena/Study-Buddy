@@ -1,0 +1,108 @@
+<!-- templates/course_management.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Course Management</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <h1>Course Management</h1>
+    
+    <div>
+        <input type="text" id="course_name" placeholder="Course Name">
+        <input type="text" id="course_code" placeholder="Course Code">
+        <input type="text" id="description" placeholder="Description">
+        <button id="save-course-btn">Save Course</button>
+    </div>
+    
+    <h2>All Courses</h2>
+    <ul id="course-list">
+        {% for course in courses %}
+            <li data-id="{{ course.course_id }}">
+                {{ course.course_name }} - {{ course.course_code }} ({{ course.description }})
+                <button onclick="editCourse({{ course.course_id }}, '{{ course.course_name }}', '{{ course.course_code }}', '{{ course.description }}')">Edit</button>
+                <button onclick="deleteCourse({{ course.course_id }})">Delete</button>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <script>
+        let editingCourseId = null; // Track if we're editing an existing course
+
+        // Save Course (Create or Update)
+        $('#save-course-btn').click(function() {
+            const name = $('#course_name').val();
+            const code = $('#course_code').val();
+            const description = $('#description').val();
+
+            if (editingCourseId) {
+                // Update existing course
+                $.post(`/course/update/${editingCourseId}/`, {
+                    course_name: name,
+                    course_code: code,
+                    description: description,
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                }, function(data) {
+                    // Update the course item in the list
+                    const courseItem = $(`li[data-id="${data.id}"]`);
+                    courseItem.html(
+                        `${data.name} - ${data.code} (${data.description})
+                        <button onclick="editCourse(${data.id}, '${data.name}', '${data.code}', '${data.description}')">Edit</button>
+                        <button onclick="deleteCourse(${data.id})">Delete</button>`
+                    );
+
+                    // Reset the form and editing state
+                    resetForm();
+                });
+            } else {
+                // Create new course
+                $.post("{% url 'add-course' %}", {
+                    course_name: name,
+                    course_code: code,
+                    description: description,
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                }, function(data) {
+                    $('#course-list').append(
+                        `<li data-id="${data.id}">
+                            ${data.name} - ${data.code} (${data.description})
+                            <button onclick="editCourse(${data.id}, '${data.name}', '${data.code}', '${data.description}')">Edit</button>
+                            <button onclick="deleteCourse(${data.id})">Delete</button>
+                        </li>`
+                    );
+
+                    // Reset the form after adding
+                    resetForm();
+                });
+            }
+        });
+
+        // Edit Course (Populate form for editing)
+        function editCourse(courseId, name, code, description) {
+            $('#course_name').val(name);
+            $('#course_code').val(code);
+            $('#description').val(description);
+            editingCourseId = courseId; // Set editing mode with the course ID
+            $('#save-course-btn').text("Update Course"); // Change button text
+        }
+
+        // Delete Course
+        function deleteCourse(courseId) {
+            $.post(`/course/delete/${courseId}/`, {
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            }, function(data) {
+                $(`li[data-id="${data.id}"]`).remove();
+            });
+        }
+
+        // Reset the form to its initial state
+        function resetForm() {
+            $('#course_name').val('');
+            $('#course_code').val('');
+            $('#description').val('');
+            editingCourseId = null; // Clear editing mode
+            $('#save-course-btn').text("Add Course"); // Reset button text
+        }
+    </script>
+</body>
+</html>
