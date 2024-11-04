@@ -1,0 +1,17 @@
+<!-- StudyBuddy/students/templates/students/student_form.html -->
+{% extends "base.html" %}
+
+{% block content %}
+    {% if form.instance.pk %}
+        <h1>Edit Student</h1>
+    {% else %}
+        <h1>Add Student</h1>
+    {% endif %}
+    
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save</button>
+    </form>
+    <a href="{% url 'students:student_list' %}">Back to Student List</a>
+{% endblock %}

@@ -35,9 +35,10 @@ INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'django.contrib.messages',
+    'django.contrib.messages',  
     'django.contrib.staticfiles',
     'tutors',  # Register the tutors app
+    'students',  # Add students app here
     'rest_framework',  # Include Django REST Framework for API support
     'Subject' #add subject
 ]
@@ -57,7 +58,7 @@ ROOT_URLCONF = 'StudyBuddy.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],  # You can leave this empty or add paths to other templates
+        'DIRS': [BASE_DIR / 'templates'],  # Add this line to include the custom templates folder
         'APP_DIRS': True,  # Ensure this is True to look for templates in app directories
         'OPTIONS': {
             'context_processors': [

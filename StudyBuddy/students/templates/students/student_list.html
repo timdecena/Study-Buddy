@@ -1,0 +1,17 @@
+<!-- StudyBuddy/students/templates/students/student_list.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Students</h1>
+<a href="{% url 'students:student_create' %}">Add Student</a>
+<hr>
+<ul>
+    {% for student in students %}
+    <li>
+        {{ student.student_id }} - {{ student.year }}
+        <a href="{% url 'students:student_update' student.pk %}">Edit</a>
+        <a href="{% url 'students:student_delete' student.pk %}">Delete</a>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}
