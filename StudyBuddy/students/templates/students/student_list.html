@@ -1,17 +1,78 @@
-<!-- StudyBuddy/students/templates/students/student_list.html -->
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e6f7ff;
+            color: #333;
+            text-align: center;
+        }
+        h1 {
+            color: #0066cc;
+        }
+        .btn {
+            background-color: #008cba;
+            color: white;
+            padding: 10px 15px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .btn:hover {
+            background-color: #005580;
+        }
+        hr {
+            margin: 20px 0;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            background-color: #ffffff;
+            padding: 15px;
+            margin: 10px auto;
+            width: 80%;
+            max-width: 400px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        li span {
+            font-size: 1.1em;
+            color: #333;
+        }
+        li div a {
+            color: #008cba;
+            text-decoration: none;
+            margin: 0 5px;
+        }
+        li div a:hover {
+            color: #005580;
+        }
+    </style>
+</head>
+<body>
 
-{% block content %}
 <h1>Students</h1>
-<a href="{% url 'students:student_create' %}">Add Student</a>
+<a class="btn" href="{% url 'students:student_create' %}">Add Student</a>
 <hr>
 <ul>
     {% for student in students %}
     <li>
-        {{ student.student_id }} - {{ student.year }}
-        <a href="{% url 'students:student_update' student.pk %}">Edit</a>
-        <a href="{% url 'students:student_delete' student.pk %}">Delete</a>
+        <span>{{ student.student_id }} - {{ student.year }}</span>
+        <div>
+            <a href="{% url 'students:student_update' student.pk %}">Edit</a> |
+            <a href="{% url 'students:student_delete' student.pk %}">Delete</a>
+        </div>
     </li>
     {% endfor %}
 </ul>
-{% endblock %}
+
+</body>
+</html>

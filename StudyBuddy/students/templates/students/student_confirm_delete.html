@@ -1,12 +1,56 @@
-<!-- StudyBuddy/students/templates/students/student_confirm_delete.html -->
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Delete</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e6f7ff;
+            color: #333;
+            text-align: center;
+        }
+        h1 {
+            color: #0066cc;
+        }
+        p {
+            font-size: 1.1em;
+        }
+        form {
+            display: inline-block;
+            margin-top: 20px;
+        }
+        .btn {
+            background-color: #008cba;
+            color: white;
+            padding: 10px 15px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-left: 10px;
+        }
+        button {
+            background-color: #e60000;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover, .btn:hover {
+            background-color: #005580;
+        }
+    </style>
+</head>
+<body>
 
-{% block content %}
 <h1>Confirm Delete</h1>
 <p>Are you sure you want to delete {{ student.student_id }}?</p>
 <form method="post">
     {% csrf_token %}
     <button type="submit">Yes, delete</button>
-    <a href="{% url 'students:student_list' %}">Cancel</a>
+    <a class="btn" href="{% url 'students:student_list' %}">Cancel</a>
 </form>
-{% endblock %}
+
+</body>
+</html>

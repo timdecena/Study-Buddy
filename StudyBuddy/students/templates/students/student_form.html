@@ -1,17 +1,70 @@
-<!-- StudyBuddy/students/templates/students/student_form.html -->
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if form.instance.pk %}Edit Student{% else %}Add Student{% endif %}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e6f7ff;
+            color: #333;
+            text-align: center;
+        }
+        h1 {
+            color: #0066cc;
+        }
+        form {
+            display: inline-block;
+            margin-top: 20px;
+            width: 300px;
+            text-align: left;
+        }
+        label {
+            font-weight: bold;
+            color: #0066cc;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #008cba;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #005580;
+        }
+        .btn {
+            display: inline-block;
+            margin-top: 10px;
+            color: #0066cc;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
 
-{% block content %}
-    {% if form.instance.pk %}
-        <h1>Edit Student</h1>
-    {% else %}
-        <h1>Add Student</h1>
-    {% endif %}
-    
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Save</button>
-    </form>
-    <a href="{% url 'students:student_list' %}">Back to Student List</a>
-{% endblock %}
+{% if form.instance.pk %}
+    <h1>Edit Student</h1>
+{% else %}
+    <h1>Add Student</h1>
+{% endif %}
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save</button>
+</form>
+<a class="btn" href="{% url 'students:student_list' %}">Back to Student List</a>
+
+</body>
+</html>
