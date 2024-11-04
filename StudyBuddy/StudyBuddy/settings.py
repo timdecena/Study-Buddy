@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'tutors',  # Register the tutors app
     'students',  # Add students app here
     'rest_framework',  # Include Django REST Framework for API support
-    'Subject' #add subject
+    'Subject', #add subject
+    'Course',
 ]
 
 MIDDLEWARE = [
