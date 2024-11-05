@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Subject Management</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Subject Management</h1>
+    <form id="subject-form" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="hidden" id="subject-id" name="subject_id" value=""> <!-- Hidden field to track edit mode -->
+        <button type="submit">Save Subject</button>
+    </form>
+
+    <h2>All Subjects</h2>
+    <ul id="subject-list">
+        {% for subject in subjects %}
+            <li id="subject-{{ subject.subject_id }}">
+                {{ subject.subject_name }}
+                <button onclick="editSubject({{ subject.subject_id }}, '{{ subject.subject_name }}')">Edit</button>
+                <button onclick="deleteSubject({{ subject.subject_id }})">Delete</button>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <script>
+        // Handle form submission via AJAX
+        $('#subject-form').submit(function(event) {
+            event.preventDefault();
+            let subjectId = $('#subject-id').val();
+            let url = subjectId ? `{% url 'update-subject' 0 %}`.replace('0', subjectId) : "{% url 'add-subject' %}";
+            
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: $(this).serialize(),
+                success: function(data) {
+                    if (subjectId) {
+                        // Update the existing subject in the list
+                        $(`#subject-${subjectId}`).html(`${data.name} 
+                            <button onclick="editSubject(${data.id}, '${data.name}')">Edit</button> 
+                            <button onclick="deleteSubject(${data.id})">Delete</button>`);
+                    } else {
+                        // Append new subject to the list if the addition is successful
+                        $('#subject-list').append(
+                            `<li id="subject-${data.id}">${data.name} 
+                            <button onclick="editSubject(${data.id}, '${data.name}')">Edit</button> 
+                            <button onclick="deleteSubject(${data.id})">Delete</button></li>`
+                        );
+                    }
+                    $('#subject-form')[0].reset();  // Reset the form after submission
+                    $('#subject-id').val('');       // Clear the hidden field for subject ID
+                },
+                error: function(error) {
+                    alert("An error occurred while saving the subject.");
+                }
+            });
+        });
+
+        // Function to delete a subject
+        function deleteSubject(subject_id) {
+            $.ajax({
+                url: `/Subject/delete/${subject_id}/`,
+                type: "POST",
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                success: function(data) {
+                    $(`#subject-${subject_id}`).remove();  // Remove the deleted subject from the list
+                },
+                error: function(error) {
+                    alert("An error occurred while deleting the subject.");
+                }
+            });
+        }
+
+        // Function to edit a subject
+        function editSubject(subject_id, subject_name) {
+            $('#subject-id').val(subject_id);  // Set the subject ID for the update
+            $('#id_subject_name').val(subject_name);  // Populate the subject name field in the form
+        }
+    </script>
+</body>
+</html>
