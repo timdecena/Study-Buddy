@@ -13,6 +13,15 @@
         <input type="text" id="course_name" placeholder="Course Name">
         <input type="text" id="course_code" placeholder="Course Code">
         <input type="text" id="description" placeholder="Description">
+        
+        <!-- Subject Dropdown -->
+        <select id="subject">
+            <option value="">Select Subject</option>
+            {% for subject in form.fields.subject.queryset %}
+                <option value="{{ subject.subject_id }}">{{ subject.subject_name }}</option>
+            {% endfor %}
+        </select>
+        
         <button id="save-course-btn">Save Course</button>
     </div>
     
@@ -20,21 +29,21 @@
     <ul id="course-list">
         {% for course in courses %}
             <li data-id="{{ course.course_id }}">
-                {{ course.course_name }} - {{ course.course_code }} ({{ course.description }})
-                <button onclick="editCourse({{ course.course_id }}, '{{ course.course_name }}', '{{ course.course_code }}', '{{ course.description }}')">Edit</button>
+                {{ course.course_name }} - {{ course.course_code }} ({{ course.description }}, {{ course.subject.subject_name }})
+                <button onclick="editCourse({{ course.course_id }}, '{{ course.course_name }}', '{{ course.course_code }}', '{{ course.description }}', '{{ course.subject.subject_id }}')">Edit</button>
                 <button onclick="deleteCourse({{ course.course_id }})">Delete</button>
             </li>
         {% endfor %}
     </ul>
 
     <script>
-        let editingCourseId = null; // Track if we're editing an existing course
+        let editingCourseId = null;
 
-        // Save Course (Create or Update)
         $('#save-course-btn').click(function() {
             const name = $('#course_name').val();
             const code = $('#course_code').val();
             const description = $('#description').val();
+            const subjectId = $('#subject').val();
 
             if (editingCourseId) {
                 // Update existing course
@@ -42,17 +51,16 @@
                     course_name: name,
                     course_code: code,
                     description: description,
+                    subject: subjectId,
                     csrfmiddlewaretoken: '{{ csrf_token }}'
                 }, function(data) {
-                    // Update the course item in the list
                     const courseItem = $(`li[data-id="${data.id}"]`);
                     courseItem.html(
-                        `${data.name} - ${data.code} (${data.description})
-                        <button onclick="editCourse(${data.id}, '${data.name}', '${data.code}', '${data.description}')">Edit</button>
+                        `${data.name} - ${data.code} (${data.description}, ${data.subject_name})
+                        <button onclick="editCourse(${data.id}, '${data.name}', '${data.code}', '${data.description}', ${data.subject_id})">Edit</button>
                         <button onclick="deleteCourse(${data.id})">Delete</button>`
                     );
 
-                    // Reset the form and editing state
                     resetForm();
                 });
             } else {
@@ -61,32 +69,31 @@
                     course_name: name,
                     course_code: code,
                     description: description,
+                    subject: subjectId,
                     csrfmiddlewaretoken: '{{ csrf_token }}'
                 }, function(data) {
                     $('#course-list').append(
                         `<li data-id="${data.id}">
-                            ${data.name} - ${data.code} (${data.description})
-                            <button onclick="editCourse(${data.id}, '${data.name}', '${data.code}', '${data.description}')">Edit</button>
+                            ${data.name} - ${data.code} (${data.description}, ${data.subject_name})
+                            <button onclick="editCourse(${data.id}, '${data.name}', '${data.code}', '${data.description}', ${data.subject_id})">Edit</button>
                             <button onclick="deleteCourse(${data.id})">Delete</button>
                         </li>`
                     );
 
-                    // Reset the form after adding
                     resetForm();
                 });
             }
         });
 
-        // Edit Course (Populate form for editing)
-        function editCourse(courseId, name, code, description) {
+        function editCourse(courseId, name, code, description, subjectId) {
             $('#course_name').val(name);
             $('#course_code').val(code);
             $('#description').val(description);
-            editingCourseId = courseId; // Set editing mode with the course ID
-            $('#save-course-btn').text("Update Course"); // Change button text
+            $('#subject').val(subjectId);
+            editingCourseId = courseId;
+            $('#save-course-btn').text("Update Course");
         }
 
-        // Delete Course
         function deleteCourse(courseId) {
             $.post(`/course/delete/${courseId}/`, {
                 csrfmiddlewaretoken: '{{ csrf_token }}'
@@ -95,13 +102,13 @@
             });
         }
 
-        // Reset the form to its initial state
         function resetForm() {
             $('#course_name').val('');
             $('#course_code').val('');
             $('#description').val('');
-            editingCourseId = null; // Clear editing mode
-            $('#save-course-btn').text("Add Course"); // Reset button text
+            $('#subject').val('');
+            editingCourseId = null;
+            $('#save-course-btn').text("Add Course");
         }
     </script>
 </body>
