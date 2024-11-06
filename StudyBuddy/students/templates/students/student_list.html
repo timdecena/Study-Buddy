@@ -11,12 +11,12 @@
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f7faf9; /* Light background */
+            background-color: #f7faf9;
         }
 
         /* Navbar Styles */
         nav {
-            background-color: #1a5b41; /* Forest green */
+            background-color: #1a5b41;
             color: white;
             padding: 20px;
             text-align: center;
@@ -66,7 +66,7 @@
         }
 
         .btn {
-            background-color: #1a5b41; /* Forest green */
+            background-color: #1a5b41;
             color: white;
             padding: 12px 20px;
             text-decoration: none;
@@ -103,9 +103,14 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
-        .student-list li span {
-            font-size: 16px;
+        .student-details {
+            display: flex;
+            flex-direction: column;
             color: #333;
+        }
+
+        .student-details span {
+            font-size: 16px;
         }
 
         .student-list li div a {
@@ -147,7 +152,13 @@
         <ul class="student-list">
             {% for student in students %}
                 <li>
-                    <span>{{ student.student_id }} - {{ student.year }}</span>
+                    <div class="student-details">
+                        <span><strong>ID:</strong> {{ student.student_id }}</span>
+                        <span><strong>Name:</strong> {{ student.fullname }}</span>
+                        <span><strong>Course:</strong> {{ student.course }}</span>
+                        <span><strong>Year:</strong> {{ student.year }}</span>
+                        <span><strong>Section:</strong> {{ student.section }}</span>
+                    </div>
                     <div>
                         <a href="{% url 'students:student_update' student.pk %}">Edit</a> |
                         <a href="{% url 'students:student_delete' student.pk %}">Delete</a>
