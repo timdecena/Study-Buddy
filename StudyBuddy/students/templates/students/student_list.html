@@ -1,3 +1,4 @@
+<!-- students/templates/students/student_list.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student List</title>
     <style>
+        /* CSS directly in the HTML file */
         body {
             font-family: Arial, sans-serif;
             background-color: #e6f7ff;
@@ -65,7 +67,7 @@
 <ul>
     {% for student in students %}
     <li>
-        <span>{{ student.student_id }} - {{ student.year }}</span>
+        <span>{{ student.student_id }} - {{ student.fullname }} ({{ student.year }} - {{ student.course }}, Section: {{ student.section }})</span>
         <div>
             <a href="{% url 'students:student_update' student.pk %}">Edit</a> |
             <a href="{% url 'students:student_delete' student.pk %}">Delete</a>
