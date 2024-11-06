@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyBuddy Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        nav {
+            background-color: #2f4f4f; /* Forest green */
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        nav h1 {
+            margin: 0;
+        }
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        nav ul li {
+            display: inline;
+            margin-right: 20px;
+        }
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+        }
+        .container {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+        }
+        .main-content {
+            width: 70%;
+        }
+        .sidebar {
+            width: 25%;
+            background-color: #f4f4f4;
+            padding: 20px;
+            border-radius: 5px;
+        }
+        .sidebar h3 {
+            margin-top: 0;
+        }
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .sidebar ul li {
+            margin-bottom: 10px;
+        }
+        .sidebar ul li a {
+            text-decoration: none;
+            color: #2f4f4f;
+        }
+        .sidebar ul li a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav>
+        <h1>StudyBuddy</h1>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/Subject">Subject Management</a></li>
+            <li><a href="/students">Student Form</a></li>
+            <li><a href="/Course">Course Management</a></li>
+            <li><a href="/tutors/">Tutors</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Main Content -->
+        <div class="main-content">
+            <h2>Welcome to StudyBuddy Dashboard</h2>
+            <p>Here you can manage different aspects of the StudyBuddy app, including subjects, students, courses, and tutors.</p>
+            <p>Select a section from the sidebar to begin managing.</p>
+        </div>
+
+        <!-- Sidebar (Dashboard) -->
+        <div class="sidebar">
+            <h3>Dashboard</h3>
+            <p>Quick access to app features</p>
+            <ul>
+                <li><a href="/Subject/subject_management/">Subject Management</a></li>
+                <li><a href="/students/student_form/">Student Form</a></li>
+                <li><a href="/Course/course_management/">Course Management</a></li>
+                <li><a href="/tutors/">Tutors</a></li>
+            </ul>
+        </div>
+    </div>
+
+</body>
+</html>

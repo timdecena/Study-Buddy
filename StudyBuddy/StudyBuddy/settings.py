@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'rest_framework',  # Include Django REST Framework for API support
     'Subject', #add subject
     'Course',
+    'home',
 ]
 
 MIDDLEWARE = [
