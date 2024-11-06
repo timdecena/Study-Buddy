@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'Subject', #add subject
     'Course',
     'home',
+    'transaction',
 ]
 
 MIDDLEWARE = [

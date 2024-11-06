@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Transaction Management</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <h1>Transaction Management</h1>
+
+    <div>
+        <input type="text" id="payment_method" placeholder="Payment Method">
+        <input type="number" id="payment_amount" placeholder="Payment Amount">
+
+        <!-- Tutor Dropdown -->
+        <select id="tutor">
+            <option value="">Select Tutor</option>
+            {% for tutor in tutors %}
+                <option value="{{ tutor.id }}">{{ tutor.last_name }}</option>
+            {% endfor %}
+        </select>
+
+        <button id="save-transaction-btn">Save Transaction</button>
+    </div>
+
+    <h2>All Transactions</h2>
+    <ul id="transaction-list">
+        {% for transaction in transactions %}
+            <li data-id="{{ transaction.transaction_id }}">
+                Recipient: {{ transaction.tutor.last_name }} - Method: {{ transaction.payment_method }} - Amount: ${{ transaction.payment_amount }}
+                <button onclick="editTransaction({{ transaction.transaction_id }}, '{{ transaction.payment_method }}', '{{ transaction.payment_amount }}', {{ transaction.tutor.id }})">Edit</button>
+                <button onclick="deleteTransaction({{ transaction.transaction_id }})">Delete</button>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <script>
+        let editingTransactionId = null;
+
+        $('#save-transaction-btn').click(function() {
+            const method = $('#payment_method').val();
+            const amount = $('#payment_amount').val();
+            const tutorId = $('#tutor').val();
+
+            if (editingTransactionId) {
+                // Update existing transaction
+                $.post(`/transaction/update/${editingTransactionId}/`, {
+                    payment_method: method,
+                    payment_amount: amount,
+                    tutor: tutorId,
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                }, function(data) {
+                    const transactionItem = $(`li[data-id="${data.id}"]`);
+                    transactionItem.html(
+                        `Recipient: ${data.tutor_last_name} - Method: ${data.method} - Amount: $${data.amount}
+                        <button onclick="editTransaction(${data.id}, '${data.method}', '${data.amount}', ${data.tutor_id})">Edit</button>
+                        <button onclick="deleteTransaction(${data.id})">Delete</button>`
+                    );
+
+                    resetForm();
+                });
+            } else {
+                // Create new transaction
+                $.post("{% url 'add-transaction' %}", {
+                    payment_method: method,
+                    payment_amount: amount,
+                    tutor: tutorId,
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                }, function(data) {
+                    $('#transaction-list').append(
+                        `<li data-id="${data.id}">
+                            Recipient: ${data.tutor_last_name} - Method: ${data.method} - Amount: $${data.amount}
+                            <button onclick="editTransaction(${data.id}, '${data.method}', '${data.amount}', ${data.tutor_id})">Edit</button>
+                            <button onclick="deleteTransaction(${data.id})">Delete</button>
+                        </li>`
+                    );
+
+                    resetForm();
+                });
+            }
+        });
+
+        function editTransaction(transactionId, method, amount, tutorId) {
+            $('#payment_method').val(method);
+            $('#payment_amount').val(amount);
+            $('#tutor').val(tutorId);
+            editingTransactionId = transactionId;
+            $('#save-transaction-btn').text("Update Transaction");
+        }
+
+        function deleteTransaction(transactionId) {
+            $.post(`/transaction/delete/${transactionId}/`, {
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            }, function(data) {
+                $(`li[data-id="${data.id}"]`).remove();
+            });
+        }
+
+        function resetForm() {
+            $('#payment_method').val('');
+            $('#payment_amount').val('');
+            $('#tutor').val('');
+            editingTransactionId = null;
+            $('#save-transaction-btn').text("Add Transaction");
+        }
+    </script>
+</body>
+</html>
