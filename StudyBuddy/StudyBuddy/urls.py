@@ -9,4 +9,5 @@ urlpatterns = [
     path('Subject/', include('Subject.urls')),
     path('tutors/', include('tutors.urls')),
     path('transaction/', include('transaction.urls')),
+    path('session/', include('session.urls')),
 ]

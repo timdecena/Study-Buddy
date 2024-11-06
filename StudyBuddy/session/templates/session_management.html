@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Session Management</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+</head>
+<body>
+    <h1>Session Management</h1>
+    <form id="session-form" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="hidden" id="session-id" name="session_id" value="">
+        <button type="submit">Save Session</button>
+    </form>
+
+    <h2>All Sessions</h2>
+    <ul id="session-list">
+        {% for session in sessions %}
+            <li id="session-{{ session.session_id }}">
+                {{ session.session_name }} - {{ session.schedule_date }} - {{ session.time_start }}:00
+                - Tutor: {{ session.tutor.last_name }}
+                - Student: {{ session.student.fullname }}
+                - Course: {{ session.course.course_name }}
+                <button onclick="editSession({{ session.session_id }}, '{{ session.session_name }}', '{{ session.schedule_date }}', {{ session.time_start }}, {{ session.tutor.id }}, {{ session.student.id }}, {{ session.course.id }})">Edit</button>
+                <button onclick="deleteSession({{ session.session_id }})">Delete</button>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <script>
+        $(function() {
+            $('#id_schedule_date').datepicker({ dateFormat: 'yy-mm-dd' });
+        });
+
+        $('#session-form').submit(function(event) {
+            event.preventDefault();
+            let sessionId = $('#session-id').val();
+            let url = sessionId ? `{% url 'update-session' 0 %}`.replace('0', sessionId) : "{% url 'add-session' %}";
+
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: $(this).serialize(),
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                success: function(data) {
+                    if (data.id) {  // Check if the response contains the session ID
+                        let sessionHtml = `<li id="session-${data.id}">${data.name} - ${data.schedule_date} - ${data.time_start}:00
+                            - Tutor: ${data.tutor}
+                            - Student: ${data.student}
+                            - Course: ${data.course}
+                            <button onclick="editSession(${data.id}, '${data.name}', '${data.schedule_date}', ${data.time_start}, ${data.tutor_id}, ${data.student_id}, ${data.course_id})">Edit</button>
+                            <button onclick="deleteSession(${data.id})">Delete</button>
+                        </li>`;
+
+                        if (sessionId) {
+                            $(`#session-${sessionId}`).replaceWith(sessionHtml);
+                        } else {
+                            $('#session-list').append(sessionHtml);
+                        }
+
+                        $('#session-form')[0].reset();  
+                        $('#session-id').val('');  
+                    } else {
+                        alert("Failed to save session. Please try again.");
+                    }
+                },
+                error: function(xhr) {
+                    console.error(xhr.responseText); // Log the error to the console for debugging
+                    alert("An error occurred while saving the session.");
+                }
+            });
+        });
+
+        function deleteSession(session_id) {
+            $.ajax({
+                url: `/session/delete/${session_id}/`,
+                type: "POST",
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                success: function() {
+                    $(`#session-${session_id}`).remove();
+                },
+                error: function() {
+                    alert("An error occurred while deleting the session.");
+                }
+            });
+        }
+
+        function editSession(session_id, session_name, schedule_date, time_start, tutor_id, student_id, course_id) {
+            $('#session-id').val(session_id);
+            $('#id_session_name').val(session_name);
+            $('#id_schedule_date').val(schedule_date);
+            $('#id_time_start').val(time_start);
+            $('#id_tutor').val(tutor_id);
+            $('#id_student').val(student_id);
+            $('#id_course').val(course_id);
+        }
+    </script>
+</body>
+</html>

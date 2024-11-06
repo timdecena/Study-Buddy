@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'Course',
     'home',
     'transaction',
+    'session',
 ]
 
 MIDDLEWARE = [
