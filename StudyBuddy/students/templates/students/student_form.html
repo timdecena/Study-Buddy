@@ -5,66 +5,138 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% if form.instance.pk %}Edit Student{% else %}Add Student{% endif %}</title>
     <style>
+        /* General Styles */
         body {
-            font-family: Arial, sans-serif;
-            background-color: #e6f7ff;
-            color: #333;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f7faf9; /* Light background */
+        }
+
+        /* Navbar Styles */
+        nav {
+            background-color: #1a5b41; /* Forest green */
+            color: white;
+            padding: 20px 0; /* Increase padding to ensure visibility */
             text-align: center;
         }
+
+        nav h1 {
+            margin: 0;
+            font-size: 24px;
+            color: white;
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin-top: 10px;
+        }
+
+        nav ul li {
+            display: inline;
+            margin-right: 20px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+        }
+
+        nav ul li a:hover {
+            text-decoration: underline;
+        }
+
+        /* Form Styles */
         h1 {
-            color: #0066cc;
+            color: #1a5b41;
+            text-align: center;
+            margin-bottom: 30px;
         }
+
         form {
-            display: inline-block;
-            margin-top: 20px;
-            width: 300px;
-            text-align: left;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
+
         label {
             font-weight: bold;
-            color: #0066cc;
+            color: #1a5b41;
+            margin-bottom: 8px;
+            display: block;
         }
+
         input, select, textarea {
             width: 100%;
-            padding: 8px;
-            margin: 5px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
         }
+
         button {
-            background-color: #008cba;
+            background-color: #1a5b41; /* Forest green */
             color: white;
-            padding: 10px 15px;
+            padding: 12px 20px;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
+            font-size: 16px;
             width: 100%;
         }
+
         button:hover {
-            background-color: #005580;
+            background-color: #144e33;
         }
+
         .btn {
-            display: inline-block;
-            margin-top: 10px;
-            color: #0066cc;
             text-decoration: none;
+            color: #1a5b41;
+            display: inline-block;
+            margin-top: 20px;
+            font-size: 16px;
+        }
+
+        .btn:hover {
+            color: #144e33;
         }
     </style>
 </head>
 <body>
 
-{% if form.instance.pk %}
-    <h1>Edit Student</h1>
-{% else %}
-    <h1>Add Student</h1>
-{% endif %}
+    <!-- Navbar -->
+    <nav>
+        <h1>StudyBuddy</h1>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/Subject">Subjects</a></li>
+            <li><a href="/students">Students</a></li>
+            <li><a href="/Course">Courses</a></li>
+            <li><a href="/tutors/">Tutors</a></li>
+        </ul>
+    </nav>
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Save</button>
-</form>
-<a class="btn" href="{% url 'students:student_list' %}">Back to Student List</a>
+    <!-- Student Form Section -->
+    <div class="container">
+        {% if form.instance.pk %}
+            <h1>Edit Student</h1>
+        {% else %}
+            <h1>Add Student</h1>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Save</button>
+        </form>
+
+        <a class="btn" href="{% url 'students:student_list' %}">Back to Student List</a>
+    </div>
 
 </body>
 </html>

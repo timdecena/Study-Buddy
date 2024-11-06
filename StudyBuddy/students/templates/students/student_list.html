@@ -5,74 +5,156 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student List</title>
     <style>
+        /* General Styles */
         body {
-            font-family: Arial, sans-serif;
-            background-color: #e6f7ff;
-            color: #333;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f7faf9; /* Light background */
+        }
+
+        /* Navbar Styles */
+        nav {
+            background-color: #1a5b41; /* Forest green */
+            color: white;
+            padding: 20px;
             text-align: center;
         }
-        h1 {
-            color: #0066cc;
-        }
-        .btn {
-            background-color: #008cba;
+
+        nav h1 {
+            margin: 0;
+            font-size: 24px;
             color: white;
-            padding: 10px 15px;
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin-top: 10px;
+        }
+
+        nav ul li {
+            display: inline;
+            margin-right: 20px;
+        }
+
+        nav ul li a {
+            color: white;
             text-decoration: none;
-            border-radius: 5px;
+            font-size: 18px;
         }
+
+        nav ul li a:hover {
+            text-decoration: underline;
+        }
+
+        /* Student List Section */
+        .container {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #1a5b41;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            background-color: #1a5b41; /* Forest green */
+            color: white;
+            padding: 12px 20px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
         .btn:hover {
-            background-color: #005580;
+            background-color: #144e33;
         }
+
         hr {
             margin: 20px 0;
+            border-top: 1px solid #ddd;
         }
-        ul {
+
+        .student-list {
             list-style: none;
             padding: 0;
+            margin: 0;
         }
-        li {
-            background-color: #ffffff;
-            padding: 15px;
-            margin: 10px auto;
-            width: 80%;
-            max-width: 400px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+        .student-list li {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 15px;
+            margin: 10px 0;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
-        li span {
-            font-size: 1.1em;
+
+        .student-list li span {
+            font-size: 16px;
             color: #333;
         }
-        li div a {
-            color: #008cba;
+
+        .student-list li div a {
+            color: #1a5b41;
             text-decoration: none;
-            margin: 0 5px;
+            font-weight: bold;
+            margin: 0 8px;
         }
-        li div a:hover {
-            color: #005580;
+
+        .student-list li div a:hover {
+            color: #144e33;
         }
     </style>
 </head>
 <body>
 
-<h1>Students</h1>
-<a class="btn" href="{% url 'students:student_create' %}">Add Student</a>
-<hr>
-<ul>
-    {% for student in students %}
-    <li>
-        <span>{{ student.student_id }} - {{ student.year }}</span>
-        <div>
-            <a href="{% url 'students:student_update' student.pk %}">Edit</a> |
-            <a href="{% url 'students:student_delete' student.pk %}">Delete</a>
-        </div>
-    </li>
-    {% endfor %}
-</ul>
+    <!-- Navbar -->
+    <nav>
+        <h1>StudyBuddy</h1>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/Subject">Subjects</a></li>
+            <li><a href="/students">Students</a></li>
+            <li><a href="/Course">Courses</a></li>
+            <li><a href="/tutors/">Tutors</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Container for Student List -->
+    <div class="container">
+        <h1>Student List</h1>
+
+        <!-- Add Student Button -->
+        <a class="btn" href="{% url 'students:student_create' %}">Add Student</a>
+
+        <hr>
+
+        <!-- Student List -->
+        <ul class="student-list">
+            {% for student in students %}
+                <li>
+                    <span>{{ student.student_id }} - {{ student.year }}</span>
+                    <div>
+                        <a href="{% url 'students:student_update' student.pk %}">Edit</a> |
+                        <a href="{% url 'students:student_delete' student.pk %}">Delete</a>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
 
 </body>
 </html>
