@@ -3,11 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tutors Management</title>
+    <title>Tutors Application</title>
     <style>
+        /* Navbar Styling */
+        .navbar {
+            background-color: #004d26; /* Forest green */
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            font-weight: bold;
+        }
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+
+        /* General Styling */
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
+        }
+        h1, h2 {
+            color: #004d26;
         }
         form {
             margin-bottom: 20px;
@@ -22,14 +49,26 @@
     </style>
 </head>
 <body>
-    <h1>Tutors Management</h1>
+
+    <!-- Navbar -->
+    <div class="navbar">
+        <h1>StudyBuddy</h1>
+        <div>
+            <a href="/Subject">Subjects</a>
+            <a href="/students">Students</a>
+            <a href="/Course">Courses</a>
+            <a href="/tutors">Tutors</a>
+        </div>
+    </div>
+
+    <h1>Tutors Application</h1>
     <form id="tutorForm">
         <input type="hidden" id="tutorId" value="">
         <input type="text" id="firstName" placeholder="First Name" required>
         <input type="text" id="lastName" placeholder="Last Name" required>
         <input type="email" id="email" placeholder="Email" required>
         <input type="text" id="subject" placeholder="Subject" required>
-        <button type="submit">Add Tutor</button>
+        <button type="submit">Register</button>
     </form>
 
     <h2>All Tutors</h2>
