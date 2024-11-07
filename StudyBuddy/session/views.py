@@ -17,7 +17,7 @@ def add_session(request):
         if form.is_valid():
             session = form.save()
             return JsonResponse({
-                'id': session.id,
+                'id': session.session_id,
                 'name': session.session_name,
                 'schedule_date': session.schedule_date.strftime('%Y-%m-%d'),
                 'time_start': session.time_start,
@@ -35,7 +35,7 @@ def update_session(request, session_id):
         if form.is_valid():
             session = form.save()
             return JsonResponse({
-                'id': session.id,
+                'id': session.session_id,
                 'name': session.session_name,
                 'schedule_date': session.schedule_date.strftime('%Y-%m-%d'),
                 'time_start': session.time_start,
