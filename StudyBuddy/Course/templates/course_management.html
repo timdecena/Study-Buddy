@@ -5,6 +5,14 @@
     <meta charset="UTF-8">
     <title>Course Management</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        // Set up CSRF token for AJAX requests
+        $.ajaxSetup({
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        });
+    </script>
 </head>
 <body>
     <h1>Course Management</h1>
@@ -95,12 +103,18 @@
         }
 
         function deleteCourse(courseId) {
-            $.post(`/course/delete/${courseId}/`, {
+            $.post("{% url 'delete-course' course_id=0 %}".replace('0', courseId), {
                 csrfmiddlewaretoken: '{{ csrf_token }}'
             }, function(data) {
-                $(`li[data-id="${data.id}"]`).remove();
+                if (data.id) {
+                    $(`li[data-id="${data.id}"]`).remove();
+                }
+            }).fail(function(xhr, status, error) {
+                console.error("Delete request failed:", error);
+                alert("Failed to delete the course. Please try again.");
             });
         }
+        
 
         function resetForm() {
             $('#course_name').val('');
@@ -112,4 +126,4 @@
         }
     </script>
 </body>
-</html>
+</html> 
