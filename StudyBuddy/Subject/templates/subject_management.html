@@ -5,113 +5,154 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Subject Management</title>
     <style>
-        /* General Styles */
+        /* Reset margins and padding */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Full viewport height and width for body */
         body {
             font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
             margin: 0;
             padding: 0;
-            background-color: #f7faf9; /* Light grayish background */
-        }
-
-        /* Navbar Styles */
-        nav {
-            background-color: #1a5b41; /* Darker forest green */
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-
-        nav h1 {
-            margin: 0;
-        }
-
-        nav ul {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        nav ul li {
-            display: inline;
-            margin-right: 20px;
-        }
-
-        nav ul li a {
-            color: white;
-            text-decoration: none;
-            font-size: 18px;
-        }
-
-        nav ul li a:hover {
-            text-decoration: underline;
-        }
-
-        /* Main Content Styling */
-        .container {
+            height: 100vh;
+            overflow: hidden;
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
         }
 
-        h1 {
-            color: #1a5b41;
+        /* Navbar styling */
+        .navbar {
+            background-color: #004d26; /* Forest green */
+            color: white;
+            padding: 20px;
+            width: 200px;
+            display: flex;
+            flex-direction: column; /* Stack items vertically */
+            align-items: flex-start; /* Align items to the left */
+            height: 100vh; /* Full height for sidebar */
         }
 
-        form, ul {
-            width: 100%;
-            max-width: 600px;
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        /* Navbar title styling */
+        .navbar h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
             margin-bottom: 20px;
         }
 
-        input[type="text"], button {
-            width: 100%;
-            margin-bottom: 10px;
-            padding: 10px;
+        /* Navbar links container */
+        .nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
             font-size: 16px;
+            padding: 5px 0;
+        }
+
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+
+        /* Main content styling */
+        .container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: start;
+            padding: 40px 10px;
+            overflow-y: auto;
+        }
+
+        h1, h2 {
+            color: #004d26;
+        }
+
+        /* Form styling */
+        form {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        input {
+            padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
+            width: 100%;
+            max-width: 300px;
         }
 
         button {
-            background-color: #4CAF50;
+            padding: 10px 15px;
+            background-color: #004d26;
             color: white;
             border: none;
+            border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
         }
 
         button:hover {
-            background-color: #45a049;
+            background-color: #006b39;
         }
 
-        ul li {
+        /* Subject list styling */
+        #subject-list {
+            list-style-type: none;
+            padding: 0;
+            margin-top: 20px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        #subject-list li {
+            background-color: #fff;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px;
-            margin-bottom: 10px;
-            background-color: #f4f4f4;
+        }
+
+        /* Button styling inside list */
+        #subject-list button {
+            background-color: #d9534f;
+            color: white;
+            border: none;
             border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        #subject-list button:hover {
+            background-color: #c9302c;
         }
     </style>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
 
-    <!-- Navbar -->
-    <nav>
+    <!-- Sidebar Navbar -->
+    <nav class="navbar">
         <h1>StudyBuddy</h1>
-        <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/Subject">Subjects</a></li>
-            <li><a href="/students">Students</a></li>
-            <li><a href="/Course">Courses</a></li>
-            <li><a href="/tutors/">Tutors</a></li>
-        </ul>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/Subject">Subjects</a>
+            <a href="/students">Students</a>
+            <a href="/Course">Courses</a>
+            <a href="/tutors/">Tutors</a>
+        </div>
     </nav>
 
     <!-- Main Content -->
@@ -130,13 +171,16 @@
             {% for subject in subjects %}
                 <li id="subject-{{ subject.subject_id }}">
                     {{ subject.subject_name }}
-                    <button onclick="editSubject({{ subject.subject_id }}, '{{ subject.subject_name }}')">Edit</button>
-                    <button onclick="deleteSubject({{ subject.subject_id }})">Delete</button>
+                    <div>
+                        <button onclick="editSubject({{ subject.subject_id }}, '{{ subject.subject_name }}')">Edit</button>
+                        <button onclick="deleteSubject({{ subject.subject_id }})">Delete</button>
+                    </div>
                 </li>
             {% endfor %}
         </ul>
     </div>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         // Handle form submission via AJAX
         $('#subject-form').submit(function(event) {
@@ -152,14 +196,19 @@
                     if (subjectId) {
                         // Update the existing subject in the list
                         $(`#subject-${subjectId}`).html(`${data.name} 
-                            <button onclick="editSubject(${data.id}, '${data.name}')">Edit</button> 
-                            <button onclick="deleteSubject(${data.id})">Delete</button>`);
+                            <div>
+                                <button onclick="editSubject(${data.id}, '${data.name}')">Edit</button> 
+                                <button onclick="deleteSubject(${data.id})">Delete</button>
+                            </div>`);
                     } else {
                         // Append new subject to the list if the addition is successful
                         $('#subject-list').append(
                             `<li id="subject-${data.id}">${data.name} 
-                            <button onclick="editSubject(${data.id}, '${data.name}')">Edit</button> 
-                            <button onclick="deleteSubject(${data.id})">Delete</button></li>`
+                                <div>
+                                    <button onclick="editSubject(${data.id}, '${data.name}')">Edit</button> 
+                                    <button onclick="deleteSubject(${data.id})">Delete</button>
+                                </div>
+                            </li>`
                         );
                     }
                     $('#subject-form')[0].reset();  // Reset the form after submission
