@@ -4,47 +4,141 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tutors Application</title>
+  
     <style>
-        /* Navbar Styling */
+        /* Reset margins and padding */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Full viewport height and width for body */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+        }
+
+        /* Navbar styling */
         .navbar {
             background-color: #004d26; /* Forest green */
             color: white;
-            padding: 15px;
+            padding: 20px;
+            width: 200px;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column; /* Stack items vertically */
+            align-items: flex-start; /* Align items to the left */
+            height: 100vh; /* Full height for sidebar */
         }
+
+        /* Navbar title styling */
         .navbar h1 {
-            margin: 0;
             font-size: 24px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 20px;
         }
+
+        /* Navbar links container */
+        .nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
         .navbar a {
             color: white;
             text-decoration: none;
-            margin-left: 20px;
-            font-weight: bold;
+            font-weight: 600;
+            font-size: 16px;
+            padding: 5px 0;
         }
+
         .navbar a:hover {
             text-decoration: underline;
         }
 
-        /* General Styling */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
+        /* Main content styling */
+        .container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: start;
+            padding: 40px 10px;
+            overflow-y: auto;
         }
+
         h1, h2 {
             color: #004d26;
         }
+
+        /* Form styling */
         form {
             margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
+
         input {
-            margin-right: 10px;
-            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%;
+            max-width: 300px;
         }
+
         button {
-            margin-left: 5px;
+            padding: 10px 15px;
+            background-color: #004d26;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #006b39;
+        }
+
+        /* Tutor list styling */
+        #tutorList {
+            list-style-type: none;
+            padding: 0;
+            margin-top: 20px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        #tutorList li {
+            background-color: #fff;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Button styling inside list */
+        #tutorList button {
+            background-color: #d9534f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        #tutorList button:hover {
+            background-color: #c9302c;
         }
     </style>
 </head>
@@ -53,7 +147,7 @@
     <!-- Navbar -->
     <div class="navbar">
         <h1>StudyBuddy</h1>
-        <div>
+        <div class="nav-links">
             <a href="/Subject">Subjects</a>
             <a href="/students">Students</a>
             <a href="/Course">Courses</a>
@@ -61,21 +155,24 @@
         </div>
     </div>
 
-    <h1>Tutors Application</h1>
-    <form id="tutorForm">
-        <input type="hidden" id="tutorId" value="">
-        <input type="text" id="firstName" placeholder="First Name" required>
-        <input type="text" id="lastName" placeholder="Last Name" required>
-        <input type="email" id="email" placeholder="Email" required>
-        <input type="text" id="subject" placeholder="Subject" required>
-        <button type="submit">Register</button>
-    </form>
+    <!-- Main content -->
+    <div class="container">
+        <h1>Tutors Application</h1>
+        <form id="tutorForm">
+            <input type="hidden" id="tutorId" value="">
+            <input type="text" id="firstName" placeholder="First Name" required>
+            <input type="text" id="lastName" placeholder="Last Name" required>
+            <input type="email" id="email" placeholder="Email" required>
+            <input type="text" id="subject" placeholder="Subject" required>
+            <button type="submit">Register</button>
+        </form>
 
-    <h2>All Tutors</h2>
-    <ul id="tutorList"></ul>
+        <h2>All Tutors</h2>
+        <ul id="tutorList"></ul>
+    </div>
 
     <script>
-        const apiUrl = 'http://127.0.0.1:8000/tutors/api/tutors/';  // Updated API URL
+        const apiUrl = 'http://127.0.0.1:8000/tutors/api/tutors/';
 
         // Fetch and display tutors
         async function fetchTutors() {
