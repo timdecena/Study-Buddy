@@ -70,9 +70,6 @@
 
 <form method="post">
     {% csrf_token %}
-    
-    <label for="{{ form.student_id.id_for_label }}">Student ID</label>
-    {{ form.student_id }}
 
     <label for="{{ form.fullname.id_for_label }}">Full Name</label>
     {{ form.fullname }}

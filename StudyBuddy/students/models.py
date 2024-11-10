@@ -1,13 +1,11 @@
-# students/models.py
-
 from django.db import models
 
 class Student(models.Model):
-    student_id = models.CharField(max_length=20, unique=True)  # Unique identifier for each student
-    fullname = models.CharField(max_length=100, default="Default Full Name") # Full name of the student
-    year = models.IntegerField()  # Represents the year level of the student
-    course = models.CharField(max_length=50, default="Default Course")  # Course enrolled
-    section = models.CharField(max_length=10, default="Default Section")  # Section of the student
+    student_id = models.AutoField(primary_key=True)  # Use AutoField if you want an integer ID
+    fullname = models.CharField(max_length=100)
+    course = models.CharField(max_length=100)
+    year = models.IntegerField()
+    section = models.CharField(max_length=100)
 
     def __str__(self):
-        return f"{self.student_id} - {self.fullname}"
+        return self.fullname
