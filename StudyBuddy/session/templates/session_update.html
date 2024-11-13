@@ -1,0 +1,26 @@
+<!-- templates/session_update.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Update Session</title>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script>
+        $(function() {
+            $('#id_schedule_date').datepicker({ dateFormat: 'yy-mm-dd' });
+        });
+    </script>
+</head>
+<body>
+    <h1>Update Session</h1>
+
+    <form id="session-form" method="post" action="{% url 'update-session' session_id=session.session_id %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save Changes</button>
+        <a href="{% url 'session-management' %}">Cancel</a>
+    </form>
+</body>
+</html>
