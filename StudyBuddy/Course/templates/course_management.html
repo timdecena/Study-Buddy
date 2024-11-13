@@ -6,44 +6,203 @@
     <title>Course Management</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
-        // Set up CSRF token for AJAX requests
         $.ajaxSetup({
             headers: {
                 'X-CSRFToken': '{{ csrf_token }}'
             }
         });
     </script>
-</style>
+    <style>
+        /* Reset margins and padding */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Full viewport height and width for body */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+        }
+
+        /* Navbar styling */
+        .navbar {
+            background-color: #004d26;
+            color: white;
+            padding: 20px;
+            width: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            height: 100vh;
+        }
+
+        /* Navbar title styling */
+        .navbar h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        /* Navbar links container */
+        .nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            padding: 5px 0;
+        }
+
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+
+        /* Main content styling */
+        .container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 10px;
+            overflow-y: auto;
+        }
+
+        h1, h2 {
+            color: #004d26;
+        }
+
+        /* Form styling */
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        input, select {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .save-button {
+            padding: 10px 20px;
+            background-color: #004d26;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .save-button:hover {
+            background-color: #006b39;
+        }
+
+        /* Course list styling */
+        #course-list {
+            list-style-type: none;
+            padding: 0;
+            margin-top: 20px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        #course-list li {
+            background-color: #fff;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .edit-button, .delete-button {
+            background-color: #d9534f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .edit-button:hover {
+            background-color: #c9302c;
+        }
+    </style>
 </head>
 <body>
-    <h1>Course Management</h1>
-    
-    <div>
-        <input type="text" id="course_name" placeholder="Course Name">
-        <input type="text" id="course_code" placeholder="Course Code">
-        <input type="text" id="description" placeholder="Description">
-        
-        <!-- Subject Dropdown -->
-        <select id="subject">
-            <option value="">Select Subject</option>
-            {% for subject in form.fields.subject.queryset %}
-                <option value="{{ subject.subject_id }}">{{ subject.subject_name }}</option>
-            {% endfor %}
-        </select>
-        
-        <button id="save-course-btn">Save Course</button>
+
+    <!-- Navbar -->
+    <div class="navbar">
+        <h1>StudyBuddy</h1>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/Subject">Subjects</a>
+            <a href="/students">Students</a>
+            <a href="/Course">Courses</a>
+            <a href="/tutors">Tutors</a>
+        </div>
     </div>
-    
-    <h2>All Courses</h2>
-    <ul id="course-list">
-        {% for course in courses %}
-            <li data-id="{{ course.course_id }}">
-                {{ course.course_name }} - {{ course.course_code }} ({{ course.description }}, {{ course.subject.subject_name }})
-                <button onclick="window.location.href='{% url 'update-course' course.course_id %}'">Edit</button>
-                <button onclick="deleteCourse({{ course.course_id }})">Delete</button>
-            </li>
-        {% endfor %}
-    </ul>
+
+    <!-- Main content -->
+    <div class="container">
+        <h1>Course Management</h1>
+
+        <!-- Form for adding/updating courses -->
+        <div class="form-group">
+            <input type="text" id="course_name" placeholder="Course Name">
+            <input type="text" id="course_code" placeholder="Course Code">
+            <input type="text" id="description" placeholder="Description">
+            
+            <!-- Subject Dropdown -->
+            <select id="subject">
+                <option value="">Select Subject</option>
+                {% for subject in form.fields.subject.queryset %}
+                    <option value="{{ subject.subject_id }}">{{ subject.subject_name }}</option>
+                {% endfor %}
+            </select>
+
+            <!-- Save button centered below form fields -->
+            <button class="save-button" id="save-course-btn">Save Course</button>
+        </div>
+        
+        <h2>All Courses</h2>
+        <ul id="course-list">
+            {% for course in courses %}
+                <li data-id="{{ course.course_id }}">
+                    {{ course.course_name }} - {{ course.course_code }} ({{ course.description }}, {{ course.subject.subject_name }})
+                    <div class="action-buttons">
+                        <button onclick="window.location.href='{% url 'update-course' course.course_id %}'">Edit</button>
+                        <button class="delete-button" onclick="deleteCourse({{ course.course_id }})">Delete</button>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
 
     <script>
         let editingCourseId = null;
@@ -66,8 +225,10 @@
                     const courseItem = $(`li[data-id="${data.id}"]`);
                     courseItem.html(
                         `${data.name} - ${data.code} (${data.description}, ${data.subject_name})
-                        <button onclick="editCourse(${data.id}, '${data.name}', '${data.code}', '${data.description}', ${data.subject_id})">Edit</button>
-                        <button onclick="deleteCourse(${data.id})">Delete</button>`
+                        <div class="action-buttons">
+                            <button class="edit-button" onclick="editCourse(${data.id}, '${data.name}', '${data.code}', '${data.description}', ${data.subject_id})">Edit</button>
+                            <button class="delete-button" onclick="deleteCourse(${data.id})">Delete</button>
+                        </div>`
                     );
 
                     resetForm();
@@ -84,8 +245,10 @@
                     $('#course-list').append(
                         `<li data-id="${data.id}">
                             ${data.name} - ${data.code} (${data.description}, ${data.subject_name})
-                            <button onclick="editCourse(${data.id}, '${data.name}', '${data.code}', '${data.description}', ${data.subject_id})">Edit</button>
-                            <button onclick="deleteCourse(${data.id})">Delete</button>
+                            <div class="action-buttons">
+                                <button class="edit-button" onclick="editCourse(${data.id}, '${data.name}', '${data.code}', '${data.description}', ${data.subject_id})">Edit</button>
+                                <button class="delete-button" onclick="deleteCourse(${data.id})">Delete</button>
+                            </div>
                         </li>`
                     );
 
@@ -115,7 +278,6 @@
                 alert("Failed to delete the course. Please try again.");
             });
         }
-        
 
         function resetForm() {
             $('#course_name').val('');
@@ -127,4 +289,4 @@
         }
     </script>
 </body>
-</html> 
+</html>

@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,108 +7,172 @@
     <title>Transaction Management</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <style>
-        /* General Styles */
-        body {
-            font-family: Arial, sans-serif;
+        /* Reset margins and padding */
+        * {
             margin: 0;
             padding: 0;
-            background-color: #f7faf9;
+            box-sizing: border-box;
         }
 
-        /* Page Title */
-        h1 {
-            text-align: center;
-            color: #1a5b41;
-            padding-top: 20px;
+        /* Full viewport height and width for body */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
         }
 
-        /* Form Container */
-        div {
+        /* Navbar styling */
+        .navbar {
+            background-color: #004d26; /* Forest green */
+            color: white;
+            padding: 20px;
+            width: 200px;
+            display: flex;
+            flex-direction: column; /* Stack items vertically */
+            align-items: flex-start; /* Align items to the left */
+            height: 100vh; /* Full height for sidebar */
+        }
+
+        /* Navbar title styling */
+        .navbar h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        /* Navbar links container */
+        .nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            padding: 5px 0;
+        }
+
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+
+        /* Content area styling */
+        .content {
+            flex: 1;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin: 20px;
-            padding: 20px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            max-width: 400px;
-            margin: auto;
         }
-        input[type="text"],
-        input[type="number"],
-        select {
+
+        .content h1 {
+            color: #004d26;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        /* Form styling */
+        .form-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            margin-bottom: 30px;
+        }
+
+        .form-container input, .form-container select, .form-container button {
             width: 100%;
             padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
+            margin-top: 10px;
+            border: 1px solid #ccc;
             border-radius: 4px;
-        }
-
-        /* Button Styles */
-        #save-transaction-btn {
-            background-color: #1a5b41;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 25px;
             font-size: 16px;
+        }
+
+        .form-container button {
+            background-color: #004d26;
+            color: white;
+            font-weight: bold;
             cursor: pointer;
-            transition: background-color 0.3s ease;
         }
 
-        #save-transaction-btn:hover {
-            background-color: #45a049;
+        .form-container button:hover {
+            background-color: #006637;
         }
 
-        /* Transaction List Styles */
-        h2 {
-            text-align: center;
-            color: #1a5b41;
-            margin-top: 40px;
+        /* Transaction list styling */
+        .transactions-list {
+            width: 100%;
+            max-width: 500px;
         }
 
-        #transaction-list {
-            list-style-type: none;
-            padding: 0;
-            max-width: 600px;
-            margin: 20px auto;
-        }
-
-        #transaction-list li {
+        .transaction-item {
             background-color: white;
-            margin-bottom: 10px;
             padding: 15px;
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            color: #1a5b41;
             font-size: 16px;
         }
 
-        #transaction-list button {
-            background-color: transparent;
-            color: #1a5b41;
-            border: none;
-            cursor: pointer;
+        .transaction-item span {
             font-weight: bold;
-            margin-left: 10px;
-            transition: color 0.3s ease;
         }
 
-        #transaction-list button:hover {
-            color: #45a049;
+        .transaction-item .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .transaction-item .actions a {
+            color: #004d26;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .transaction-item .actions a:hover {
+            color: #006637;
         }
     </style>
 </head>
 <body>
-    <h1>Transaction Management</h1>
+    <!-- Navbar -->
+    <div class="navbar">
+        <h1>StudyBuddy</h1>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/Subject">Subjects</a>
+            <a href="/students">Students</a>
+            <a href="/Course">Courses</a>
+            <a href="/tutors">Tutors</a>
+            <a href="/session">Session</a>
+            <a href="/transaction">Transaction</a>
 
-    <div>
-        <input type="text" id="payment_method" placeholder="Payment Method">
-        <input type="number" id="payment_amount" placeholder="Payment Amount">
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+        <h1>Transaction Management</h1>
+        
+        <!-- Form for creating a transaction -->
+        <div class="form-container">
+            <form id="transaction-form">
+                <input type="text" id="payment_method" placeholder="Payment Method">
+                <input type="number" id="payment_amount" placeholder="Payment Amount">
 
         <!-- Tutor Dropdown -->
         <select id="tutor">
@@ -117,9 +183,10 @@
         </select>
 
         <button id="save-transaction-btn">Save Transaction</button>
-    </div>
+            </form>
+        </div>
 
-    <h2>All Transactions</h2>
+        <h2>All Transactions</h2>
     <ul id="transaction-list">
         {% for transaction in transactions %}
             <li data-id="{{ transaction.transaction_id }}">
