@@ -165,6 +165,8 @@
             <a href="/students">Students</a>
             <a href="/Course">Courses</a>
             <a href="/tutors">Tutors</a>
+            <a href="/session">Session</a>
+            <a href="/transaction">Transaction</a>
         </div>
     </div>
 
@@ -223,17 +225,23 @@
                     csrfmiddlewaretoken: '{{ csrf_token }}'
                 }, function(data) {
                     const courseItem = $(`li[data-id="${data.id}"]`);
-                    courseItem.html(
-                        `${data.name} - ${data.code} (${data.description}, ${data.subject_name})
+                    
+                    // Define the updated HTML for the course item, including the new URL structure
+                    const courseHtml = `
+                        ${data.name} - ${data.code} (${data.description}, ${data.subject_name})
                         <div class="action-buttons">
-                            <button class="edit-button" onclick="editCourse(${data.id}, '${data.name}', '${data.code}', '${data.description}', ${data.subject_id})">Edit</button>
+                            <button onclick="window.location.href='/Course/update/${data.id}/'">Edit</button>
                             <button class="delete-button" onclick="deleteCourse(${data.id})">Delete</button>
-                        </div>`
-                    );
-
+                        </div>
+                    `;
+                    
+                    // Update the HTML content of the course item
+                    courseItem.html(courseHtml);
+            
                     resetForm();
                 });
-            } else {
+            }
+             else {
                 // Create new course
                 $.post("{% url 'add-course' %}", {
                     course_name: name,
@@ -246,7 +254,7 @@
                         `<li data-id="${data.id}">
                             ${data.name} - ${data.code} (${data.description}, ${data.subject_name})
                             <div class="action-buttons">
-                                <button class="edit-button" onclick="editCourse(${data.id}, '${data.name}', '${data.code}', '${data.description}', ${data.subject_id})">Edit</button>
+                                <button onclick="window.location.href='/Course/update/${data.id}/'">Edit</button>
                                 <button class="delete-button" onclick="deleteCourse(${data.id})">Delete</button>
                             </div>
                         </li>`
@@ -256,15 +264,6 @@
                 });
             }
         });
-
-        function editCourse(courseId, name, code, description, subjectId) {
-            $('#course_name').val(name);
-            $('#course_code').val(code);
-            $('#description').val(description);
-            $('#subject').val(subjectId);
-            editingCourseId = courseId;
-            $('#save-course-btn').text("Update Course");
-        }
 
         function deleteCourse(courseId) {
             $.post("{% url 'delete-course' course_id=0 %}".replace('0', courseId), {

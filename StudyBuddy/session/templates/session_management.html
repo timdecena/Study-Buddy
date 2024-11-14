@@ -73,16 +73,17 @@
                 },
                 success: function(data) {
                     const sessionHtml = `
-                        <li id="session-${data.id}">
-                            <span>${data.name} - ${data.schedule_date} - ${data.time_start}:00
-                            - Tutor: ${data.tutor}
-                            - Student: ${data.student}
-                            - Course: ${data.course}</span>
-                            <div>
-                                <button onclick="editSession(${data.id}, '${data.name}', '${data.schedule_date}', ${data.time_start}, ${data.tutor_id}, ${data.student_id}, ${data.course_id})">Edit</button>
-                                <button onclick="deleteSession(${data.id})">Delete</button>
-                            </div>
-                        </li>`;
+                            <li id="session-${data.id}">
+                                <span>${data.name} - ${data.schedule_date} - ${data.time_start}:00
+                                - Tutor: ${data.tutor}
+                                - Student: ${data.student}
+                                - Course: ${data.course}</span>
+                                <div>
+                                    ${data.id ? `<button onclick="window.location.href='/session/update/${data.id}/'">Edit</button>` : ""}
+                                    <button onclick="deleteSession(${data.id})">Delete</button>
+                                </div>
+                            </li>`;
+
 
                     if (editingSessionId) {
                         $(`#session-${editingSessionId}`).replaceWith(sessionHtml);
@@ -98,18 +99,6 @@
                 }
             });
         });
-
-        function editSession(sessionId, sessionName, scheduleDate, timeStart, tutorId, studentId, courseId) {
-            $('#session-id').val(sessionId);
-            $('#id_session_name').val(sessionName);
-            $('#id_schedule_date').val(scheduleDate);
-            $('#id_time_start').val(timeStart);
-            $('#id_tutor').val(tutorId);
-            $('#id_student').val(studentId);
-            $('#id_course').val(courseId);
-            editingSessionId = sessionId;
-            $('#save-session-btn').text("Update Session");
-        }
 
         function deleteSession(sessionId) {
             $.post(`/session/delete/${sessionId}/`, {
