@@ -6,30 +6,187 @@
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <style>
+        /* Reset margins and padding */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Full viewport height and width for body */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+        }
+
+        /* Navbar styling */
+        .navbar {
+            background-color: #004d26; /* Forest green */
+            color: white;
+            padding: 20px;
+            width: 200px;
+            display: flex;
+            flex-direction: column; /* Stack items vertically */
+            align-items: flex-start; /* Align items to the left */
+            height: 100vh; /* Full height for sidebar */
+        }
+
+        /* Navbar title styling */
+        .navbar h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        /* Navbar links container */
+        .nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            padding: 5px 0;
+        }
+
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+
+        /* Content area styling */
+        .content {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .content h1 {
+            color: #004d26;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        /* Form styling */
+        .form-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            margin-bottom: 30px;
+        }
+
+        .form-container input, .form-container select, .form-container button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .form-container button {
+            background-color: #004d26;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .form-container button:hover {
+            background-color: #006637;
+        }
+
+        /* Sessions list styling */
+        .sessions-list {
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .session-item {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 16px;
+        }
+
+        .session-item span {
+            font-weight: bold;
+        }
+
+        .session-item .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .session-item .actions button {
+            color: #004d26;
+            background: none;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .session-item .actions button:hover {
+            color: #006637;
+        }
+    </style>
 </head>
 <body>
-    <nav>
+    <!-- Navbar -->
+    <div class="navbar">
+        <h1>StudyBuddy</h1>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/Subject">Subjects</a>
+            <a href="/students">Students</a>
+            <a href="/Course">Courses</a>
+            <a href="/tutors">Tutors</a>
+            <a href="/session">Session</a>
+            <a href="/transaction">Transaction</a>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
         <h1>Session Management</h1>
-    </nav>
-    
-    <div class="container">
-        <form id="session-form" method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <input type="hidden" id="session-id" name="session_id" value="">
-            <button type="submit" id="save-session-btn">Save Session</button>
-        </form>
+
+        <!-- Form for creating/editing a session -->
+        <div class="form-container">
+            <form id="session-form" method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <input type="hidden" id="session-id" name="session_id" value="">
+                <button type="submit" id="save-session-btn">Save Session</button>
+            </form>
+        </div>
 
         <h2>All Sessions</h2>
         <ul id="session-list">
             {% for session in sessions %}
-                <li id="session-{{ session.session_id }}">
+                <li id="session-{{ session.session_id }}" class="session-item">
                     <span>{{ session.session_name }} - {{ session.schedule_date }} - {{ session.time_start }}:00
                         - Tutor: {{ session.tutor.last_name }}
                         - Student: {{ session.student.fullname }}
-                        - Course: {{ session.course.course_name }}
-                    </span>
-                    <div>
+                        - Course: {{ session.course.course_name }}</span>
+                    <div class="actions">
                         <button onclick="window.location.href='{% url 'update-session' session.session_id %}'">Edit</button>
                         <button onclick="deleteSession({{ session.session_id }})">Delete</button>
                     </div>
@@ -42,7 +199,7 @@
         $(function() {
             $('#id_schedule_date').datepicker({ dateFormat: 'yy-mm-dd' });
         });
-    
+
         let editingSessionId = null;
 
         // Handle form submission
@@ -73,17 +230,16 @@
                 },
                 success: function(data) {
                     const sessionHtml = `
-                            <li id="session-${data.id}">
+                            <li id="session-${data.id}" class="session-item">
                                 <span>${data.name} - ${data.schedule_date} - ${data.time_start}:00
                                 - Tutor: ${data.tutor}
                                 - Student: ${data.student}
                                 - Course: ${data.course}</span>
-                                <div>
+                                <div class="actions">
                                     ${data.id ? `<button onclick="window.location.href='/session/update/${data.id}/'">Edit</button>` : ""}
                                     <button onclick="deleteSession(${data.id})">Delete</button>
                                 </div>
                             </li>`;
-
 
                     if (editingSessionId) {
                         $(`#session-${editingSessionId}`).replaceWith(sessionHtml);
