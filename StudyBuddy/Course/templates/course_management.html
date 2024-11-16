@@ -1,4 +1,3 @@
-<!-- templates/course_management.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -140,8 +139,8 @@
             gap: 10px;
         }
 
-        .edit-button, .delete-button {
-            background-color: #d9534f;
+        .edit-button {
+            background-color: #d9534f; /* Red color for edit button */
             color: white;
             border: none;
             border-radius: 5px;
@@ -150,6 +149,19 @@
         }
 
         .edit-button:hover {
+            background-color: #c9302c; /* Darker red for hover */
+        }
+
+        .delete-button {
+            background-color: #d9534f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .delete-button:hover {
             background-color: #c9302c;
         }
     </style>
@@ -198,7 +210,7 @@
                 <li data-id="{{ course.course_id }}">
                     {{ course.course_name }} - {{ course.course_code }} ({{ course.description }}, {{ course.subject.subject_name }})
                     <div class="action-buttons">
-                        <button onclick="window.location.href='{% url 'update-course' course.course_id %}'">Edit</button>
+                        <button class="edit-button" onclick="window.location.href='{% url 'update-course' course.course_id %}'">Edit</button>
                         <button class="delete-button" onclick="deleteCourse({{ course.course_id }})">Delete</button>
                     </div>
                 </li>
@@ -226,11 +238,11 @@
                 }, function(data) {
                     const courseItem = $(`li[data-id="${data.id}"]`);
                     
-                    // Define the updated HTML for the course item, including the new URL structure
+                    // Define the updated HTML for the course item
                     const courseHtml = `
                         ${data.name} - ${data.code} (${data.description}, ${data.subject_name})
                         <div class="action-buttons">
-                            <button onclick="window.location.href='/Course/update/${data.id}/'">Edit</button>
+                            <button class="edit-button" onclick="window.location.href='/Course/update/${data.id}/'">Edit</button>
                             <button class="delete-button" onclick="deleteCourse(${data.id})">Delete</button>
                         </div>
                     `;
@@ -254,7 +266,7 @@
                         `<li data-id="${data.id}">
                             ${data.name} - ${data.code} (${data.description}, ${data.subject_name})
                             <div class="action-buttons">
-                                <button onclick="window.location.href='/Course/update/${data.id}/'">Edit</button>
+                                <button class="edit-button" onclick="window.location.href='/Course/update/${data.id}/'">Edit</button>
                                 <button class="delete-button" onclick="deleteCourse(${data.id})">Delete</button>
                             </div>
                         </li>`
