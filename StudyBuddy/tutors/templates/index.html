@@ -155,7 +155,6 @@
             <a href="/tutors">Tutors</a>
             <a href="/session">Session</a>
             <a href="/transaction">Transaction</a>
-
         </div>
     </div>
 
@@ -238,6 +237,12 @@
 
         // Delete a tutor
         async function deleteTutor(id) {
+            const currentTutorId = document.getElementById('tutorId').value;
+            if (currentTutorId && parseInt(currentTutorId) === id) {
+                // If the deleted tutor is the one being edited, clear the form
+                document.getElementById('tutorForm').reset();
+                document.getElementById('tutorId').value = '';
+            }
             await fetch(`${apiUrl}${id}/`, { method: 'DELETE' });
             fetchTutors();
         }
