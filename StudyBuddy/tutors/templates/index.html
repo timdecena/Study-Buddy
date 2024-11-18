@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tutors Application</title>
-  
     <style>
         /* Reset margins and padding */
         * {
@@ -166,7 +165,7 @@
             <input type="text" id="firstName" placeholder="First Name" required>
             <input type="text" id="lastName" placeholder="Last Name" required>
             <input type="email" id="email" placeholder="Email" required>
-            <input type="text" id="subject" placeholder="Subject" required>
+            <input type="text" id="subject" placeholder="Course" required>
             <button type="submit">Register</button>
         </form>
 
@@ -216,7 +215,6 @@
                 body: JSON.stringify(tutorData),
             });
 
-            // Reset the form and refresh the list of tutors
             document.getElementById('tutorForm').reset();
             document.getElementById('tutorId').value = '';
             fetchTutors();
@@ -235,11 +233,18 @@
                 });
         }
 
-        // Delete a tutor
+        // Delete a tutor with confirmation
         async function deleteTutor(id) {
             const currentTutorId = document.getElementById('tutorId').value;
+            let message = "Are you sure you want to delete this tutor?";
             if (currentTutorId && parseInt(currentTutorId) === id) {
-                // If the deleted tutor is the one being edited, clear the form
+                message += " This will also clear the fields in the form.";
+            }
+            if (!confirm(message)) {
+                return; // Exit if the user cancels
+            }
+
+            if (currentTutorId && parseInt(currentTutorId) === id) {
                 document.getElementById('tutorForm').reset();
                 document.getElementById('tutorId').value = '';
             }
