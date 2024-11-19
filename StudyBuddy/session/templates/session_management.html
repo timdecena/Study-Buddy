@@ -114,7 +114,7 @@
             width: 100%;
             max-width: 500px;
         }
-
+        
         .session-item {
             background-color: white;
             padding: 15px;
@@ -122,20 +122,28 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             margin-bottom: 10px;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column; /* Stack content vertically */
+            align-items: flex-start; /* Align text to the left */
             font-size: 16px;
+            word-wrap: break-word; /* Ensure text breaks to fit within the box */
+            overflow: hidden; /* Prevent overflow issues */
         }
-
+        
+        /* Adjust text for the session details */
         .session-item span {
-            font-weight: bold;
+            font-weight: normal;
+            line-height: 1.6; /* Improve readability */
+            white-space: normal; /* Allow text to wrap */
         }
-
+        
+        /* Button container */
         .session-item .actions {
             display: flex;
             gap: 10px;
+            margin-top: 10px; /* Add spacing from the session details */
         }
-
+        
+        /* Action buttons */
         .session-item .actions button {
             color: white;
             background-color: #c9302c;
@@ -145,9 +153,9 @@
             font-weight: bold;
             cursor: pointer;
         }
-
+        
         .session-item .actions button:hover {
-            background-color: #c9302c;
+            background-color: #a71d1a;
         }
     </style>
 </head>
@@ -259,14 +267,18 @@
         });
 
         function deleteSession(sessionId) {
-            $.post(`/session/delete/${sessionId}/`, {
-                csrfmiddlewaretoken: '{{ csrf_token }}'
-            }, function() {
-                $(`#session-${sessionId}`).remove();
-            }).fail(function() {
-                alert("An error occurred while deleting the session.");
-            });
+            const confirmation = confirm("Are you sure you want to delete this session?");
+            if (confirmation) {
+                $.post(`/session/delete/${sessionId}/`, {
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                }, function() {
+                    $(`#session-${sessionId}`).remove();
+                }).fail(function() {
+                    alert("An error occurred while deleting the session.");
+                });
+            }
         }
+        
 
         function resetSessionForm() {
             $('#session-id').val('');

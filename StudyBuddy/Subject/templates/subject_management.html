@@ -223,18 +223,22 @@
         });
 
         // Function to delete a subject
+        // Function to delete a subject with confirmation
         function deleteSubject(subject_id) {
-            $.ajax({
-                url: `/Subject/delete/${subject_id}/`,
-                type: "POST",
-                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
-                success: function(data) {
-                    $(`#subject-${subject_id}`).remove();  // Remove the deleted subject from the list
-                },
-                error: function(error) {
-                    alert("An error occurred while deleting the subject.");
-                }
-            });
+            const confirmation = confirm("Are you sure you want to delete this program?");
+            if (confirmation) {
+                $.ajax({
+                    url: `/Subject/delete/${subject_id}/`,
+                    type: "POST",
+                    headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                    success: function(data) {
+                        $(`#subject-${subject_id}`).remove();  // Remove the deleted subject from the list
+                    },
+                    error: function(error) {
+                        alert("An error occurred while deleting the subject.");
+                    }
+                });
+            }
         }
 
         // Function to edit a subject
