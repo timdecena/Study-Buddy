@@ -72,6 +72,7 @@
             border-radius: 25px;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            margin: 10px;
         }
 
         .hero .btn:hover {
@@ -140,6 +141,24 @@
                 margin-bottom: 20px;
             }
         }
+
+        .logout-btn {
+    color: white;
+    text-decoration: none;
+    background-color: #f44336;  /* Red color for logout */
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-size: 16px;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.logout-btn:hover {
+    background-color: #e53935;  /* Darker red on hover */
+}
     </style>
 </head>
 <body>
@@ -156,6 +175,7 @@
             <li><a href="/session">Session</a></li>
             <li><a href="/transaction">Transaction</a></li>
         </ul>
+        <a href="{% url 'tutor_logout' %}" class="logout-btn">Logout</a>
     </nav>
 
     <!-- Hero Section (Main Hook about StudyBuddy) -->
@@ -164,7 +184,9 @@
         <p>Your learning companion to help manage courses, subjects, students, and tutors all in one place.</p>
         <div>
             <a href="/tutors" class="btn">Register as a Tutor</a>
-            <a href="/students" class="btn" style="margin-left: 20px;">Register as a Student</a>
+            <a href="/students" class="btn">Register as a Student</a>
+            <!-- New Login Button for Tutors -->
+            <a href="/tutors/login" class="btn" style="background-color: #1a5b41; color: white;">Login as a Tutor</a>
         </div>
     </div>
 
