@@ -10,28 +10,24 @@ class TutorViewSet(viewsets.ModelViewSet):
     serializer_class = TutorSerializer
 
 def tutor_login(request):
-    """
-    Displays the login form and handles the login process.
-    """
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
         
         try:
-            # Find the tutor by username
             tutor = Tutor.objects.get(username=username)
-            
-            # Check if the password is correct (no hashing, directly comparing)
             if tutor.password == password:
-                # If password is correct, manually log the tutor in
-                request.session['tutor_id'] = tutor.id  # Store tutor's ID in session
-                return redirect('/')  # Redirect to the home page or dashboard
+                # Store tutor's details in session
+                request.session['user_role'] = 'Tutor'
+                request.session['username'] = tutor.username
+                return redirect('/')
             else:
                 messages.error(request, 'Invalid username or password.')
         except Tutor.DoesNotExist:
             messages.error(request, 'Invalid username or password.')
     
     return render(request, 'login.html')
+
         
 
 from django.contrib.auth import logout

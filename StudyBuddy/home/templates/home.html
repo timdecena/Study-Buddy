@@ -174,6 +174,14 @@
     font-size: 18px;
     font-weight: bold;
 }
+
+.user-info {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 16px;
+    color: white;
+}
     </style>
 </head>
 {% if messages %}
@@ -198,6 +206,11 @@
             <li><a href="/transaction">Transaction</a></li>
         </ul>
         <a href="{% url 'tutor_logout' %}" class="logout-btn">Logout</a>
+        {% if request.session.username %}
+        <div style="position: absolute; top: 20px; left: 20px; color: white;">
+            Logged in as {{ request.session.username }} ({{ request.session.user_role }})
+        </div>
+        {% endif %}
     </nav>
 
     <!-- Hero Section (Main Hook about StudyBuddy) -->
