@@ -48,5 +48,5 @@ def tutor_logout(request):
     # Optionally add a success message for feedback
     messages.success(request, "You have been logged out successfully.")
     
-    # Redirect to the home page or login page
+    messages.success(request, 'You have successfully logged out.')
     return redirect('/')

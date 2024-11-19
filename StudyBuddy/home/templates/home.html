@@ -159,8 +159,30 @@
 .logout-btn:hover {
     background-color: #e53935;  /* Darker red on hover */
 }
+
+/* Style for the success message */
+.message {
+    background-color: #4CAF50;  /* Green background */
+    color: white;
+    padding: 15px;
+    text-align: center;
+    margin: 20px 0;
+    border-radius: 5px;
+}
+
+.message-content {
+    font-size: 18px;
+    font-weight: bold;
+}
     </style>
 </head>
+{% if messages %}
+    <div class="message">
+        {% for message in messages %}
+            <div class="message-content">{{ message }}</div>
+        {% endfor %}
+    </div>
+{% endif %}
 <body>
 
     <!-- Navbar -->
