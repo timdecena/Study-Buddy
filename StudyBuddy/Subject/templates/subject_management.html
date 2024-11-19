@@ -148,7 +148,7 @@
         <h1>StudyBuddy</h1>
         <div class="nav-links">
             <a href="/">Home</a>
-            <a href="/Subject">Subjects</a>
+            <a href="/Subject">Programs</a>
             <a href="/students">Students</a>
             <a href="/Course">Courses</a>
             <a href="/tutors/">Tutors</a>
@@ -159,16 +159,16 @@
 
     <!-- Main Content --> 
     <div class="container">
-        <h1>Subject Management</h1>
+        <h1>Program Management</h1>
         
         <form id="subject-form" method="post">
             {% csrf_token %}
             {{ form.as_p }}
             <input type="hidden" id="subject-id" name="subject_id" value=""> <!-- Hidden field to track edit mode -->
-            <button type="submit">Save Subject</button>
+            <button type="submit">Save Program</button>
         </form>
 
-        <h2>All Subjects</h2>
+        <h2>All Programs</h2>
         <ul id="subject-list">
             {% for subject in subjects %}
                 <li id="subject-{{ subject.subject_id }}">
