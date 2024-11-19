@@ -143,45 +143,22 @@
         }
 
         .logout-btn {
-    color: white;
-    text-decoration: none;
-    background-color: #f44336;  /* Red color for logout */
-    padding: 10px 20px;
-    border-radius: 25px;
-    font-size: 16px;
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
+            color: white;
+            text-decoration: none;
+            background-color: #f44336; /* Red color for logout */
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 16px;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
 
-.logout-btn:hover {
-    background-color: #e53935;  /* Darker red on hover */
-}
-
-/* Style for the success message */
-.message {
-    background-color: #4CAF50;  /* Green background */
-    color: white;
-    padding: 15px;
-    text-align: center;
-    margin: 20px 0;
-    border-radius: 5px;
-}
-
-.message-content {
-    font-size: 18px;
-    font-weight: bold;
-}
-
-.user-info {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    font-size: 16px;
-    color: white;
-}
+        .logout-btn:hover {
+            background-color: #e53935; /* Darker red on hover */
+        }
     </style>
 </head>
 {% if messages %}
@@ -192,7 +169,6 @@
     </div>
 {% endif %}
 <body>
-
     <!-- Navbar -->
     <nav>
         <h1>StudyBuddy</h1>
@@ -213,28 +189,25 @@
         {% endif %}
     </nav>
 
-    <!-- Hero Section (Main Hook about StudyBuddy) -->
+    <!-- Hero Section -->
     <div class="hero">
         <h2>Welcome to StudyBuddy!</h2>
         <p>Your learning companion to help manage courses, subjects, students, and tutors all in one place.</p>
         <div>
             <a href="/tutors" class="btn">Register as a Tutor</a>
-            <a href="/students" class="btn">Register as a Student</a>
-            <!-- New Login Button for Tutors -->
+            <a href="http://127.0.0.1:8000/students/create/" class="btn">Register as a Student</a> <!-- Updated link -->
             <a href="/tutors/login" class="btn" style="background-color: #1a5b41; color: white;">Login as a Tutor</a>
+            <a href="/students/login" class="btn" style="background-color: #1a5b41; color: white;">Login as a Student</a>
         </div>
     </div>
 
     <!-- Main Content and Sidebar -->
     <div class="container">
-        <!-- Main Content -->
         <div class="main-content">
             <h2>What is StudyBuddy?</h2>
             <p>StudyBuddy is a comprehensive platform designed to help students, tutors, and educators collaborate efficiently. Manage your subjects, courses, and tutors with ease, and ensure that learning remains an exciting and productive journey for everyone.</p>
             <p>Select a section from the sidebar to get started.</p>
         </div>
-
-        <!-- Sidebar (Dashboard) -->
         <div class="sidebar">
             <h3>Quick Links</h3>
             <ul>
@@ -245,6 +218,5 @@
             </ul>
         </div>
     </div>
-
 </body>
 </html>

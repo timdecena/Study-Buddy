@@ -29,6 +29,7 @@
             font-weight: bold;
         }
         form input[type="text"],
+        form input[type="password"],
         form input[type="number"],
         form input[type="submit"],
         form select {
@@ -82,6 +83,12 @@
 
     <label for="{{ form.section.id_for_label }}">Section</label>
     {{ form.section }}
+
+    <label for="{{ form.username.id_for_label }}">Username</label>
+    {{ form.username }}
+
+    <label for="{{ form.password.id_for_label }}">Password</label>
+    {{ form.password }}
 
     <button type="submit">Save</button>
 </form>
