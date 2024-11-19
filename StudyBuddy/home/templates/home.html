@@ -161,13 +161,6 @@
         }
     </style>
 </head>
-{% if messages %}
-    <div class="message">
-        {% for message in messages %}
-            <div class="message-content">{{ message }}</div>
-        {% endfor %}
-    </div>
-{% endif %}
 <body>
     <!-- Navbar -->
     <nav>
@@ -182,12 +175,22 @@
             <li><a href="/transaction">Transaction</a></li>
         </ul>
         <a href="{% url 'tutor_logout' %}" class="logout-btn">Logout</a>
+        
         {% if request.session.username %}
         <div style="position: absolute; top: 20px; left: 20px; color: white;">
             Logged in as {{ request.session.username }} ({{ request.session.user_role }})
         </div>
         {% endif %}
+    
+        {% if messages %}
+        <div style="position: absolute; top: 20px; left: 20px; color: white;">
+            {% for message in messages %}
+                <div>{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
     </nav>
+    
 
     <!-- Hero Section -->
     <div class="hero">
