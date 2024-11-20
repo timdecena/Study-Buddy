@@ -3,11 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tutor Dashboard - StudyBuddy</title>
+    <title>Tutor Dashboard</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'tutors_dashboard.css' %}">
 </head>
 <body>
-    <h1>Welcome to the Tutor Dashboard</h1>
-    <p>Hello, {{ request.session.username }}!</p>
-    <a href="{% url 'tutor_logout' %}">Logout</a>
+    <div class="dashboard-container">
+        <!-- Sidebar (Navbar) -->
+        <nav class="sidebar">
+            <h2>StudyBuddy</h2>
+            <ul>
+                <li><a href="#">Assigned Students</a></li>
+                <li><a href="#" class="active">Home</a></li>
+                <li><a href="#">Assignments</a></li>
+                <li><a href="#">Messages</a></li>
+                <li><a href="#">Profile Settings</a></li>
+                <li><a href="{% url 'tutor_logout' %}" class="logout-btn">Logout</a></li>
+            </ul>
+            <!-- Search Bar -->
+            <form method="GET" action="{% url 'tutors_dashboard' %}">
+                <input type="text" name="query" value="{{ query }}" placeholder="Search tutors or students..." class="search-bar">
+                <button type="submit" class="search-btn">Search</button>
+            </form>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <header class="welcome-banner">
+                <h1>Welcome, {{ request.session.username }}!</h1>
+                <p>Your dashboard to manage assignments, communicate with students, and more.</p>
+            </header>
+
+            <section class="assignments-section">
+                <h2>Your Assignments</h2>
+                <ul class="assignments-list">
+                    <li>
+                        <span>Math Homework #1</span>
+                        <button class="btn view-btn">View</button>
+                        <button class="btn grade-btn">Grade</button>
+                    </li>
+                    <li>
+                        <span>Science Quiz Results</span>
+                        <button class="btn view-btn">View</button>
+                        <button class="btn grade-btn">Grade</button>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Search Results Display -->
+            <h2>Tutors</h2>
+            <ul>
+                {% for tutor in tutors %}
+                    <li>{{ tutor.first_name }} {{ tutor.last_name }} - {{ tutor.subject }}</li>
+                {% empty %}
+                    <li>No tutors found for your search.</li>
+                {% endfor %}
+            </ul>
+
+            <h2>Students</h2>
+            <ul>
+                {% for student in students %}
+                    <li>{{ student.fullname }} - {{ student.course }} - Year {{ student.year }}</li>
+                {% empty %}
+                    <li>No students found for your search.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
 </body>
 </html>
