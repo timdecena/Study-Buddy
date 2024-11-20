@@ -12,7 +12,7 @@
             padding: 0;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
             height: 100vh;
             color: #333;
         }
@@ -29,7 +29,7 @@
 
         h1 {
             text-align: center;
-            color: #00ff40;
+            color: #00796b;
             margin-bottom: 20px;
         }
 
@@ -39,9 +39,12 @@
         }
 
         li {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 10px;
             background-color: #fafafa;
             margin: 10px 0;
-            padding: 10px;
+            padding: 15px;
             border-radius: 4px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
@@ -52,21 +55,75 @@
 
         .tutor-name {
             font-weight: bold;
+            font-size: 1.2em;
+            color: #333;
         }
 
         .subject {
             color: #7f8c8d;
         }
+
+        .tutor-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .tutor-email {
+            font-size: 0.9em;
+            color: #00796b;
+        }
+
+        .tutor-details {
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .create-session-btn, .back-btn {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #00796b;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .create-session-btn:hover, .back-btn:hover {
+            background-color: #00796b;
+        }
+
+        .back-btn {
+            background-color: #00b6a1;
+        }
+
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- Back Button -->
+        <a href="/students/homepage" class="back-btn">Back to Student Homepage</a>
+        
         <h1>Available Tutors</h1>
         <ul>
             {% for tutor in tutors %}
                 <li>
-                    <span class="tutor-name">{{ tutor.first_name }} {{ tutor.last_name }}</span> - 
-                    <span class="subject">{{ tutor.subject }}</span>
+                    <div class="tutor-info">
+                        <span class="tutor-name">{{ tutor.first_name }} {{ tutor.last_name }}</span>
+                        <span class="subject">{{ tutor.subject }}</span>
+                        <div class="row">
+                            <span class="tutor-email">{{ tutor.email }}</span>
+                            <span class="tutor-details">{{ tutor.additional_info }}</span>
+                        </div>
+                        <!-- Create Session Button -->
+                        <button class="create-session-btn">Create Session</button>
+                    </div>
                 </li>
             {% endfor %}
         </ul>
