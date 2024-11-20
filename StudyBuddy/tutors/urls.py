@@ -13,4 +13,5 @@ urlpatterns = [
     path('course/', include('Course.urls')),
     path('login/', tutor_login, name='tutor_login'),
     path('logout/', tutor_logout, name='tutor_logout'),
+    path('dashboard/', TemplateView.as_view(template_name='tutors_dashboard.html'), name='tutors_dashboard'),  # Dashboard URL
 ]

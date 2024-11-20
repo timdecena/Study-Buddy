@@ -21,7 +21,8 @@ def tutor_login(request):
                 # Store tutor's details in session
                 request.session['user_role'] = 'Tutor'
                 request.session['username'] = tutor.username
-                return redirect('/')
+                # Redirect to the tutor's dashboard after successful login
+                return redirect('tutors_dashboard')  # Use the name of the URL pattern for dashboard
             else:
                 messages.error(request, 'Invalid username or password.')
         except Tutor.DoesNotExist:
