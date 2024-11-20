@@ -4,6 +4,7 @@ from .serializers import TutorSerializer
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
+from django.shortcuts import render
 
 class TutorViewSet(viewsets.ModelViewSet):
     queryset = Tutor.objects.all()
@@ -46,3 +47,6 @@ def tutor_logout(request):
     
     messages.success(request, 'You have successfully logged out.')
     return redirect('/')
+
+def ok(request):
+    return render(request, 'login.html')
