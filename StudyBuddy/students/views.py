@@ -82,6 +82,15 @@ def logout(request):
     # Redirect to the default homepage
     return redirect('home')  # Change 'default_homepage' to the name of your homepage view
 
+# students/views.py
+
+def student_list(request):
+    query = request.GET.get('q', '')  # Get the search query from the request
+    if query:
+        students = Student.objects.filter(fullname__icontains=query)  # Filter students based on fullname
+    else:
+        students = Student.objects.all()
+    return render(request, 'students/student_list.html', {'students': students, 'query': query})
 
 
 
