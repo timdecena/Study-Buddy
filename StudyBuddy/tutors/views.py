@@ -65,33 +65,15 @@ def tutor_list(request):
         tutors = Tutor.objects.all()
     return render(request, 'tutors/tutor_list.html', {'tutors': tutors, 'query': query})
 
-
 from django.shortcuts import render
-from .models import Tutor
-from students.models import Student  # Ensure you import Student model from the students app
+from tutors.models import Tutor
+from students.models import Student
 
 def tutors_dashboard(request):
-    query = request.GET.get('query', '')  # Get the search query from GET request
-
-    # Initially, fetch all tutors and students
-    tutors = Tutor.objects.all()
-    students = Student.objects.all()
-
-    if query:
-        # Filter tutors based on first_name, last_name, or subject
-        tutors = tutors.filter(
-            first_name__icontains=query) | tutors.filter(last_name__icontains=query) | tutors.filter(subject__icontains=query)
-
-        # Filter students based on fullname or course
-        students = students.filter(
-            fullname__icontains=query) | students.filter(course__icontains=query)
-
-    context = {
+    query = request.GET.get('query', '').strip()
+    tutors = Tutor.objects.filter(first_name__icontains=query) | Tutor.objects.filter(last_name__icontains=query)
+    students = Student.objects.filter(fullname__icontains=query) | Student.objects.filter(course__icontains=query)
+    return render(request, 'tutors_dashboard.html', {
         'tutors': tutors,
         'students': students,
-        'query': query  # Passing query for feedback in the template
-    }
-
-    return render(request, 'tutors/dashboard.html', context)
-
-
+    })

@@ -1,3 +1,4 @@
+<!-- tutors/templates/tutors/tutor_dashboard.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -51,22 +52,27 @@
             </section>
 
             <!-- Search Results Display -->
+            <h1>Debug: Tutors Dashboard Template Loaded</h1>
             <h2>Tutors</h2>
             <ul>
-                {% for tutor in tutors %}
-                    <li>{{ tutor.first_name }} {{ tutor.last_name }} - {{ tutor.subject }}</li>
-                {% empty %}
+                {% if tutors.exists %}
+                    {% for tutor in tutors %}
+                        <li>{{ tutor.first_name }} {{ tutor.last_name }} - {{ tutor.subject }}</li>
+                    {% endfor %}
+                {% else %}
                     <li>No tutors found for your search.</li>
-                {% endfor %}
+                {% endif %}
             </ul>
-
+            
             <h2>Students</h2>
             <ul>
-                {% for student in students %}
-                    <li>{{ student.fullname }} - {{ student.course }} - Year {{ student.year }}</li>
-                {% empty %}
+                {% if students.exists %}
+                    {% for student in students %}
+                        <li>{{ student.fullname }} - {{ student.course }} - Year {{ student.year }}</li>
+                    {% endfor %}
+                {% else %}
                     <li>No students found for your search.</li>
-                {% endfor %}
+                {% endif %}
             </ul>
         </div>
     </div>

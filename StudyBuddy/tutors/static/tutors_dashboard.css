@@ -1,0 +1,46 @@
+/* tutors/static/tutors_dashboard.css */
+body {
+    font-family: Arial, sans-serif;
+}
+
+.dashboard-container {
+    display: flex;
+}
+
+.sidebar {
+    width: 250px;
+    background-color: #f4f4f4;
+    padding: 20px;
+}
+
+.sidebar h2 {
+    font-size: 24px;
+}
+
+.main-content {
+    flex: 1;
+    padding: 20px;
+}
+
+.search-bar {
+    width: 80%;
+    padding: 10px;
+}
+
+.search-btn {
+    padding: 10px;
+}
+
+.assignments-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.assignments-list li {
+    margin: 10px 0;
+}
+
+.btn {
+    padding: 5px 10px;
+    margin: 5px;
+}
