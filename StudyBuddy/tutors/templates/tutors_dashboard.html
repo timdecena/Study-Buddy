@@ -3,11 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tutor Dashboard - StudyBuddy</title>
+    <title>Tutors Dashboard - StudyBuddy</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'tutors_dashboard.css' %}">
 </head>
 <body>
-    <h1>Welcome to the Tutor Dashboard</h1>
-    <p>Hello, {{ request.session.username }}!</p>
-    <a href="{% url 'tutor_logout' %}">Logout</a>
+
+    <!-- Navbar -->
+    <div class="navbar">
+        <h1>StudyBuddy</h1>
+        <div class="nav-links">
+            <a href="#">Home</a>
+            <a href="#">Assigned Students</a>
+            <a href="#">Assignments</a>
+            <a href="#">Messages</a>
+            <a href="#">Profile Settings</a>
+            <a href="{% url 'tutor_logout' %}" class="logout-btn">Logout</a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h1>Tutors Dashboard</h1>
+        <section class="assignments-section">
+            <h2>Your Assignments</h2>
+            <ul class="assignments-list">
+                <li>
+                    <span>Math Homework #1</span>
+                    <button class="btn view-btn">View</button>
+                    <button class="btn grade-btn">Grade</button>
+                </li>
+                <li>
+                    <span>Science Quiz Results</span>
+                    <button class="btn view-btn">View</button>
+                    <button class="btn grade-btn">Grade</button>
+                </li>
+            </ul>
+        </section>
+    </div>
+
 </body>
 </html>
