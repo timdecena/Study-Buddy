@@ -182,7 +182,8 @@
             <li><a href="/session">Session</a></li>
             <li><a href="/transaction">Transaction</a></li>
         </ul>
-        <a href="{% url 'tutor_logout' %}" class="logout-btn">Logout</a>
+        <a href="{% url 'tutors:tutor_logout' %}" class="logout-btn">Logout</a>
+
         
         {% if request.session.username %}
         <div style="position: absolute; top: 20px; left: 20px; color: white;">

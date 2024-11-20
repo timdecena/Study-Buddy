@@ -7,7 +7,8 @@ urlpatterns = [
     path('Course/', include('Course.urls')),
     path('students/', include('students.urls')),
     path('Subject/', include('Subject.urls')),
-    path('tutors/', include('tutors.urls')),
+    path('tutors/', include('tutors.urls', namespace='tutors')),  # Include tutors URLs only once
     path('transaction/', include('transaction.urls')),
     path('session/', include('session.urls')),
+    
 ]

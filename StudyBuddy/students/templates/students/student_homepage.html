@@ -14,7 +14,7 @@
             color: #333; /* Darker text */
         }
 
-        /* Header Styles */
+        /* Header and Navbar Styles */
         .header {
             background-color: #1a5b41; /* Dark green */
             color: white;
@@ -30,6 +30,25 @@
         .header p {
             font-size: 18px;
             margin-top: 5px;
+        }
+
+        .navbar {
+            background-color: #145231; /* Slightly darker green */
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .navbar a:hover {
+            background-color: #0f4025; /* Darker hover effect */
         }
 
         /* Main Content Styles */
@@ -104,6 +123,11 @@
             .details p {
                 font-size: 16px;
             }
+
+            .navbar a {
+                font-size: 14px;
+                padding: 8px 16px;
+            }
         }
     </style>
 </head>
@@ -112,7 +136,10 @@
     <div class="header">
         <h1>Welcome, {{ student.fullname }}!</h1>
         <p>Your personalized student dashboard</p>
+        <a href="{% url 'students:tutors_list' %}" style="color: white; font-size: 16px; text-decoration: underline;">View Available Tutors</a>
     </div>
+
+   
 
     <!-- Hero Section -->
     <div class="container">

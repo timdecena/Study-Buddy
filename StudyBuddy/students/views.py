@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Student
 from .forms import StudentForm
+from tutors.models import Tutor
 from django.contrib import messages
 
 
@@ -81,6 +82,11 @@ def logout(request):
     messages.success(request, "You have been logged out successfully.")
     # Redirect to the default homepage
     return redirect('home')  # Change 'default_homepage' to the name of your homepage view
+
+def tutors_list(request):
+    # Assuming you have a Tutor model to query
+    tutors = Tutor.objects.all()
+    return render(request, 'students/tutors_list.html', {'tutors': tutors})
 
 
 
