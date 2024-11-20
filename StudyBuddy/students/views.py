@@ -19,7 +19,7 @@ def student_login(request):
             request.session['username'] = student.username
             request.session['user_role'] = 'student'
             
-            messages.success(request, f"Welcome, {student.fullname}!(Logged in as student)")
+            messages.success(request, f"Login Successful")
             return redirect('students:student_homepage')  # Redirect to the student homepage
         except Student.DoesNotExist:
             messages.error(request, "Invalid username or password")
