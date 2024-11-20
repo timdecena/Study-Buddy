@@ -1,9 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
+
+from django.contrib.auth.decorators import login_required
+
 from .models import Student
 from .forms import StudentForm
 from tutors.models import Tutor
 from django.contrib import messages
-
+from friend_requests.views import send_friend_request
 
 # Student Login
 def student_login(request):
@@ -99,4 +102,32 @@ def student_list(request):
     return render(request, 'students/student_list.html', {'students': students, 'query': query})
 
 
+@login_required
+def send_friend_request(request, tutor_id):
+    """
+    Sends a friend request from a student to a tutor.
+    """
+    tutor = get_object_or_404(Tutor, id=tutor_id)
+    student = request.user.student  # Assuming the student is linked to the user model
 
+    # Check if a friend request already exists
+    if FriendRequest.objects.filter(student=student, tutor=tutor).exists():
+        messages.error(request, "Friend request already sent.")
+    else:
+        # Create a new friend request
+        FriendRequest.objects.create(student=student, tutor=tutor, status='Pending')
+        messages.success(request, "Friend request sent successfully.")
+
+    return redirect('students:students_dashboard')  # Redirect to a student dashboard or tutor list
+
+
+
+def tutors_dashboard(request):
+    # Fetch all students or filter based on your needs
+    students = Student.objects.all()
+
+    # Render the template with students data
+    return render(request, 'tutors_dashboard.html', {
+        'students': students,
+        'query': request.GET.get('query', ''),
+    })

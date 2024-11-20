@@ -6,6 +6,134 @@
     <title>Tutor Dashboard</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'tutors_dashboard.css' %}">
+    <style>
+        /* Add styling similar to tutors_list.html */
+        ul.students-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        ul.students-list li {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 10px;
+            background-color: #fafafa;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        ul.students-list li:hover {
+            background-color: #e3e3e3;
+        }
+
+        .student-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .student-name {
+            font-weight: bold;
+            font-size: 1.2em;
+            color: #333;
+        }
+
+        .student-course {
+            color: #7f8c8d;
+        }
+
+        .student-email {
+            font-size: 0.9em;
+            color: #00796b;
+        }
+
+        /* Sidebar and Layout Styles */
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        nav.sidebar {
+            width: 250px;
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+        }
+
+        nav.sidebar h2 {
+            font-size: 1.5em;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        nav.sidebar ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        nav.sidebar ul li {
+            margin-bottom: 15px;
+        }
+
+        nav.sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.1em;
+        }
+
+        nav.sidebar ul li a:hover, nav.sidebar ul li a.active {
+            color: #16a085;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+        }
+
+        .welcome-banner {
+            background-color: #ecf0f1;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+
+        .search-btn {
+            padding: 10px 15px;
+            background-color: #16a085;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .search-btn:hover {
+            background-color: #1abc9c;
+        }
+
+        /* Form buttons */
+        .create-session-btn, button[type="submit"] {
+            background-color: #3498db;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .create-session-btn:hover, button[type="submit"]:hover {
+            background-color: #2980b9;
+        }
+    </style>
 </head>
 <body>
     <div class="dashboard-container">
@@ -34,40 +162,52 @@
                 <p>Your dashboard to manage assignments, communicate with students, and more.</p>
             </header>
 
-            <section class="assignments-section">
-                <h2>Your Assignments</h2>
-                <ul class="assignments-list">
-                    <li>
-                        <span>Math Homework #1</span>
-                        <button class="btn view-btn">View</button>
-                        <button class="btn grade-btn">Grade</button>
-                    </li>
-                    <li>
-                        <span>Science Quiz Results</span>
-                        <button class="btn view-btn">View</button>
-                        <button class="btn grade-btn">Grade</button>
-                    </li>
-                </ul>
-            </section>
-
-            <!-- Search Results Display -->
-            <h2>Tutors</h2>
+            <!-- Friend Requests -->
+            <h2>Pending Friend Requests</h2>
             <ul>
-                {% for tutor in tutors %}
-                    <li>{{ tutor.first_name }} {{ tutor.last_name }} - {{ tutor.subject }}</li>
+                {% for request in friend_requests %}
+                    <li>
+                        {{ request.student.fullname }} has sent you a friend request.
+                        <form method="POST" action="{% url 'handle_friend_request' request.id 'accept' %}">
+                            {% csrf_token %}
+                            <button type="submit">Accept</button>
+                        </form>
+                        <form method="POST" action="{% url 'handle_friend_request' request.id 'decline' %}">
+                            {% csrf_token %}
+                            <button type="submit">Decline</button>
+                        </form>
+                    </li>
                 {% empty %}
-                    <li>No tutors found for your search.</li>
+                    <li>No friend requests at the moment.</li>
                 {% endfor %}
             </ul>
 
-            <h2>Students</h2>
-            <ul>
-                {% for student in students %}
-                    <li>{{ student.fullname }} - {{ student.course }} - Year {{ student.year }}</li>
-                {% empty %}
-                    <li>No students found for your search.</li>
-                {% endfor %}
-            </ul>
+            <!-- Students Section -->
+            <h2>Available Students</h2>
+<ul class="students-list">
+    {% for student in students %}
+        <li>
+            <div class="student-info">
+                <span class="student-name">{{ student.fullname }}</span>
+                <span class="student-course">{{ student.course }} - Year {{ student.year }}</span>
+                <div>
+                    <span class="student-email">{{ student.username }}</span>
+                    <span class="student-section">Section: {{ student.section }}</span>
+                </div>
+                <!-- In tutors_dashboard.html -->
+{% for student in students %}
+<form method="POST" action="{% url 'send_friend_request' student.tutor.id %}">
+    {% csrf_token %}
+    <button type="submit" class="create-session-btn">Add as Friend</button>
+</form>
+{% endfor %}
+            </div>
+        </li>
+    {% empty %}
+        <li>No students available.</li>
+    {% endfor %}
+</ul>
+
         </div>
     </div>
 </body>

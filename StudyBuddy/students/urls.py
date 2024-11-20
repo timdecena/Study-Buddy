@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 from .views import tutors_list 
+from friend_requests.views import send_friend_request
 
 app_name = 'students'
 
@@ -13,5 +14,11 @@ urlpatterns = [
     path('delete/<int:pk>/', views.student_delete, name='student_delete'),
     path('logout/', views.logout, name='logout'),
     path('view_tutors/', tutors_list, name='tutors_list'),  
+    path('send_friend_request/<int:tutor_id>/', send_friend_request, name='send_friend_request'),
+    path('tutors/', views.tutors_list, name='tutors_list'),
+    path('tutors_dashboard/', views.tutors_dashboard, name='tutors_dashboard'),
+
+    
+    
 
 ]

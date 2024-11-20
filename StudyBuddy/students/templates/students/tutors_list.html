@@ -110,23 +110,23 @@
         <!-- Back Button -->
         <a href="/students/homepage" class="back-btn">Back to Student Homepage</a>
         
-        <h1>Available Tutors</h1>
-        <ul>
-            {% for tutor in tutors %}
-                <li>
-                    <div class="tutor-info">
-                        <span class="tutor-name">{{ tutor.first_name }} {{ tutor.last_name }}</span>
-                        <span class="subject">{{ tutor.subject }}</span>
-                        <div class="row">
-                            <span class="tutor-email">{{ tutor.email }}</span>
-                            <span class="tutor-details">{{ tutor.additional_info }}</span>
-                        </div>
-                        <!-- Create Session Button -->
-                        <button class="create-session-btn">Create Session</button>
-                    </div>
-                </li>
-            {% endfor %}
-        </ul>
+        <h2>Available Tutors</h2>
+<ul class="tutors-list">
+    {% for tutor in tutors %}
+        <li>
+            <div class="tutor-info">
+                <span class="tutor-name">{{ tutor.first_name }} {{ tutor.last_name }}</span>
+                <span class="tutor-subject">{{ tutor.subject }}</span>
+                <form method="POST" action="{% url 'send_friend_request' tutor.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="create-session-btn">Send Friend Request</button>
+                </form>
+            </div>
+        </li>
+    {% empty %}
+        <li>No tutors available at the moment.</li>
+    {% endfor %}
+</ul>
     </div>
 </body>
 </html>

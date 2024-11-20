@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutors List</title>
+    <style>
+        /* General Styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+
+        .tutor-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .tutor-item {
+            background-color: white;
+            border: 1px solid #ddd;
+            margin: 15px 0;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tutor-details {
+            flex: 1;
+        }
+
+        .tutor-details h2 {
+            margin: 0;
+            color: #333;
+        }
+
+        .tutor-details p {
+            margin: 5px 0;
+            color: #555;
+        }
+
+        /* Button Styling */
+        .btn-send-request, .btn-accept-request, .btn-decline-request {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        .btn-send-request {
+            background-color: #008CBA;
+        }
+
+        .btn-accept-request {
+            background-color: #4CAF50;
+        }
+
+        .btn-decline-request {
+            background-color: #f44336;
+        }
+
+        .friend-requests {
+            flex: 1;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-left: 20px;
+        }
+
+        .friend-requests h3 {
+            color: #4CAF50;
+            margin-bottom: 15px;
+        }
+
+        .friend-requests p {
+            color: #333;
+            margin: 5px 0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .tutor-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .friend-requests {
+                margin-left: 0;
+                margin-top: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>List of Tutors</h1>
+        
+        <div class="tutor-list">
+            {% if tutors %}
+                <ul>
+                    {% for tutor in tutors %}
+                        <li class="tutor-item">
+                            <div class="tutor-details">
+                                <h2>{{ tutor.first_name }} {{ tutor.last_name }}</h2>
+                                <p><strong>Subject Expertise:</strong> {{ tutor.subject }}</p>
+                                <p><strong>Location:</strong> {{ tutor.location }}</p>
+                            </div>
+                            
+                            {% if user.is_authenticated and user.is_student %}
+                                <form action="{% url 'send_friend_request' tutor.id %}" method="POST">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn-send-request">Send Friend Request</button>
+                                </form>
+                            {% elif user.is_authenticated and user.is_tutor %}
+                                <div class="friend-requests">
+                                    <h3>Friend Requests</h3>
+                                    {% for request in tutor.friend_requests.all %}
+                                        <p>{{ request.student.first_name }} {{ request.student.last_name }} has sent you a friend request.</p>
+                                        <form action="{% url 'accept_friend_request' tutor.id request.student.id %}" method="POST">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn-accept-request">Accept</button>
+                                        </form>
+                                        <form action="{% url 'decline_friend_request' tutor.id request.student.id %}" method="POST">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn-decline-request">Decline</button>
+                                        </form>
+                                    {% empty %}
+                                        <p>No friend requests.</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No tutors available at the moment.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

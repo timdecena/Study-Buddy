@@ -1,6 +1,14 @@
+from django import views
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import TutorViewSet, tutor_login, tutor_logout, tutor_list
+from .views import (
+    TutorViewSet, 
+    tutor_login, 
+    tutor_logout, 
+    tutors_list, 
+    send_friend_request, 
+    handle_friend_request
+)
 from django.views.generic import TemplateView
 
 # Create a router and register the TutorViewSet
@@ -21,5 +29,10 @@ urlpatterns = [
     path('dashboard/', TemplateView.as_view(template_name='tutors_dashboard.html'), name='tutors_dashboard'),
 
     # Tutor management
-    path('tutors_list/', tutor_list, name='tutor_list'),
+    path('tutors_list/', tutors_list, name='tutors_list'),
+    
+
+    # Friend Requests
+     path('send_friend_request/<int:tutor_id>/', send_friend_request, name='send_friend_request'),
+    path('handle_friend_request/<int:request_id>/<str:action>/', handle_friend_request, name='handle_friend_request'),
 ]
