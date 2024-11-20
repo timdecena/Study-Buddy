@@ -166,7 +166,15 @@
     <nav>
         <h1>StudyBuddy</h1>
         <ul>
-            <li><a href="/">Home</a></li>
+            <li>
+                {% if request.session.user_role == "student" %}
+                    <a href="/students/home">Home</a>
+                {% elif request.session.user_role == "tutor" %}
+                    <a href="/tutors/home">Home</a>
+                {% else %}
+                    <a href="/">Home</a>
+                {% endif %}
+            </li>
             <li><a href="/Subject">Programs</a></li>
             <li><a href="/students">Students</a></li>
             <li><a href="/Course">Courses</a></li>
