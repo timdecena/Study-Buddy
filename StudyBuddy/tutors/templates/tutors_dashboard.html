@@ -16,7 +16,7 @@
             <ul>
                 <li><a href="#">Assigned Students</a></li>
                 <li><a href="#" class="active">Home</a></li>
-                <li><a href="{% url 'tutors:assignment' %}">Assignments</a></li>
+                <li><a href="#">Assignments</a></li>
                 <li><a href="#">Messages</a></li>
                 <li><a href="#">Profile Settings</a></li>
                 <li><a href="{% url 'tutors:tutor_logout' %}" class="logout-btn">Logout</a></li>
@@ -35,6 +35,50 @@
                 <p>Your dashboard to manage assignments, communicate with students, and more.</p>
             </header>
 
+            <!-- Friend Requests Section -->
+            <section class="friend-requests-section">
+                <h2>Friend Requests</h2>
+                <ul>
+                    {% for request in friend_requests %}
+                        <li>
+                            <div>
+                                <!-- Sender Details -->
+                                {% if request.sender_type == 'student' %}
+                                    Name: {{ request.sender.first_name }} {{ request.sender.last_name }}<br>
+                                    Course: {{ request.sender.course }}<br>
+                                    Year: {{ request.sender.year }}<br>
+                                {% elif request.sender_type == 'tutor' %}
+                                    Name: {{ request.sender.first_name }} {{ request.sender.last_name }}<br>
+                                    Subject: {{ request.sender.subject }}<br>
+                                {% endif %}
+            
+                                <!-- Receiver Details -->
+                                <br>
+                                {% if request.receiver_type == 'student' %}
+                                    Name: {{ request.receiver.first_name }} {{ request.receiver.last_name }}<br>
+                                    Course: {{ request.receiver.course }}<br>
+                                    Year: {{ request.receiver.year }}
+                                {% elif request.receiver_type == 'tutor' %}
+                                    Name: {{ request.receiver.first_name }} {{ request.receiver.last_name }}<br>
+                                    Subject: {{ request.receiver.subject }}
+                                {% endif %}
+                            </div>
+                            <form method="POST" action="{% url 'tutors:accept_friend_request' request.id %}" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn accept-btn">Accept</button>
+                            </form>
+                            <form method="POST" action="{% url 'tutors:reject_friend_request' request.id %}" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn reject-btn">Reject</button>
+                            </form>
+                        </li>
+                    {% empty %}
+                        <li>No pending friend requests.</li>
+                    {% endfor %}
+                </ul>
+            </section>
+
+            <!-- Assignments Section -->
             <section class="assignments-section">
                 <h2>Your Assignments</h2>
                 <ul class="assignments-list">
@@ -52,10 +96,9 @@
             </section>
 
             <!-- Search Results Display -->
-            <h1>Debug: Tutors Dashboard Template Loaded</h1>
             <h2>Tutors</h2>
             <ul>
-                {% if tutors.exists %}
+                {% if tutors %}
                     {% for tutor in tutors %}
                         <li>{{ tutor.first_name }} {{ tutor.last_name }} - {{ tutor.subject }}</li>
                     {% endfor %}
@@ -66,7 +109,7 @@
             
             <h2>Students</h2>
             <ul>
-                {% if students.exists %}
+                {% if students %}
                     {% for student in students %}
                         <li>{{ student.fullname }} - {{ student.course }} - Year {{ student.year }}</li>
                     {% endfor %}

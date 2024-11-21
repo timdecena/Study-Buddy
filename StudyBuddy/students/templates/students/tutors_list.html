@@ -121,8 +121,12 @@
                             <span class="tutor-email">{{ tutor.email }}</span>
                             <span class="tutor-details">{{ tutor.additional_info }}</span>
                         </div>
-                        <!-- Add tutor -->
-                        <button class="create-add-btn">Add as A Tutor</button>
+                        <!-- Add tutor as friend -->
+                        <form method="POST" action="{% url 'friend_requests:send_request' receiver_type='tutor' receiver_id=tutor.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="create-add-btn">Add as Friend</button>
+                        </form>
+                        
                     </div>
                 </li>
             {% endfor %}

@@ -1,7 +1,9 @@
 from rest_framework import viewsets
+
+from friend_requests.models import FriendRequest
 from .models import Tutor
 from .serializers import TutorSerializer
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 
@@ -70,13 +72,39 @@ from tutors.models import Tutor
 from students.models import Student
 
 def tutors_dashboard(request):
+    # Fetch the username from session data
+    username = request.session.get('username')
+    if not username:
+        messages.error(request, 'You need to log in first.')
+        return redirect('tutors:tutor_login')
+    
+    try:
+        tutor = Tutor.objects.get(username=username)  # Get tutor by username from session
+    except Tutor.DoesNotExist:
+        messages.error(request, 'Tutor not found.')
+        return redirect('tutors:tutor_login')
+
+    # Handle search query for tutors and students
     query = request.GET.get('query', '').strip()
+    
+    # Search tutors by first name or last name
     tutors = Tutor.objects.filter(first_name__icontains=query) | Tutor.objects.filter(last_name__icontains=query)
+    
+    # Search students by fullname or course
     students = Student.objects.filter(fullname__icontains=query) | Student.objects.filter(course__icontains=query)
-    return render(request, 'tutors_dashboard.html', {
+    
+    # Fetch friend requests where the logged-in tutor is the receiver
+    friend_requests = FriendRequest.objects.filter(receiver_tutor=tutor, status='pending')
+    
+    # Combine the context data
+    context = {
+        'friend_requests': friend_requests,
         'tutors': tutors,
         'students': students,
-    })
+        'query': query,  # To retain the search query for displaying in the form
+    }
+
+    return render(request, 'tutors_dashboard.html', context)
 
 
 from django.shortcuts import render, redirect
@@ -113,4 +141,26 @@ def assignment_page(request):
     # Handle GET requests and show all assignments
     assignments = Assignment.objects.all()
     return render(request, 'assignment.html', {'assignments': assignments})
+
+def accept_friend_request(request, id):
+    # Get the friend request by ID
+    friend_request = get_object_or_404(FriendRequest, id=id)
+
+    # Change the status to 'accepted'
+    friend_request.status = 'accepted'
+    friend_request.save()
+
+    messages.success(request, 'Friend request accepted.')
+    return redirect('tutors:tutors_dashboard')
+
+def reject_friend_request(request, id):
+    # Get the friend request by ID
+    friend_request = get_object_or_404(FriendRequest, id=id)
+
+    # Change the status to 'rejected'
+    friend_request.status = 'rejected'
+    friend_request.save()
+
+    messages.success(request, 'Friend request rejected.')
+    return redirect('tutors:tutors_dashboard')
 
