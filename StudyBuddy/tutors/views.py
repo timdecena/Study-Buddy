@@ -78,6 +78,7 @@ def tutors_dashboard(request):
         messages.error(request, 'You need to log in first.')
         return redirect('tutors:tutor_login')
     
+    # Retrieve the logged-in tutor
     try:
         tutor = Tutor.objects.get(username=username)  # Get tutor by username from session
     except Tutor.DoesNotExist:
@@ -94,17 +95,20 @@ def tutors_dashboard(request):
     students = Student.objects.filter(fullname__icontains=query) | Student.objects.filter(course__icontains=query)
     
     # Fetch friend requests where the logged-in tutor is the receiver
-    friend_requests = FriendRequest.objects.filter(receiver_tutor=tutor, status='pending')
-    
+    friend_requests = FriendRequest.objects.filter(receiver_tutor=tutor, status='pending').select_related(
+        'sender_student', 'sender_tutor', 'receiver_student', 'receiver_tutor'
+    )
+
     # Combine the context data
     context = {
-        'friend_requests': friend_requests,
-        'tutors': tutors,
-        'students': students,
+        'friend_requests': friend_requests,  # Friend requests for the logged-in tutor
+        'tutors': tutors,  # Tutors matching the search query
+        'students': students,  # Students matching the search query
         'query': query,  # To retain the search query for displaying in the form
     }
 
     return render(request, 'tutors_dashboard.html', context)
+
 
 
 from django.shortcuts import render, redirect
@@ -163,4 +167,26 @@ def reject_friend_request(request, id):
 
     messages.success(request, 'Friend request rejected.')
     return redirect('tutors:tutors_dashboard')
+
+from django.shortcuts import get_object_or_404, redirect
+
+def handle_friend_request(request, id, action):
+    """
+    Handles accepting or rejecting friend requests.
+    """
+    friend_request = get_object_or_404(FriendRequest, id=id)
+
+    if action == 'accept':
+        friend_request.status = 'accepted'
+        messages.success(request, 'Friend request accepted.')
+    elif action == 'reject':
+        friend_request.status = 'rejected'
+        messages.success(request, 'Friend request rejected.')
+    else:
+        messages.error(request, 'Invalid action.')
+
+    friend_request.save()
+    return redirect('tutors:tutors_dashboard')
+
+
 

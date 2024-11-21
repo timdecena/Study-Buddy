@@ -11,24 +11,22 @@ def send_friend_request(request, receiver_type, receiver_id):
     sender_student = None
     sender_tutor = None
 
-    # Determine sender based on logged-in user role
     if request.session.get('user_role') == 'student':
         sender_student = Student.objects.get(username=request.session['username'])
     elif request.session.get('user_role') == 'tutor':
         sender_tutor = Tutor.objects.get(username=request.session['username'])
 
-    # Determine receiver based on type
     if receiver_type == 'student':
         receiver_student = get_object_or_404(Student, pk=receiver_id)
         friend_request = FriendRequest(sender_student=sender_student, receiver_student=receiver_student)
     elif receiver_type == 'tutor':
         receiver_tutor = get_object_or_404(Tutor, pk=receiver_id)
-        friend_request = FriendRequest(sender_tutor=sender_tutor, receiver_tutor=receiver_tutor)
+        friend_request = FriendRequest(sender_student=sender_student, receiver_tutor=receiver_tutor)
 
-    # Save the friend request
     friend_request.save()
     messages.success(request, 'Friend request sent successfully!')
     return redirect('students:student_homepage' if sender_student else 'tutors:tutors_dashboard')
+
 
 
 def handle_friend_request(request, request_id, action):
