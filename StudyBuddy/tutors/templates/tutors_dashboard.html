@@ -99,29 +99,39 @@
                 </ul>
             </section>
 
-            <!-- Search Results Display -->
-            <h2>Tutors</h2>
-            <ul>
-                {% if tutors %}
-                    {% for tutor in tutors %}
-                        <li>{{ tutor.first_name }} {{ tutor.last_name }} - {{ tutor.subject }}</li>
-                    {% endfor %}
-                {% else %}
-                    <li>No tutors found for your search.</li>
-                {% endif %}
-            </ul>
+            <section class="tutors-students-container">
+                <div class="list-section">
+                    <h2>Tutors</h2>
+                    <ul class="tutor-list">
+                        {% if tutors %}
+                            {% for tutor in tutors %}
+                                <li>
+                                    <span class="tutor-name">{{ tutor.first_name }} {{ tutor.last_name }}</span>
+                                    <span class="tutor-subject">- {{ tutor.subject }}</span>
+                                </li>
+                            {% endfor %}
+                        {% else %}
+                            <li class="empty-state">No tutors found for your search.</li>
+                        {% endif %}
+                    </ul>
+                </div>
             
-            <h2>Students</h2>
-            <ul>
-                {% if students %}
-                    {% for student in students %}
-                        <li>{{ student.fullname }} - {{ student.course }} - Year {{ student.year }}</li>
-                    {% endfor %}
-                {% else %}
-                    <li>No students found for your search.</li>
-                {% endif %}
-            </ul>
-        </div>
-    </div>
+                <div class="list-section">
+                    <h2>Students</h2>
+                    <ul class="student-list">
+                        {% if students %}
+                            {% for student in students %}
+                                <li>
+                                    <span class="student-name">{{ student.fullname }}</span>
+                                    <span class="student-details">- {{ student.course }} - Year {{ student.year }}</span>
+                                </li>
+                            {% endfor %}
+                        {% else %}
+                            <li class="empty-state">No students found for your search.</li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </section>
+            
 </body>
 </html>
