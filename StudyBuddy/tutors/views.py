@@ -77,3 +77,40 @@ def tutors_dashboard(request):
         'tutors': tutors,
         'students': students,
     })
+
+
+from django.shortcuts import render, redirect
+from django.http import JsonResponse
+from .models import Assignment
+
+def assignment_page(request):
+    if request.method == 'POST':
+        # Print the form data to check if title and description are sent correctly
+        title = request.POST.get('title')
+        description = request.POST.get('description')
+        assignment_id = request.POST.get('assignment_id')
+
+        print(f"Title: {title}, Description: {description}")
+
+        if not title or not description:
+            return JsonResponse({'success': False, 'error': 'Title and description are required'}, status=400)
+
+        if assignment_id:
+            # Update existing assignment
+            try:
+                assignment = Assignment.objects.get(id=assignment_id)
+                assignment.title = title
+                assignment.description = description
+                assignment.save()
+            except Assignment.DoesNotExist:
+                return JsonResponse({'success': False, 'error': 'Assignment not found'}, status=404)
+        else:
+            # Create new assignment
+            Assignment.objects.create(title=title, description=description)
+
+        return JsonResponse({'success': True})
+
+    # Handle GET requests and show all assignments
+    assignments = Assignment.objects.all()
+    return render(request, 'assignment.html', {'assignments': assignments})
+

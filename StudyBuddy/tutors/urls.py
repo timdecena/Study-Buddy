@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import TutorViewSet, tutor_login, tutor_logout, tutor_list, tutors_dashboard
+from .views import TutorViewSet, tutor_login, tutor_logout, tutor_list, tutors_dashboard, assignment_page
 from django.views.generic import TemplateView
 
 # Create a router and register the TutorViewSet
@@ -22,4 +22,11 @@ urlpatterns = [
 
     # Tutor management
     path('tutors_list/', tutor_list, name='tutor_list'),
+
+    #Assignment
+    # Assignment Management
+    path('assignments/', assignment_page, name='assignment'),
+
+
+
 ]

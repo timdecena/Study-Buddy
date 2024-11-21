@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignment Management</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+    <h1>Assignment Management</h1>
+
+    <!-- Add/Edit Form -->
+    <form method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="assignment_id" id="assignment_id">
+        <label for="title">Title:</label>
+        <input type="text" name="title" id="title" required>
+        <br>
+        <label for="description">Description:</label>
+        <textarea name="description" id="description" required></textarea>
+        <br>
+        <button type="submit">Save Assignment</button>
+    </form>
+    
+
+    <!-- Assignment Table -->
+    <h2>Existing Assignments</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for assignment in assignments %}
+            <tr>
+                <td>{{ assignment.title }}</td>
+                <td>{{ assignment.description }}</td>
+                <td>
+                    <button onclick="editAssignment({{ assignment.id }}, '{{ assignment.title }}', '{{ assignment.description }}')">Edit</button>
+                    <button onclick="deleteAssignment({{ assignment.id }})">Delete</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        // Edit Assignment function
+        function editAssignment(id, title, description) {
+            document.getElementById("assignment_id").value = id;
+            document.getElementById("title").value = title;
+            document.getElementById("description").value = description;
+        }
+
+        // Delete Assignment function
+        function deleteAssignment(id) {
+            if (confirm("Are you sure you want to delete this assignment?")) {
+                fetch(`/tutors/assignments/`, {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        'delete_id': id,
+                        'csrfmiddlewaretoken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    }
+                });
+            }
+        }
+
+        // Form submit (Create/Edit Assignment)
+        document.getElementById("assignmentForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(this);
+            fetch('/tutors/assignments/', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
