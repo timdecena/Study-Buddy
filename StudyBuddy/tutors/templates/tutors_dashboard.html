@@ -162,10 +162,45 @@
                 <p>Your dashboard to manage assignments, communicate with students, and more.</p>
             </header>
 
-            <!-- Friend Requests -->
-            <h2>Pending Friend Requests</h2>
-            <ul>
-                {% for request in friend_requests %}
+            <!-- Friend Requests Section -->
+            <section class="friend-requests-section">
+                <h2>Friend Requests</h2>
+                <ul>
+                    {% for request in friend_requests %}
+                        <li>
+                            <div>
+                                {% if request.sender_student %}
+                                    <p>
+                                        <strong>From:</strong> {{ request.sender_student.fullname }} <br>
+                                        <strong>Course:</strong> {{ request.sender_student.course }} <br>
+                                        <strong>Year:</strong> {{ request.sender_student.year }}
+                                    </p>
+                                {% elif request.sender_tutor %}
+                                    <p>
+                                        <strong>From:</strong> {{ request.sender_tutor.fullname }} <br>
+                                        <strong>Subject:</strong> {{ request.sender_tutor.subject }}
+                                    </p>
+                                {% endif %}
+                            </div>
+                            <form method="POST" action="{% url 'tutors:accept_friend_request' request.id %}" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn accept-btn">Accept</button>
+                            </form>
+                            <form method="POST" action="{% url 'tutors:reject_friend_request' request.id %}" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn reject-btn">Reject</button>
+                            </form>
+                        </li>
+                    {% empty %}
+                        <li>No pending friend requests.</li>
+                    {% endfor %}
+                </ul>
+            </section>
+
+            <!-- Assignments Section -->
+            <section class="assignments-section">
+                <h2>Your Assignments</h2>
+                <ul class="assignments-list">
                     <li>
                         {{ request.student.fullname }} has sent you a friend request.
                         <form method="POST" action="{% url 'handle_friend_request' request.id 'accept' %}">
@@ -208,6 +243,28 @@
     {% endfor %}
 </ul>
 
+            <!-- Search Results Display -->
+            <h2>Tutors</h2>
+            <ul>
+                {% if tutors %}
+                    {% for tutor in tutors %}
+                        <li>{{ tutor.first_name }} {{ tutor.last_name }} - {{ tutor.subject }}</li>
+                    {% endfor %}
+                {% else %}
+                    <li>No tutors found for your search.</li>
+                {% endif %}
+            </ul>
+            
+            <h2>Students</h2>
+            <ul>
+                {% if students %}
+                    {% for student in students %}
+                        <li>{{ student.fullname }} - {{ student.course }} - Year {{ student.year }}</li>
+                    {% endfor %}
+                {% else %}
+                    <li>No students found for your search.</li>
+                {% endif %}
+            </ul>
         </div>
     </div>
 </body>

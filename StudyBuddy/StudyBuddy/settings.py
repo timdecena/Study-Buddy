@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'home',
     'transaction',
     'session',
-    'friend_requests',
+    'friend_requests',  # Add this line
 ]
 
 MIDDLEWARE = [

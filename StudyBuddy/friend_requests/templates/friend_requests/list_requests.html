@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Friend Requests</title>
+    <link rel="stylesheet" href="{% static 'path/to/styles.css' %}">
+</head>
+<body>
+    <h1>Friend Requests</h1>
+    <ul>
+        {% for request in received_requests %}
+            <li>
+                Request from {{ request.sender_student or request.sender_tutor }}
+                <a href="{% url 'friend_requests:handle_request' request.id 'accept' %}" class="button accept">Accept</a>
+                <a href="{% url 'friend_requests:handle_request' request.id 'decline' %}" class="button decline">Decline</a>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

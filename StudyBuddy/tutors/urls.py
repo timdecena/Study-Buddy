@@ -4,12 +4,14 @@ from rest_framework.routers import DefaultRouter
 from .views import (
     TutorViewSet, 
     tutor_login, 
-    tutor_logout, 
+    tutor_logout,
+    tutors_dashboard, 
     tutors_list, 
     send_friend_request, 
     handle_friend_request
 )
 from django.views.generic import TemplateView
+from . import views
 
 # Create a router and register the TutorViewSet
 app_name = 'tutors'  # Define the namespace for reverse URL lookups
@@ -26,7 +28,9 @@ urlpatterns = [
     path('logout/', tutor_logout, name='tutor_logout'),
 
     # Dashboard
-    path('dashboard/', TemplateView.as_view(template_name='tutors_dashboard.html'), name='tutors_dashboard'),
+    path('dashboard/', tutors_dashboard, name='tutors_dashboard'),
+    path('accept_friend_request/<int:id>/', views.accept_friend_request, name='accept_friend_request'),
+    path('reject_friend_request/<int:id>/', views.reject_friend_request, name='reject_friend_request'),
 
     # Tutor management
     path('tutors_list/', tutors_list, name='tutors_list'),

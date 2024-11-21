@@ -11,6 +11,7 @@ urlpatterns = [
     path('tutors/', include('tutors.urls', namespace='tutors')),  # Include tutors URLs only once
     path('transaction/', include('transaction.urls')),
     path('session/', include('session.urls')),
+    path('friend-requests/', include('friend_requests.urls')),
     
 
     # Specific route for sending friend request (before the general friend_requests include)
