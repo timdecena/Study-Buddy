@@ -5,78 +5,127 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Login - StudyBuddy</title>
     <style>
-        /* Reset margins and padding */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
+        
         /* Full viewport height and width for body */
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f3f2f1; /* Soft gray similar to Teams' background */
             margin: 0;
             padding: 0;
             height: 100vh;
-            overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
         }
-
+        
         h1 {
-            color: #004d26;
+            color: #004d26; /* Dark green for the theme */
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 20px; /* Spacing between the heading and input fields */
         }
-
+        
         /* Form styling */
         form {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #ffffff; /* White background for card-like form */
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            align-items: center; /* Center elements inside the form */
+            gap: 15px;
             max-width: 400px;
             width: 100%;
         }
-
+        
         label {
-            font-weight: bold;
+            font-weight: 600;
+            color: #444444; /* Neutral dark gray for readability */
+            font-size: 14px;
+            align-self: flex-start; /* Align labels to the left */
         }
-
+        
         input {
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            padding: 12px;
+            border: 1px solid #d1d1d1; /* Light border for minimalistic design */
+            border-radius: 6px;
             width: 100%;
+            font-size: 14px;
+            transition: border-color 0.3s ease-in-out;
         }
-
+        
+        input:focus {
+            outline: none;
+            border-color: #004d26; /* Highlight border on focus with theme color */
+            box-shadow: 0 0 0 2px rgba(0, 77, 38, 0.2);
+        }
+        
         button {
-            padding: 10px 15px;
-            background-color: #004d26;
+            padding: 12px;
+            background-color: #004d26; /* Green theme color */
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: bold;
             cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+            width: 100%;
         }
-
+        
         button:hover {
-            background-color: #006b39;
+            background-color: #006b39; /* Slightly lighter green on hover */
         }
-
+        
+        button:active {
+            background-color: #003f1e; /* Darker green on active */
+        }
+        
         /* Error message styling */
         .error-message {
-            color: red;
-            font-size: 14px;
+            color: #d93025; /* Red for errors, similar to Google's error color */
+            font-size: 13px;
+            list-style: none;
+            margin-top: 10px;
+            padding-left: 0;
         }
+        
+        ul.error-message {
+            background-color: #fdecea;
+            border: 1px solid #f5c6cb;
+            border-radius: 6px;
+            padding: 10px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 500px) {
+            form {
+                padding: 20px;
+            }
+        
+            h1 {
+                font-size: 20px;
+            }
+        
+            input, button {
+                font-size: 13px;
+            }
+        }        
     </style>
 </head>
 <body>
 
-    <h1>Student Login</h1>
+    
     <form method="POST">
+        <h1>Student Login</h1>
         {% csrf_token %}
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" required>
