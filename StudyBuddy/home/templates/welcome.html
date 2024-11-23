@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome - StudyBuddy</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Aligns content at the top */
+            background: linear-gradient(to bottom right, #4CAF50, #81C784);
+        }
+
+        .container {
+            background-color: #ffffff;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+            text-align: center;
+            padding: 30px 20px;
+            margin-top: 20px; /* Ensures the container is not pushed too far to the top */
+        }
+
+        .header {
+            background: linear-gradient(to right, #1a5b41, #4CAF50);
+            color: white;
+            padding: 20px 20px; /* Reduced padding for better spacing */
+            border-radius: 20px 20px 0 0;
+            margin-bottom: 20px; /* Adds space below the header */
+        }
+
+        .header h2 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .header p {
+            margin-top: 10px;
+            font-size: 16px;
+            color: #e0f2f1;
+        }
+
+        .options {
+            margin-top: 20px;
+        }
+
+        .card {
+            background-color: #f7faf9;
+            border: 1px solid #ddd;
+            border-radius: 15px;
+            margin: 10px 0;
+            padding: 20px 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .card h3 {
+            margin: 0;
+            font-size: 18px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .card a {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 12px 30px;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            border-radius: 25px;
+            background-color: #1a5b41;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .card a:hover {
+            background-color: #145231;
+            transform: translateY(-3px);
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 30px;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            background-color: #FF5722;
+            border-radius: 25px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background-color: #E64A19;
+            transform: translateY(-3px);
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            .header h2 {
+                font-size: 24px;
+            }
+
+            .card a {
+                font-size: 14px;
+                padding: 10px 20px;
+            }
+
+            .back-btn {
+                font-size: 14px;
+                padding: 10px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header">
+            <h2>Welcome to StudyBuddy!</h2>
+            <p>Your ultimate learning companion to manage courses, subjects, students, and tutors all in one place.</p>
+        </div>
+
+        <!-- Signup/Login Options -->
+        <div class="options">
+            <!-- Register as a Tutor -->
+            <div class="card">
+                <h3>New Tutor?</h3>
+                <a href="/tutors">Register as a Tutor</a>
+            </div>
+
+            <!-- Register as a Student -->
+            <div class="card">
+                <h3>New Student?</h3>
+                <a href="http://127.0.0.1:8000/students/create/">Register as a Student</a>
+            </div>
+
+            <!-- Login as a Tutor -->
+            <div class="card">
+                <h3>Already a Tutor?</h3>
+                <a href="/tutors/login">Login as a Tutor</a>
+            </div>
+
+            <!-- Login as a Student -->
+            <div class="card">
+                <h3>Already a Student?</h3>
+                <a href="/students/login">Login as a Student</a>
+            </div>
+        </div>
+
+        <!-- Back Button -->
+        <a class="back-btn" href="javascript:history.back()">Go Back</a>
+    </div>
+</body>
+</html>

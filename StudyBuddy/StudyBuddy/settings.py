@@ -131,7 +131,9 @@ USE_TZ = True
 STATIC_URL = '/static/'  # Default setting
 STATIC_ROOT = BASE_DIR / 'staticfiles'  # For production use (optional)
 # Remove or comment out STATICFILES_DIRS unless you have global static directories
-# STATICFILES_DIRS = []
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
 
 
 # Default primary key field type
