@@ -14,6 +14,8 @@ urlpatterns = [
     path('logout/', views.logout, name='logout'),
     path('view_tutors/', tutors_list, name='tutors_list'),  
     path('view/', views.view_students, name='view_students'),  # New URL
+    path('edit/<int:pk>/', views.edit_profile, name='edit_profile'),
+
     
 
 ]

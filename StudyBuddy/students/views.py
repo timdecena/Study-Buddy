@@ -3,6 +3,7 @@ from .models import Student
 from .forms import StudentForm
 from tutors.models import Tutor
 from django.contrib import messages
+from django.views.generic import UpdateView
 
 
 # Student Login
@@ -27,12 +28,19 @@ def student_login(request):
 
     return render(request, 'students/student_login.html')
 
-# Student Homepage
 def student_homepage(request):
-    if request.session.get('user_role') == 'student':
-        student = Student.objects.get(username=request.session['username'])
-        return render(request, 'students/student_homepage.html', {'student': student})
+    # Check if the user is logged in and has the 'student' role
+    if request.session.get('user_role') == 'student' and request.session.get('username'):
+        try:
+            # Retrieve the student object based on the username in the session
+            student = get_object_or_404(Student, username=request.session['username'])
+            return render(request, 'students/student_homepage.html', {'student': student})
+        except Student.DoesNotExist:
+            # Handle the case where the username does not match any student record
+            messages.error(request, "Student profile not found.")
+            return redirect('students:login')
     else:
+        # If the user is not authorized, display an error message and redirect to the login page
         messages.error(request, "You are not authorized to access this page.")
         return redirect('students:login')
 
@@ -63,16 +71,15 @@ def student_create(request,pk=None):
 
 # Update an existing student
 def student_update(request, pk):
-    student = get_object_or_404(Student, pk=pk)
+    student = get_object_or_404(Student, student_id=pk)
     if request.method == 'POST':
-        form = StudentForm(request.POST, request.FILES)  # Handle file uploads
+        form = StudentForm(request.POST, request.FILES, instance=student)
         if form.is_valid():
             form.save()
-            messages.success(request, "Student updated successfully!")
-            return redirect('students:student_list')
+            return redirect('students:student_list')  # Redirect to the student list or desired page
     else:
-        form = StudentForm()
-    return render(request, 'students/student_form.html', {'form': form})
+        form = StudentForm(instance=student)
+    return render(request, 'students/student_update.html', {'form': form, 'student': student})
 
 # Delete a student
 def student_delete(request, pk):
@@ -109,6 +116,21 @@ def student_list(request):
 def view_students(request):
     students = Student.objects.all()  # Fetch all students
     return render(request, 'students/students_view.html', {'students': students})
+
+
+def edit_profile(request, pk):
+    student = get_object_or_404(Student, pk=pk)
+
+    if request.method == 'POST':
+        form = StudentForm(request.POST, request.FILES, instance=student)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Profile updated successfully!')
+            return redirect('students:student_homepage')
+    else:
+        form = StudentForm(instance=student)
+
+    return render(request, 'students/edit_profile.html', {'form': form, 'student': student})
 
 
 
