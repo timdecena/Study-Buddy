@@ -42,28 +42,36 @@ def student_list(request):
     return render(request, 'students/student_list.html', {'students': students})
 
 # Create a new student
-def student_create(request):
-    if request.method == 'POST':
-        form = StudentForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Student registered successfully!")
-            return redirect('students:student_list')  # Redirect after success
+def student_create(request,pk=None):
+    if pk:
+        student = get_object_or_404(Student, pk=pk)
     else:
-        form = StudentForm()
+        student = None
+    if request.method == 'POST':
+        form = StudentForm(request.POST, request.FILES, instance=student)
+        if form.is_valid():
+            student = form.save(commit=False)
+            # Check if the user wants to delete the profile picture
+            if form.cleaned_data.get('delete_profile_image'):
+                student.profile_image = 'profile_pics/default.jpg'
+            student.save()
+            return redirect('students:student_list')  # Redirect to student list or another page
+    else:
+        form = StudentForm(instance=student)
+
     return render(request, 'students/student_form.html', {'form': form})
 
 # Update an existing student
 def student_update(request, pk):
     student = get_object_or_404(Student, pk=pk)
     if request.method == 'POST':
-        form = StudentForm(request.POST, instance=student)
+        form = StudentForm(request.POST, request.FILES)  # Handle file uploads
         if form.is_valid():
             form.save()
             messages.success(request, "Student updated successfully!")
             return redirect('students:student_list')
     else:
-        form = StudentForm(instance=student)
+        form = StudentForm()
     return render(request, 'students/student_form.html', {'form': form})
 
 # Delete a student
@@ -97,6 +105,10 @@ def student_list(request):
     else:
         students = Student.objects.all()
     return render(request, 'students/student_list.html', {'students': students, 'query': query})
+
+def view_students(request):
+    students = Student.objects.all()  # Fetch all students
+    return render(request, 'students/students_view.html', {'students': students})
 
 
 

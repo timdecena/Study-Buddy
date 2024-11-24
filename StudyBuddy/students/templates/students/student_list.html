@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student List</title>
+    <!-- Load static files -->
+    {% load static %}
     <style>
         /* Reset and General Styles */
         * {
@@ -105,6 +107,7 @@
             display: flex;
             flex-direction: column;
             color: #333;
+            margin-right: 15px;
         }
 
         .student-details span {
@@ -120,6 +123,15 @@
 
         .student-list li div a:hover {
             color: #006b39;
+        }
+
+        /* Styling for profile image */
+        .profile-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 20px;
         }
     </style>
 </head>
@@ -145,19 +157,25 @@
 
         <ul class="student-list">
             {% for student in students %}
-                <li>
-                    <div class="student-details">
-                        <span><strong>ID:</strong> {{ student.student_id }}</span>
-                        <span><strong>Name:</strong> {{ student.fullname }}</span>
-                        <span><strong>Course:</strong> {{ student.course }}</span>
-                        <span><strong>Year:</strong> {{ student.year }}</span>
-                        <span><strong>Section:</strong> {{ student.section }}</span>
-                    </div>
-                    <div>
-                        <a href="{% url 'students:student_update' student.student_id %}">Edit</a> |
-                        <a href="{% url 'students:student_delete' student.student_id %}">Delete</a>
-                    </div>
-                </li>
+            <li>
+                <div class="student-details">
+                    <!-- Display Profile Image if exists -->
+                    {% if student.profile_image %}
+                        <img src="{{ student.profile_image.url }}" alt="Profile Picture" class="profile-image">
+                    {% else %}
+                        <img src="{% static 'default-profile.jpg' %}" alt="Default Profile Picture" class="profile-image">
+                    {% endif %}
+                    <span><strong>ID:</strong> {{ student.student_id }}</span>
+                    <span><strong>Name:</strong> {{ student.fullname }}</span>
+                    <span><strong>Course:</strong> {{ student.course }}</span>
+                    <span><strong>Year:</strong> {{ student.year }}</span>
+                    <span><strong>Section:</strong> {{ student.section }}</span>
+                </div>
+                <div>
+                    <a href="{% url 'students:student_update' student.student_id %}">Edit</a> |
+                    <a href="{% url 'students:student_delete' student.student_id %}">Delete</a>
+                </div>
+            </li>
             {% endfor %}
         </ul>
     </div>

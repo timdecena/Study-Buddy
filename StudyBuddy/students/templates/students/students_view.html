@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Directory</title>
+    {% load static %}
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f6fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar {
+            background-color: #333;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+        }
+
+        .navbar a:hover {
+            color: #00aaff;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .student-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            list-style: none;
+            padding: 0;
+        }
+
+        .student-card {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .student-card h2 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .student-card p {
+            margin: 5px 0;
+            color: #666;
+        }
+
+        .student-card img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="/">Home</a>
+        <a href="/students/view">View Students</a>
+    </nav>
+
+    <!-- Content Container -->
+    <div class="container">
+        <h1>Student Directory</h1>
+        <ul class="student-list">
+            {% for student in students %}
+                <li class="student-card">
+                    {% if student.profile_image %}
+                        <img src="{{ student.profile_image.url }}" alt="Profile Picture of {{ student.fullname }}">
+                    {% else %}
+                        <img src="{% static 'profile_pics/default.jpg' %}" alt="Default Profile Picture">
+                    {% endif %}
+                    <h2>{{ student.fullname }}</h2>
+                    <p><strong>Student ID:</strong> {{ student.student_id }}</p>
+                    <p><strong>Course:</strong> {{ student.course }}</p>
+                    <p><strong>Year:</strong> {{ student.year }}</p>
+                    <p><strong>Section:</strong> {{ student.section }}</p>
+                </li>
+            {% empty %}
+                <p>No students found.</p>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>
