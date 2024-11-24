@@ -1,4 +1,5 @@
 from rest_framework import viewsets
+from .forms import TutorRegistrationForm  # Make sure to create this form
 
 from friend_requests.models import FriendRequest
 from .models import Tutor
@@ -188,5 +189,23 @@ def handle_friend_request(request, id, action):
     friend_request.save()
     return redirect('tutors:tutors_dashboard')
 
+
+def tutor_register(request):
+    """
+    Handles tutor registration functionality.
+    """
+    if request.method == 'POST':
+        form = TutorRegistrationForm(request.POST)
+        if form.is_valid():
+            # Save the new tutor to the database
+            form.save()
+            messages.success(request, 'Registration successful. You can now log in.')
+            return redirect('tutors:tutor_login')  # Redirect to the login page after registration
+        else:
+            messages.error(request, 'Please correct the errors below.')
+    else:
+        form = TutorRegistrationForm()
+
+    return render(request, 'register.html', {'form': form})
 
 

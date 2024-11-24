@@ -17,6 +17,7 @@ urlpatterns = [
     # Public pages
     path('', TemplateView.as_view(template_name='index.html'), name='index'),
     path('login/', tutor_login, name='tutor_login'),
+    path('register/', views.tutor_register, name='tutor_register'),
     path('logout/', tutor_logout, name='tutor_logout'),
 
     # Dashboard
