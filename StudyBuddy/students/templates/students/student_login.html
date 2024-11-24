@@ -10,139 +10,137 @@
             padding: 0;
             box-sizing: border-box;
         }
-        
-        /* Full viewport height and width for body */
+
         body {
             font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f3f2f1; /* Soft gray similar to Teams' background */
-            margin: 0;
-            padding: 0;
+            background: linear-gradient(135deg, #6a9d8c, #004d26);
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
+            color: #ffffff;
         }
-        
-        h1 {
-            color: #004d26; /* Dark green for the theme */
-            font-size: 24px;
-            text-align: center;
-            margin-bottom: 20px; /* Spacing between the heading and input fields */
-        }
-        
-        /* Form styling */
-        form {
-            background-color: #ffffff; /* White background for card-like form */
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-            display: flex;
-            flex-direction: column;
-            align-items: center; /* Center elements inside the form */
-            gap: 15px;
+
+        .login-container {
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 40px 50px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
             max-width: 400px;
             width: 100%;
-        }
-        
-        label {
-            font-weight: 600;
-            color: #444444; /* Neutral dark gray for readability */
-            font-size: 14px;
-            align-self: flex-start; /* Align labels to the left */
-        }
-        
-        input {
-            padding: 12px;
-            border: 1px solid #d1d1d1; /* Light border for minimalistic design */
-            border-radius: 6px;
-            width: 100%;
-            font-size: 14px;
-            transition: border-color 0.3s ease-in-out;
-        }
-        
-        input:focus {
-            outline: none;
-            border-color: #004d26; /* Highlight border on focus with theme color */
-            box-shadow: 0 0 0 2px rgba(0, 77, 38, 0.2);
-        }
-        
-        button {
-            padding: 12px;
-            background-color: #004d26; /* Green theme color */
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s ease-in-out;
-            width: 100%;
-        }
-        
-        button:hover {
-            background-color: #006b39; /* Slightly lighter green on hover */
-        }
-        
-        button:active {
-            background-color: #003f1e; /* Darker green on active */
-        }
-        
-        /* Error message styling */
-        .error-message {
-            color: #d93025; /* Red for errors, similar to Google's error color */
-            font-size: 13px;
-            list-style: none;
-            margin-top: 10px;
-            padding-left: 0;
-        }
-        
-        ul.error-message {
-            background-color: #fdecea;
-            border: 1px solid #f5c6cb;
-            border-radius: 6px;
-            padding: 10px;
-            width: 100%;
             text-align: center;
         }
-        
-        /* Responsive design */
+
+        h1 {
+            color: #004d26;
+            margin-bottom: 25px;
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        label {
+            font-size: 14px;
+            color: #444;
+            text-align: left;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 20px;
+            font-size: 16px;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+            background-color: #f9f9f9;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            border-color: #004d26;
+            outline: none;
+            box-shadow: 0 0 10px rgba(0, 77, 38, 0.2);
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            background-color: #004d26;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #006b39;
+        }
+
+        button:active {
+            background-color: #003f1e;
+        }
+
+        .error-message {
+            color: #d93025;
+            font-size: 14px;
+            margin-top: 10px;
+            text-align: center;
+            background-color: #fdecea;
+            border: 1px solid #f5c6cb;
+            padding: 10px;
+            border-radius: 6px;
+        }
+
+        .error-message li {
+            margin: 0;
+        }
+
+        .error-message ul {
+            padding: 0;
+            list-style: none;
+        }
+
         @media (max-width: 500px) {
-            form {
-                padding: 20px;
+            .login-container {
+                padding: 30px 25px;
             }
-        
+
             h1 {
-                font-size: 20px;
+                font-size: 24px;
             }
-        
-            input, button {
-                font-size: 13px;
-            }
-        }        
+        }
+
     </style>
 </head>
 <body>
 
-    
-    <form method="POST">
+    <div class="login-container">
         <h1>Student Login</h1>
-        {% csrf_token %}
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required>
+        <form method="POST">
+            {% csrf_token %}
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
 
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
 
-        <button type="submit">Login</button>
-    </form>
+            <button type="submit">Login</button>
+        </form>
 
-    {% if messages %}
-        <ul class="error-message">
-            {% for message in messages %}
-                <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+        {% if messages %}
+            <div class="error-message">
+                <ul>
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+    </div>
 
 </body>
 </html>
