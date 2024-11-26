@@ -1,4 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
+
+from friend_requests.models import FriendRequest
 from .models import Student
 from .forms import StudentForm
 from tutors.models import Tutor
@@ -131,6 +133,34 @@ def edit_profile(request, pk):
         form = StudentForm(instance=student)
 
     return render(request, 'students/edit_profile.html', {'form': form, 'student': student})
+
+def available_tutors(request):
+    tutors = Tutor.objects.all()  # Available tutors
+    accepted_tutors = Tutor.objects.filter(friend_requests__sender=request.user, friend_requests__status='accepted')
+    
+    return render(request, 'available_tutors.html', {
+        'tutors': tutors,
+        'accepted_tutors': accepted_tutors
+    })
+
+def handle_friend_request(request, request_id, action):
+    friend_request = get_object_or_404(FriendRequest, pk=request_id)
+
+    if action == 'accept':
+        friend_request.status = 'accepted'
+        if friend_request.sender_student:
+            friend_request.receiver_tutor.accepted_students.add(friend_request.sender_student)
+        elif friend_request.sender_tutor:
+            friend_request.receiver_student.accepted_tutors.add(friend_request.sender_tutor)
+
+        messages.success(request, 'Friend request accepted!')
+    elif action == 'decline':
+        friend_request.status = 'declined'
+        messages.info(request, 'Friend request declined.')
+
+    friend_request.save()
+    return redirect('tutors:tutors_dashboard' if request.session.get('user_role') == 'tutor' else 'students:student_homepage')
+   
 
 
 
