@@ -1,6 +1,6 @@
 from rest_framework import viewsets
 from .forms import TutorRegistrationForm  # Make sure to create this form
-
+from session.forms import SessionForm
 from friend_requests.models import FriendRequest
 from .models import Tutor
 from .serializers import TutorSerializer
@@ -207,5 +207,36 @@ def tutor_register(request):
         form = TutorRegistrationForm()
 
     return render(request, 'register.html', {'form': form})
+
+def create_session(request):
+    """
+    View for creating a new tutoring session.
+    """
+    # Get the logged-in tutor
+    username = request.session.get('username')
+    if not username:
+        messages.error(request, 'You need to log in first.')
+        return redirect('tutors:tutor_login')
+    
+    try:
+        logged_in_tutor = Tutor.objects.get(username=username)
+    except Tutor.DoesNotExist:
+        messages.error(request, 'Tutor not found.')
+        return redirect('tutors:tutor_login')
+
+    if request.method == 'POST':
+        form = SessionForm(request.POST)
+        if form.is_valid():
+            session = form.save(commit=False)
+            session.tutor = logged_in_tutor  # Automatically assign the logged-in tutor
+            session.save()
+            messages.success(request, 'Session created successfully.')
+            return redirect('tutors:tutors_dashboard')  # Redirect to the dashboard after creating a session
+        else:
+            messages.error(request, 'Please correct the errors below.')
+    else:
+        form = SessionForm()
+
+    return render(request, 'create_session.html', {'form': form})
 
 

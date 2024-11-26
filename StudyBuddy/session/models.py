@@ -7,7 +7,7 @@ class Session(models.Model):
     session_id = models.AutoField(primary_key=True)
     session_name = models.CharField(max_length=100)
     schedule_date = models.DateField()
-    time_start = models.IntegerField()  # Assuming military time (0-24)
+    time_start = models.TimeField()  # Changed to TimeField
     tutor = models.ForeignKey(Tutor, on_delete=models.CASCADE, null=True, blank=True)
     student = models.ForeignKey(Student, on_delete=models.CASCADE, null=True, blank=True)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True)
