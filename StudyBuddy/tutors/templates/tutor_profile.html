@@ -2,11 +2,13 @@
 
 {% block content %}
 <div class="container">
-    <!-- Include sidebar -->
+    <!-- Include Sidebar (same as tutor_dashboard.html) -->
     {% include 'components/sidebar.html' %}
     
     <div class="content">
         <h1>Update Profile</h1>
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'tutor_profile.css' %}">
         <form method="POST" action="">
             {% csrf_token %}
             <div class="form-group">

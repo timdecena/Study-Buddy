@@ -1,16 +1,32 @@
-<nav class="sidebar">
-    <h2>StudyBuddy</h2>
-    <ul>
-        <li><a href="#">Assigned Students</a></li>
-        <li><a href="#" class="active">Home</a></li>
-        <li><a href="{% url 'tutors:assignment' %}">Assignments</a></li>
-        <li><a href="#">Messages</a></li>
-        <li><a href="#">Profile Settings</a></li>
-        <li><a href="{% url 'tutors:tutor_logout' %}" class="logout-btn">Logout</a></li>
-    </ul>
-    <!-- Search Bar -->
-    <form method="GET" action="{% url 'tutors:tutors_dashboard' %}">
-        <input type="text" name="query" value="{{ query }}" placeholder="Search tutors or students..." class="search-bar">
-        <button type="submit" class="search-btn">Search</button>
-    </form>
-</nav>
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sidebar Example</title>
+    <!-- Link to sidebar.css -->
+    <link rel="stylesheet" href="{% static 'sidebar.css' %}">
+</head>
+<body>
+    <!-- Sidebar Structure -->
+    <nav class="sidebar">
+        <h2>StudyBuddy</h2>
+        <ul>
+            <li><a href="#">Assigned Students</a></li>
+            <li><a href="#" class="active">Home</a></li>
+            <li><a href="{% url 'tutors:create_session' %}">Create Session</a></li>
+            <li><a href="{% url 'tutors:assignment' %}">Assignments</a></li>
+            <li><a href="#">Messages</a></li>
+            <li><a href="{% url 'tutors:tutor_profile' %}">Profile Settings</a></li>
+            <li><a href="{% url 'tutors:tutor_logout' %}" class="logout-btn">Logout</a></li>
+        </ul>
+        <!-- Search Bar -->
+      
+    </nav>
+    
+    <!-- Main Content (Optional for testing) -->
+    <div class="main-content">
+    </div>
+</body>
+</html>
