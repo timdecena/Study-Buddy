@@ -1,9 +1,17 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import TutorViewSet, tutor_login, tutor_logout, tutor_list, tutors_dashboard, assignment_page
+from .views import (
+    TutorViewSet,
+    tutor_login,
+    tutor_logout,
+    tutor_list,
+    tutors_dashboard,
+    assignment_page,
+    tutor_profile,
+    handle_friend_request,
+)
 from django.views.generic import TemplateView
 from . import views
-from .views import handle_friend_request
 
 # Create a router and register the TutorViewSet
 app_name = 'tutors'  # Define the namespace for reverse URL lookups
@@ -29,13 +37,12 @@ urlpatterns = [
     path('tutors_list/', tutor_list, name='tutor_list'),
     path('create-session/', views.create_session, name='create_session'),
 
-
-    #Assignment
     # Assignment Management
     path('assignments/', assignment_page, name='assignment'),
-    
+
+    # Friend Request Handling
     path('handle_friend_request/<int:id>/<str:action>/', handle_friend_request, name='handle_friend_request'),
 
-
-
+    # Profile Management
+    path('profile/', tutor_profile, name='tutor_profile'),  # Added profile path
 ]
