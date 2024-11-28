@@ -7,6 +7,7 @@ from .serializers import TutorSerializer
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 class TutorViewSet(viewsets.ModelViewSet):
     """
@@ -90,25 +91,40 @@ def tutors_dashboard(request):
     query = request.GET.get('query', '').strip()
     
     # Search tutors by first name or last name
-    tutors = Tutor.objects.filter(first_name__icontains=query) | Tutor.objects.filter(last_name__icontains=query)
+    tutors = Tutor.objects.filter(
+        first_name__icontains=query
+    ) | Tutor.objects.filter(
+        last_name__icontains=query
+    ) if query else Tutor.objects.none()
     
     # Search students by fullname or course
-    students = Student.objects.filter(fullname__icontains=query) | Student.objects.filter(course__icontains=query)
+    students = Student.objects.filter(
+        fullname__icontains=query
+    ) | Student.objects.filter(
+        course__icontains=query
+    ) if query else Student.objects.none()
     
     # Fetch friend requests where the logged-in tutor is the receiver
-    friend_requests = FriendRequest.objects.filter(receiver_tutor=tutor, status='pending').select_related(
-        'sender_student', 'sender_tutor', 'receiver_student', 'receiver_tutor'
-    )
+    friend_requests = FriendRequest.objects.filter(
+        receiver_tutor=tutor, status='pending'
+    ).select_related('sender_student', 'sender_tutor', 'receiver_student', 'receiver_tutor')
+
+    # Fetch accepted students for the logged-in tutor
+    accepted_students = FriendRequest.objects.filter(
+        receiver_tutor=tutor, status='accepted', sender_student__isnull=False
+    ).select_related('sender_student')
 
     # Combine the context data
     context = {
         'friend_requests': friend_requests,  # Friend requests for the logged-in tutor
         'tutors': tutors,  # Tutors matching the search query
         'students': students,  # Students matching the search query
+        'accepted_students': [req.sender_student for req in accepted_students],  # Accepted students
         'query': query,  # To retain the search query for displaying in the form
     }
 
     return render(request, 'tutors_dashboard.html', context)
+
 
 
 
@@ -209,10 +225,6 @@ def tutor_register(request):
     return render(request, 'register.html', {'form': form})
 
 def create_session(request):
-    """
-    View for creating a new tutoring session.
-    """
-    # Get the logged-in tutor
     username = request.session.get('username')
     if not username:
         messages.error(request, 'You need to log in first.')
@@ -228,16 +240,21 @@ def create_session(request):
         form = SessionForm(request.POST)
         if form.is_valid():
             session = form.save(commit=False)
-            session.tutor = logged_in_tutor  # Automatically assign the logged-in tutor
+            session.tutor = logged_in_tutor
             session.save()
             messages.success(request, 'Session created successfully.')
-            return redirect('tutors:tutors_dashboard')  # Redirect to the dashboard after creating a session
+            return redirect('tutors:tutors_dashboard')
         else:
             messages.error(request, 'Please correct the errors below.')
     else:
         form = SessionForm()
+        accepted_students = FriendRequest.objects.filter(
+            receiver_tutor=logged_in_tutor, status='accepted'
+        ).values_list('sender_student__student_id', flat=True)  # Adjust for custom primary key
+        form.fields['student'].queryset = Student.objects.filter(student_id__in=accepted_students)
 
     return render(request, 'create_session.html', {'form': form})
+
 
 
 def tutor_profile(request):
@@ -268,3 +285,14 @@ def tutor_profile(request):
         return redirect('tutors:tutor_profile')
 
     return render(request, 'tutor_profile.html', {'tutor': tutor})
+
+    
+@login_required
+def remove_accepted_student(request, student_id):
+    if request.method == 'POST':
+        student = get_object_or_404(Student, student_id=student_id)
+        tutor = Tutor.objects.get(user=request.user)  # Assuming a Tutor is linked to a user
+        # Remove the student from the tutor's accepted list
+        tutor.accepted_students.remove(student)
+        return redirect('tutors:tutors_dashboard')  # Redirect to the tutor's dashboard
+    return redirect('tutors:tutors_dashboard')

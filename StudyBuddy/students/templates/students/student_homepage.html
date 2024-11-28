@@ -185,6 +185,23 @@
             <p>Here’s a quick overview of your details.</p>
         </div>
 
+        <div class="container">
+            <h2>Tutors Accepted</h2>
+            <ul>
+                {% for tutor in accepted_tutors %}
+                    <li>
+                        <strong>Name:</strong> {{ tutor.first_name }} {{ tutor.last_name }} <br>
+                        <strong>Username:</strong> {{ tutor.username }} <br>
+                        <strong>Email:</strong> {{ tutor.email }} <br>
+                        
+                    </li>
+                    <hr>
+                {% empty %}
+                    <li>No tutors have accepted your requests yet.</li>
+                {% endfor %}
+            </ul>
+        </div>
+
         <!-- Student Details -->
         <div class="details">
             <p><strong>Year:</strong> {{ student.year }}</p>

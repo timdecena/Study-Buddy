@@ -14,5 +14,5 @@ class SessionForm(forms.ModelForm):
             'time_start': forms.TimeInput(attrs={'type': 'time'}),
         }
 
-    student = forms.ModelChoiceField(queryset=Student.objects.all(), empty_label="Select Student")
+    student = forms.ModelChoiceField(queryset=Student.objects.all(), empty_label="Select Accepted Student")
     course = forms.ModelChoiceField(queryset=Course.objects.all(), empty_label="Select Course")

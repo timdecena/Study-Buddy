@@ -10,8 +10,8 @@ class Student(models.Model):
 
 
     password = models.CharField(max_length=128, default="default_password")
-    profile_image = models.ImageField(upload_to='profile_pics/', blank=True, null=True)  # New field
-
+    profile_image = models.ImageField(upload_to='profile_pics/',null=True,blank=True,default='profile_pics/default.jpg'  # Set a default image
+)
 
     def __str__(self):
         return self.fullname

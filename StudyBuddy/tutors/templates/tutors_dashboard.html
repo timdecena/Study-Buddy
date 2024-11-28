@@ -83,6 +83,22 @@
     
 </section>
 
+<section>
+    <h2>Accepted Students</h2>
+    <ul>
+        {% for student in accepted_students %}
+            <li>
+                {{ student.fullname }} - {{ student.course }}
+            </li>
+        {% empty %}
+            <li>No accepted students yet.</li>
+        {% endfor %}
+    </ul>
+</section>
+
+
+
+
             <!-- Assignments Section -->
             <section class="assignments-section">
                 <h2>Your Assignments</h2>

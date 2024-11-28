@@ -57,3 +57,10 @@ class FriendRequest(models.Model):
     def receiver(self):
         """Retrieve receiver regardless of type."""
         return self.receiver_student or self.receiver_tutor
+
+    @staticmethod
+    def get_accepted_students_for_tutor(tutor):
+        return [req.sender_student for req in FriendRequest.objects.filter(
+            receiver_tutor=tutor, 
+            status='accepted'
+        ) if req.sender_student]

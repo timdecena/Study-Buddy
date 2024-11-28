@@ -36,7 +36,20 @@ def student_homepage(request):
         try:
             # Retrieve the student object based on the username in the session
             student = get_object_or_404(Student, username=request.session['username'])
-            return render(request, 'students/student_homepage.html', {'student': student})
+            
+            # Fetch tutors who have accepted this student
+            accepted_tutors = FriendRequest.objects.filter(
+                sender_student=student, status='accepted'
+            ).select_related('receiver_tutor')
+
+            # Prepare the context data
+            context = {
+                'student': student,
+                'accepted_tutors': [req.receiver_tutor for req in accepted_tutors],  # List of tutors who accepted
+            }
+
+            return render(request, 'students/student_homepage.html', context)
+        
         except Student.DoesNotExist:
             # Handle the case where the username does not match any student record
             messages.error(request, "Student profile not found.")
@@ -45,6 +58,7 @@ def student_homepage(request):
         # If the user is not authorized, display an error message and redirect to the login page
         messages.error(request, "You are not authorized to access this page.")
         return redirect('students:login')
+
 
 # List all students
 def student_list(request):
