@@ -79,7 +79,7 @@ def student_create(request,pk=None):
             if form.cleaned_data.get('delete_profile_image'):
                 student.profile_image = 'profile_pics/default.jpg'
             student.save()
-            return redirect('students:student_list')  # Redirect to student list or another page
+            return redirect('students:student_login')  # Redirect to student list or another page
     else:
         form = StudentForm(instance=student)
 
