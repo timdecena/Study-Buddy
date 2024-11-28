@@ -1,0 +1,148 @@
+/* Global Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #F4F4F9; /* Light gray background for clean look */
+    color: #333; /* Dark text for good readability */
+    line-height: 1.6;
+}
+
+h1 {
+    font-size: 32px;
+    color: #2D7D46; /* Green color for headers */
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* Sidebar Styling */
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 250px;
+    height: 100%;
+    background-color: #2D7D46; /* Green sidebar */
+    padding: 20px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar a {
+    text-decoration: none;
+    color: white;
+    margin: 15px 0;
+    font-size: 18px;
+    transition: all 0.3s;
+}
+
+.sidebar a:hover {
+    background-color: #1A5B32; /* Darker green for hover effect */
+    padding-left: 10px;
+}
+
+/* Main Content Styling */
+.main-content {
+    margin-left: 250px; /* Offset by sidebar width */
+    padding: 40px 60px;
+    max-width: 800px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    padding: 12px;
+    font-size: 16px;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    width: 100%;
+    transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus {
+    border-color: #2D7D46; /* Green border on focus */
+    outline: none;
+}
+
+button {
+    padding: 12px;
+    font-size: 18px;
+    color: white;
+    background-color: #2D7D46; /* Green button */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #1A5B32; /* Darker green on hover */
+}
+
+button:disabled {
+    background-color: #A8D8A8; /* Light green for disabled state */
+    cursor: not-allowed;
+}
+
+/* Response Message Styling */
+.success-message {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 10px;
+    border: 1px solid #c3e6cb;
+    border-radius: 4px;
+    margin-top: 20px;
+    font-weight: bold;
+}
+
+.error-message {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 10px;
+    border: 1px solid #f5c6cb;
+    border-radius: 4px;
+    margin-top: 20px;
+    font-weight: bold;
+}
+
+/* Make the page look nice on all screen sizes */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 200px;
+    }
+
+    .main-content {
+        margin-left: 200px;
+        padding: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        padding: 10px;
+    }
+
+    .main-content {
+        margin-left: 0;
+        padding: 20px;
+    }
+}
