@@ -126,6 +126,7 @@ def tutors_dashboard(request):
     return render(request, 'tutors_dashboard.html', context)
 
 
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import Assignment
@@ -137,13 +138,13 @@ def assignment_page(request):
     
     if not username:
         messages.error(request, 'You need to log in first.')
-        return redirect('tutors:tutor_login')
+        return JsonResponse({'success': False, 'error': 'Login required'}, status=400)
     
     try:
         logged_in_tutor = Tutor.objects.get(username=username)
     except Tutor.DoesNotExist:
         messages.error(request, 'Tutor not found.')
-        return redirect('tutors:tutor_login')
+        return JsonResponse({'success': False, 'error': 'Tutor not found'}, status=404)
 
     if request.method == 'POST':
         # Process form to create or update assignment
@@ -173,6 +174,7 @@ def assignment_page(request):
     assignments = Assignment.objects.filter(tutor=logged_in_tutor)
 
     return render(request, 'assignment.html', {'assignments': assignments})
+
 
 
 def accept_friend_request(request, id):
