@@ -22,7 +22,7 @@
     <h1>Assignment Management</h1>
 
     <!-- Add/Edit Form -->
-    <form method="POST">
+    <form method="POST" action="{% url 'tutors:assignment' %}" id="assignmentForm">
         {% csrf_token %}
         <input type="hidden" name="assignment_id" id="assignment_id">
         <label for="title">Title:</label>
@@ -33,7 +33,6 @@
         <br>
         <button type="submit">Save Assignment</button>
     </form>
-    
 
     <!-- Assignment Table -->
     <h2>Existing Assignments</h2>
@@ -93,16 +92,23 @@
         document.getElementById("assignmentForm").addEventListener("submit", function(event) {
             event.preventDefault();
             
-            const formData = new FormData(this);
-            fetch('/tutors/assignments/', {
+            const form = this;
+            const formData = new FormData(form);
+            
+            fetch(form.action, {
                 method: 'POST',
-                body: formData
+                body: formData  // Send the form data correctly
             })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
                     location.reload();
+                } else {
+                    alert('Failed to save the assignment: ' + data.error);
                 }
+            })
+            .catch(error => {
+                alert('An error occurred: ' + error);
             });
         });
     </script>

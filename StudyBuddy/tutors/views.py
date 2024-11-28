@@ -126,20 +126,30 @@ def tutors_dashboard(request):
     return render(request, 'tutors_dashboard.html', context)
 
 
-
-
 from django.shortcuts import render, redirect
-from django.http import JsonResponse
+from django.contrib import messages
 from .models import Assignment
+from tutors.models import Tutor
 
 def assignment_page(request):
+    # Get the logged-in tutor's username from session
+    username = request.session.get('username')
+    
+    if not username:
+        messages.error(request, 'You need to log in first.')
+        return redirect('tutors:tutor_login')
+    
+    try:
+        logged_in_tutor = Tutor.objects.get(username=username)
+    except Tutor.DoesNotExist:
+        messages.error(request, 'Tutor not found.')
+        return redirect('tutors:tutor_login')
+
     if request.method == 'POST':
-        # Print the form data to check if title and description are sent correctly
+        # Process form to create or update assignment
         title = request.POST.get('title')
         description = request.POST.get('description')
         assignment_id = request.POST.get('assignment_id')
-
-        print(f"Title: {title}, Description: {description}")
 
         if not title or not description:
             return JsonResponse({'success': False, 'error': 'Title and description are required'}, status=400)
@@ -147,7 +157,7 @@ def assignment_page(request):
         if assignment_id:
             # Update existing assignment
             try:
-                assignment = Assignment.objects.get(id=assignment_id)
+                assignment = Assignment.objects.get(id=assignment_id, tutor=logged_in_tutor)
                 assignment.title = title
                 assignment.description = description
                 assignment.save()
@@ -155,13 +165,15 @@ def assignment_page(request):
                 return JsonResponse({'success': False, 'error': 'Assignment not found'}, status=404)
         else:
             # Create new assignment
-            Assignment.objects.create(title=title, description=description)
+            Assignment.objects.create(title=title, description=description, tutor=logged_in_tutor)
 
         return JsonResponse({'success': True})
 
-    # Handle GET requests and show all assignments
-    assignments = Assignment.objects.all()
+    # Fetch only the assignments associated with the logged-in tutor
+    assignments = Assignment.objects.filter(tutor=logged_in_tutor)
+
     return render(request, 'assignment.html', {'assignments': assignments})
+
 
 def accept_friend_request(request, id):
     # Get the friend request by ID
