@@ -8,27 +8,32 @@ from django.contrib import messages
 from django.views.generic import UpdateView
 
 
-# Student Login
+
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from students.models import Student
+
 def student_login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
 
-        # Authenticate against the Student model
         try:
-            student = Student.objects.get(username=username, password=password)
-            
-            # Set session data
-            request.session['username'] = student.username
-            request.session['user_role'] = 'student'
-            
-            messages.success(request, f"Login Successful")
-            return redirect('students:student_homepage')  # Redirect to the student homepage
+            student = Student.objects.get(username=username)
+            if student.password == password:  # Use secure password checking here
+                request.session['username'] = student.username
+                request.session['user_role'] = 'student'
+                messages.success(request, "Login Successful")
+                return redirect('students:student_homepage')  # Corrected URL name
+            else:
+                messages.error(request, "Invalid username or password")
+                return redirect('students:student_login')  # Corrected URL name
         except Student.DoesNotExist:
             messages.error(request, "Invalid username or password")
-            return redirect('students:login')
+            return redirect('students:student_login')  # Corrected URL name
 
     return render(request, 'students/student_login.html')
+
 
 def student_homepage(request):
     # Check if the user is logged in and has the 'student' role
@@ -106,13 +111,13 @@ def student_delete(request, pk):
         return redirect('students:student_list')
     return render(request, 'students/student_confirm_delete.html', {'student': student})
 
-def logout(request):
+def student_logout(request):  # Rename to match the URL pattern
     # Clear the session
     request.session.flush()
     # Optional: Add a logout success message
     messages.success(request, "You have been logged out successfully.")
     # Redirect to the default homepage
-    return redirect('home')  # Change 'default_homepage' to the name of your homepage view
+    return redirect('home')  # Update 'home' if needed
 
 def tutors_list(request):
     # Assuming you have a Tutor model to query
