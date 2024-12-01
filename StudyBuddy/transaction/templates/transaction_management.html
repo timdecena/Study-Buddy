@@ -264,7 +264,7 @@
                             `<span>Recipient:</span> ${data.tutor_last_name} - 
                              <span>Method:</span> ${data.method} - 
                              <span>Amount:</span> $${data.amount} - 
-                             <span>Student:</span> ${data.student_name}`
+                             <span>Student:</span> ${data.student_fullname}`
                         );
                         resetForm();
                     },
@@ -291,7 +291,7 @@
                                     <span>Recipient:</span> ${data.tutor_last_name} - 
                                     <span>Method:</span> ${data.method} - 
                                     <span>Amount:</span> $${data.amount} - 
-                                    <span>Student:</span> ${data.student_name}
+                                    <span>Student:</span> ${data.student_fullname}
                                 </div>
                                 <div class="actions">
                                     <button class="edit-btn" onclick="editTransaction(${data.id}, '${data.method}', '${data.amount}', ${data.tutor_id}, ${data.student_id})">Edit</button>

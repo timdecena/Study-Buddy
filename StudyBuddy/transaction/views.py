@@ -46,7 +46,7 @@ def update_transaction(request, transaction_id):
                 'tutor_last_name': transaction.tutor.last_name,
                 'tutor_id': transaction.tutor.id,
                 'student_name': transaction.student.fullname,
-                'student_id': transaction.student.id
+                'student_id': transaction.student.student_id
             })
     return JsonResponse({'error': 'Invalid data'}, status=400)
 
