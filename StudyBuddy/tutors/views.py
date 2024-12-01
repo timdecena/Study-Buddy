@@ -8,6 +8,9 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
+import json
+
 
 class TutorViewSet(viewsets.ModelViewSet):
     """
@@ -135,19 +138,27 @@ from tutors.models import Tutor
 def assignment_page(request):
     # Get the logged-in tutor's username from session
     username = request.session.get('username')
-    
+
     if not username:
         messages.error(request, 'You need to log in first.')
         return JsonResponse({'success': False, 'error': 'Login required'}, status=400)
-    
+
     try:
         logged_in_tutor = Tutor.objects.get(username=username)
     except Tutor.DoesNotExist:
         messages.error(request, 'Tutor not found.')
         return JsonResponse({'success': False, 'error': 'Tutor not found'}, status=404)
 
+    # Fetch accepted students
+    accepted_students = FriendRequest.objects.filter(
+        receiver_tutor=logged_in_tutor, status='accepted', sender_student__isnull=False
+    ).select_related('sender_student')
+
+    # Fetch students with accepted status
+    students = Student.objects.filter(status='accepted')
+
+    # Process assignments
     if request.method == 'POST':
-        # Process form to create or update assignment
         title = request.POST.get('title')
         description = request.POST.get('description')
         assignment_id = request.POST.get('assignment_id')
@@ -173,7 +184,38 @@ def assignment_page(request):
     # Fetch only the assignments associated with the logged-in tutor
     assignments = Assignment.objects.filter(tutor=logged_in_tutor)
 
-    return render(request, 'assignment.html', {'assignments': assignments})
+    # Pass accepted students and assignments to the template
+    return render(request, 'assignment.html', {
+        'assignments': assignments,
+        'students': students,
+        'accepted_students': [req.sender_student for req in accepted_students],  # Add accepted students
+    })
+
+def assignment_view(request):
+    tutor = get_object_or_404(Tutor, user=request.user)
+    accepted_students = FriendRequest.objects.filter(
+        receiver_tutor=tutor, status='accepted'
+    ).values_list('sender_student', flat=True)
+    students = Student.objects.filter(id__in=accepted_students)
+
+    if request.method == 'POST':
+        student_id = request.POST.get('student_id')
+        title = request.POST.get('title')
+        description = request.POST.get('description')
+
+        if student_id and title and description:
+            student = get_object_or_404(Student, id=student_id)
+            Assignment.objects.create(
+                tutor=tutor, student=student, title=title, description=description
+            )
+            return JsonResponse({'success': True})
+        return JsonResponse({'success': False, 'error': 'Missing fields'})
+
+    assignments = Assignment.objects.filter(tutor=tutor)
+    return render(
+        request, 'assignment.html',
+        {'assignments': assignments, 'students': students}
+    )
 
 
 
@@ -310,3 +352,17 @@ def remove_accepted_student(request, student_id):
         tutor.accepted_students.remove(student)
         return redirect('tutors:tutors_dashboard')  # Redirect to the tutor's dashboard
     return redirect('tutors:tutors_dashboard')
+
+@csrf_exempt  # Make sure CSRF token is handled correctly in production
+def delete_assignment(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        assignment_id = data.get('delete_id')
+        
+        try:
+            assignment = Assignment.objects.get(id=assignment_id)
+            assignment.delete()
+            return JsonResponse({'success': True})
+        except Assignment.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Assignment not found'})
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})

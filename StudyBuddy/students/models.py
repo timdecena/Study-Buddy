@@ -10,8 +10,10 @@ class Student(models.Model):
 
 
     password = models.CharField(max_length=128, default="default_password")
-    profile_image = models.ImageField(upload_to='profile_pics/',null=True,blank=True,default='profile_pics/default.jpg'  # Set a default image
-)
+    profile_image = models.ImageField(upload_to='profile_pics/',null=True,blank=True,default='profile_pics/default.jpg')  # Set a default image
+    status = models.CharField(max_length=20, choices=[('accepted', 'Accepted'), ('pending', 'Pending')], default='pending')
+
+
 
     def __str__(self):
         return self.fullname

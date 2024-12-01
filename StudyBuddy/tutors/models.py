@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.db import models
 
 class Tutor(models.Model):
@@ -13,12 +14,16 @@ class Tutor(models.Model):
 
 # models.py
 from django.db import models
-from tutors.models import Tutor  # Assuming the Tutor model is in the tutors app
+from tutors.models import Tutor  # Import relevant models
+from students.models import Student
+
 
 class Assignment(models.Model):
-    title = models.CharField(max_length=200)
+    tutor = models.ForeignKey(Tutor, on_delete=models.CASCADE, related_name="assignments")
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="assignments", default=1)
+    title = models.CharField(max_length=255)
     description = models.TextField()
-    tutor = models.ForeignKey(Tutor, on_delete=models.CASCADE)  # Link each assignment to a tutor
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.title
+        return f"{self.title} ({self.tutor})"
