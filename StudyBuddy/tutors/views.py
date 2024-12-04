@@ -372,3 +372,35 @@ def delete_assignment(request):
         except Assignment.DoesNotExist:
             return JsonResponse({'success': False, 'error': 'Assignment not found'})
     return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+
+def remove_student(request, student_id):
+    if request.method == "POST":
+        try:
+            # Ensure the user is logged in
+            username = request.session.get('username')
+            if not username:
+                messages.error(request, "You must be logged in to perform this action.")
+                return redirect('tutors:tutor_login')  # Redirect to login if not logged in
+
+            # Get the logged-in tutor
+            tutor = get_object_or_404(Tutor, username=username)
+
+            # Find the student associated with the tutor and remove the association
+            student = get_object_or_404(Student, student_id=student_id, tutor=tutor)
+            student.tutor = None  # Assuming `tutor` is a field in the Student model
+            student.save()
+
+            # Provide success feedback
+            messages.success(request, f"Student {student.fullname} has been successfully removed.")
+            return redirect('tutors:tutors_dashboard')  # Redirect to the dashboard
+
+        except Student.DoesNotExist:
+            messages.error(request, "Student not found or not associated with you.")
+            return redirect('tutors:tutors_dashboard')
+
+        except Exception as e:
+            messages.error(request, f"An error occurred: {str(e)}")
+            return redirect('tutors:tutors_dashboard')
+    else:
+        return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=400)

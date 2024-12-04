@@ -89,6 +89,10 @@
         {% for student in accepted_students %}
             <li>
                 {{ student.fullname }} - {{ student.course }}
+                <form method="POST" action="{% url 'tutors:remove_student' student.student_id %}" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn remove-btn">Remove</button>
+                </form>
             </li>
         {% empty %}
             <li>No accepted students yet.</li>

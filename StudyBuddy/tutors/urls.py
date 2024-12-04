@@ -46,7 +46,7 @@ urlpatterns = [
 
     # Friend Request Handling
     path('handle_friend_request/<int:id>/<str:action>/', handle_friend_request, name='handle_friend_request'),
-
+    path('remove-student/<int:student_id>/', views.remove_student, name='remove_student'),
     # Profile Management
     path('profile/', tutor_profile, name='tutor_profile'),  # Added profile path
 ]
