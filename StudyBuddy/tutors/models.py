@@ -20,10 +20,12 @@ from students.models import Student
 
 class Assignment(models.Model):
     tutor = models.ForeignKey(Tutor, on_delete=models.CASCADE, related_name="assignments")
-    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="assignments", default=1)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="assignments")
     title = models.CharField(max_length=255)
     description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+    
+
 
     def __str__(self):
         return f"{self.title} ({self.tutor})"
