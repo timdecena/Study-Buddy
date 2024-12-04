@@ -50,7 +50,6 @@ def update_transaction(request, transaction_id):
             })
     return JsonResponse({'error': 'Invalid data'}, status=400)
 
-
 def delete_transaction(request, transaction_id):
     transaction = get_object_or_404(Transaction, pk=transaction_id)
     transaction.delete()

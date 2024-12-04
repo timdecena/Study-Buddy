@@ -225,23 +225,23 @@ def create_transaction(request):
         'transactions': transactions,
     })
     
-def edit_transaction(request, pk):
-    transaction = get_object_or_404(Transaction, pk=pk)
+
+# students/views.py
+
+def update_transaction_view(request, transaction_id):
+    transaction = get_object_or_404(Transaction, pk=transaction_id)
     if request.method == 'POST':
         form = TransactionForm(request.POST, instance=transaction)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Transaction updated successfully.')
             return redirect('students:create_transaction')
+        else:
+            return render(request, 'students/update_transaction.html', {'form': form, 'error': 'Invalid data provided'})
     else:
         form = TransactionForm(instance=transaction)
-    return render(request, 'students/edit_transaction.html', {'form': form})
+        return render(request, 'students/update_transaction.html', {'form': form, 'transaction': transaction})
 
-def delete_transaction(request, pk):
-    transaction = get_object_or_404(Transaction, pk=pk)
-    if request.method == 'POST':
-        transaction.delete()
-        messages.success(request, 'Transaction deleted successfully.')
-        return redirect('students:create_transaction')
-    return render(request, 'students/delete_transaction.html', {'transaction': transaction})
-
+def delete_transaction_view(request, transaction_id):
+    transaction = get_object_or_404(Transaction, pk=transaction_id)
+    transaction.delete()
+    return redirect('students:create_transaction')  # Or wherever you want to redirect

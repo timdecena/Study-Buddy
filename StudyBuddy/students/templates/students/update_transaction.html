@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Transaction</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'students_dashboard.css' %}">
+</head>
+<body>
+    <div class="dashboard-container">
+        <nav class="sidebar">
+            <h2>StudyBuddy</h2>
+            <ul>
+                <li><a href="{% url 'students:student_homepage' %}">Dashboard</a></li>
+                <li><a href="{% url 'students:create_transaction' %}" class="active">Transactions</a></li>
+            </ul>
+        </nav>
+
+        <div class="main-content">
+            <h1>Update Transaction</h1>
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                {% if error %}
+                    <p style="color: red;">{{ error }}</p>
+                {% endif %}
+                <button type="submit" class="btn">Update Transaction</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
