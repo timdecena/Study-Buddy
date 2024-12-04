@@ -136,59 +136,44 @@ from .models import Assignment
 from tutors.models import Tutor
 
 def assignment_page(request):
-    # Get the logged-in tutor's username from session
-    username = request.session.get('username')
-
-    if not username:
-        messages.error(request, 'You need to log in first.')
-        return JsonResponse({'success': False, 'error': 'Login required'}, status=400)
-
-    try:
-        logged_in_tutor = Tutor.objects.get(username=username)
-    except Tutor.DoesNotExist:
-        messages.error(request, 'Tutor not found.')
-        return JsonResponse({'success': False, 'error': 'Tutor not found'}, status=404)
-
-    # Fetch accepted students
-    accepted_students = FriendRequest.objects.filter(
-        receiver_tutor=logged_in_tutor, status='accepted', sender_student__isnull=False
-    ).select_related('sender_student')
-
-    # Fetch students with accepted status
-    students = Student.objects.filter(status='accepted')
-
-    # Process assignments
-    if request.method == 'POST':
-        title = request.POST.get('title')
-        description = request.POST.get('description')
-        assignment_id = request.POST.get('assignment_id')
-
-        if not title or not description:
-            return JsonResponse({'success': False, 'error': 'Title and description are required'}, status=400)
-
-        if assignment_id:
-            # Update existing assignment
+    if request.method == "POST":
+        if 'delete_id' in request.POST:
             try:
-                assignment = Assignment.objects.get(id=assignment_id, tutor=logged_in_tutor)
+                assignment_id = request.POST.get('delete_id')
+                assignment = get_object_or_404(Assignment, id=assignment_id)
+                assignment.delete()
+                return JsonResponse({'success': True})
+            except Exception as e:
+                return JsonResponse({'success': False, 'error': str(e)}, status=400)
+
+        try:
+            # Handle create or update
+            assignment_id = request.POST.get('assignment_id')
+            title = request.POST.get('title')
+            description = request.POST.get('description')
+            student_id = request.POST.get('student_id')
+
+            student = get_object_or_404(Student, student_id=student_id)
+
+            if assignment_id:  # Update
+                assignment = get_object_or_404(Assignment, id=assignment_id)
                 assignment.title = title
                 assignment.description = description
-                assignment.save()
-            except Assignment.DoesNotExist:
-                return JsonResponse({'success': False, 'error': 'Assignment not found'}, status=404)
-        else:
-            # Create new assignment
-            Assignment.objects.create(title=title, description=description, tutor=logged_in_tutor)
+                assignment.student = student
+            else:  # Create
+                assignment = Assignment(title=title, description=description, student=student)
 
-        return JsonResponse({'success': True})
+            assignment.save()
+            return JsonResponse({'success': True})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)}, status=400)
 
-    # Fetch only the assignments associated with the logged-in tutor
-    assignments = Assignment.objects.filter(tutor=logged_in_tutor)
-
-    # Pass accepted students and assignments to the template
+    # For GET requests or unexpected methods
+    assignments = Assignment.objects.select_related('student').all()
+    accepted_students = Student.objects.all()
     return render(request, 'assignment.html', {
         'assignments': assignments,
-        'students': students,
-        'accepted_students': [req.sender_student for req in accepted_students],  # Add accepted students
+        'accepted_students': accepted_students,
     })
 
 def assignment_view(request):
