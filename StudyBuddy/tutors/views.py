@@ -137,17 +137,22 @@ from tutors.models import Tutor
 
 def assignment_page(request):
     if request.method == "POST":
-        if 'delete_id' in request.POST:
+        # Handle DELETE
+        if request.headers.get('Content-Type') == 'application/json':
             try:
-                assignment_id = request.POST.get('delete_id')
-                assignment = get_object_or_404(Assignment, id=assignment_id)
-                assignment.delete()
-                return JsonResponse({'success': True})
+                body = json.loads(request.body)  # Parse JSON body
+                assignment_id = body.get('delete_id')
+                if assignment_id:
+                    assignment = get_object_or_404(Assignment, id=assignment_id)
+                    assignment.delete()
+                    return JsonResponse({'success': True})
+                else:
+                    return JsonResponse({'success': False, 'error': 'Invalid assignment ID'}, status=400)
             except Exception as e:
                 return JsonResponse({'success': False, 'error': str(e)}, status=400)
 
+        # Handle Create/Update
         try:
-            # Handle create or update
             assignment_id = request.POST.get('assignment_id')
             title = request.POST.get('title')
             description = request.POST.get('description')
