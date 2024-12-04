@@ -275,7 +275,7 @@
             } else {
                 // Create new transaction
                 $.ajax({
-                    url: "{% url 'add-transaction' %}",
+                    url: "{% url 'transaction:add-transaction' %}",
                     type: 'POST',
                     data: {
                         payment_method: method,

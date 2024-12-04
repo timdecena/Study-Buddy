@@ -5,7 +5,9 @@ from .models import Student
 from .forms import StudentForm
 from tutors.models import Tutor
 from django.contrib import messages
-from django.views.generic import UpdateView
+from transaction.models import Transaction
+from transaction.forms import TransactionForm
+from tutors.models import Tutor
 
 
 
@@ -181,5 +183,65 @@ def handle_friend_request(request, request_id, action):
     return redirect('tutors:tutors_dashboard' if request.session.get('user_role') == 'tutor' else 'students:student_homepage')
    
 
+# views.py
+def student_transactions(request):
+    username = request.session.get('username')
+    if not username:
+        messages.error(request, 'You need to log in first.')
+        return redirect('students:student_login')
+    
+    # Fetch transactions of the logged-in student
+    transactions = Transaction.objects.filter(student__username=username)
+    return render(request, 'students/transactions_list.html', {'transactions': transactions})
 
+
+def create_transaction(request):
+    username = request.session.get('username')
+    if not username:
+        messages.error(request, 'You need to log in first.')
+        return redirect('students:student_login')
+    
+    # Get the logged-in student
+    logged_in_student = get_object_or_404(Student, username=username)
+
+    if request.method == 'POST':
+        form = TransactionForm(request.POST, student=logged_in_student)
+        if form.is_valid():
+            transaction = form.save(commit=False)
+            transaction.student = logged_in_student
+            transaction.save()
+            messages.success(request, 'Transaction created successfully.')
+            return redirect('students:create_transaction')
+        else:
+            messages.error(request, 'Please correct the errors below.')
+    else:
+        form = TransactionForm(student=logged_in_student)
+
+    # Fetch all transactions for the logged-in student
+    transactions = Transaction.objects.filter(student=logged_in_student).select_related('tutor')
+
+    return render(request, 'students/create_transaction.html', {
+        'form': form,
+        'transactions': transactions,
+    })
+    
+def edit_transaction(request, pk):
+    transaction = get_object_or_404(Transaction, pk=pk)
+    if request.method == 'POST':
+        form = TransactionForm(request.POST, instance=transaction)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Transaction updated successfully.')
+            return redirect('students:create_transaction')
+    else:
+        form = TransactionForm(instance=transaction)
+    return render(request, 'students/edit_transaction.html', {'form': form})
+
+def delete_transaction(request, pk):
+    transaction = get_object_or_404(Transaction, pk=pk)
+    if request.method == 'POST':
+        transaction.delete()
+        messages.success(request, 'Transaction deleted successfully.')
+        return redirect('students:create_transaction')
+    return render(request, 'students/delete_transaction.html', {'transaction': transaction})
 

@@ -171,6 +171,9 @@
         <h1>Welcome, {{ student.fullname }}!</h1>
         <p>Your personalized student dashboard</p>
         <a href="{% url 'students:tutors_list' %}" style="color: white; font-size: 16px; text-decoration: underline;">View Available Tutors</a>
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="{% url 'students:create_transaction' %}" class="btn">Create Transaction</a>
+        </div>
     </div>
 
     <!-- Hero Section -->
