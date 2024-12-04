@@ -137,37 +137,61 @@ from tutors.models import Tutor
 
 def assignment_page(request):
     if request.method == "POST":
+        # Handle DELETE
+        if request.headers.get('Content-Type') == 'application/json':
+            try:
+                body = json.loads(request.body)  # Parse JSON body
+                assignment_id = body.get('delete_id')
+                if assignment_id:
+                    assignment = get_object_or_404(Assignment, id=assignment_id)
+                    assignment.delete()
+                    return JsonResponse({'success': True})
+                else:
+                    return JsonResponse({'success': False, 'error': 'Invalid assignment ID'}, status=400)
+            except Exception as e:
+                return JsonResponse({'success': False, 'error': str(e)}, status=400)
+
+        # Handle Create/Update
         try:
-            # Fetch the logged-in tutor
-            tutor = Tutor.objects.get(username=request.session.get('username'))
-            
-            # Handle POST data for assignment creation/updating
+            # Get the logged-in tutor
+            username = request.session.get('username')
+            if not username:
+                return JsonResponse({'success': False, 'error': 'User not logged in'}, status=401)
+
+            tutor = get_object_or_404(Tutor, username=username)
+
             assignment_id = request.POST.get('assignment_id')
             title = request.POST.get('title')
             description = request.POST.get('description')
             student_id = request.POST.get('student_id')
+
+            if not (title and description and student_id):
+                return JsonResponse({'success': False, 'error': 'All fields are required'}, status=400)
+
             student = get_object_or_404(Student, student_id=student_id)
 
-            if assignment_id:  # Update assignment
+            if assignment_id:  # Update
                 assignment = get_object_or_404(Assignment, id=assignment_id)
                 assignment.title = title
                 assignment.description = description
                 assignment.student = student
-            else:  # Create a new assignment
+                assignment.tutor = tutor
+            else:  # Create
                 assignment = Assignment(
                     title=title, 
                     description=description, 
                     student=student, 
                     tutor=tutor
                 )
+
             assignment.save()
             return JsonResponse({'success': True})
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)}, status=400)
 
-    # Handle GET request
+    # For GET requests or unexpected methods
     assignments = Assignment.objects.select_related('student', 'tutor').all()
-    accepted_students = Student.objects.all()
+    accepted_students = Student.objects.all()  # Replace with filtered students as needed
     return render(request, 'assignment.html', {
         'assignments': assignments,
         'accepted_students': accepted_students,

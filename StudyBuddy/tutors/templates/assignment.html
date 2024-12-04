@@ -127,27 +127,27 @@
     }
 }
             // Form submit (Create/Edit Assignment)
-            document.getElementById("assignmentForm").addEventListener("submit", function(event) {
-    event.preventDefault();
-    const formData = new FormData(this);
+        document.getElementById("assignmentForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+        const form = this;
+        const formData = new FormData(form);
 
-    fetch(this.action, {
-        method: 'POST',
-        body: formData,
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Update the table dynamically
-            const tableBody = document.getElementById("assignmentsTable");
-            // Reload or dynamically add the new assignment
-            location.reload(); // For simplicity, reload page
-        } else {
-            alert('Failed to save the assignment: ' + data.error);
-        }
-    })
-    .catch(error => alert('An error occurred: ' + error));
-});
+        fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert('Failed to save the assignment: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    alert('An error occurred: ' + error);
+                });
+            });
         </script>
     </body>
     </html>
