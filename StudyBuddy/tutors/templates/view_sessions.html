@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Sessions</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'tutors_dashboard.css' %}">
+</head>
+<body>
+    <div class="dashboard-container">
+        <nav class="sidebar">
+            <h2>StudyBuddy</h2>
+            <ul>
+                <li><a href="{% url 'tutors:tutors_dashboard' %}">Dashboard</a></li>
+                <li><a href="{% url 'tutors:create_session' %}">Create Session</a></li>
+                <li><a href="{% url 'tutors:view_sessions' %}" class="active">View Sessions</a></li>
+            </ul>
+        </nav>
+
+        <div class="main-content">
+            <h1>Sessions Created</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Session Name</th>
+                        <th>Schedule Date</th>
+                        <th>Time Start</th>
+                        <th>Student</th>
+                        <th>Course</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for session in sessions %}
+                        <tr>
+                            <td>{{ session.session_name }}</td>
+                            <td>{{ session.schedule_date }}</td>
+                            <td>{{ session.time_start }}</td>
+                            <td>{{ session.student.fullname }}</td>
+                            <td>{{ session.course }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="6">No sessions found.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

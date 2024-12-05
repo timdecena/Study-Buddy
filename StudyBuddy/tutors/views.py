@@ -1,4 +1,6 @@
 from rest_framework import viewsets
+
+from session.models import Session
 from .forms import TutorRegistrationForm  # Make sure to create this form
 from session.forms import SessionForm
 from friend_requests.models import FriendRequest
@@ -404,3 +406,22 @@ def remove_student(request, student_id):
             return redirect('tutors:tutors_dashboard')
     else:
         return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=400)
+
+
+def view_sessions(request):
+    # Fetch the username from session data
+    username = request.session.get('username')
+    if not username:
+        messages.error(request, 'You need to log in first.')
+        return redirect('tutors:tutor_login')
+
+    # Retrieve the logged-in tutor
+    try:
+        tutor = Tutor.objects.get(username=username)  # Fetch the tutor using username from the session
+    except Tutor.DoesNotExist:
+        messages.error(request, 'Tutor not found.')
+        return redirect('tutors:tutor_login')
+
+    # Fetch sessions associated with the logged-in tutor
+    sessions = Session.objects.filter(tutor=tutor).select_related('student')  # Get sessions for the tutor
+    return render(request, 'view_sessions.html', {'sessions': sessions})

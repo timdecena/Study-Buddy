@@ -36,6 +36,7 @@ urlpatterns = [
     # Tutor management
     path('tutors_list/', tutor_list, name='tutor_list'),
     path('create-session/', views.create_session, name='create_session'),
+    path('view-sessions/', views.view_sessions, name='view_sessions'),  # New URL for View Sessions
     path('remove-accepted-student/<int:student_id>/', views.remove_accepted_student, name='remove_accepted_student'),
 
 
