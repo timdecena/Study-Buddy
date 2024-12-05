@@ -1,5 +1,4 @@
 from rest_framework import viewsets
-
 from session.models import Session
 from .forms import TutorRegistrationForm  # Make sure to create this form
 from session.forms import SessionForm
@@ -460,3 +459,25 @@ def delete_session(request, session_id):
     return redirect('tutors:view_sessions')
 
 
+from django.contrib import messages
+from django.shortcuts import render, redirect
+from transaction.models import Transaction
+
+def tutor_transactions(request):
+    # Check if the tutor is logged in using the session
+    username = request.session.get('username')
+    if not username:
+        messages.error(request, 'You need to log in first.')
+        return redirect('tutors:tutor_login')  # Redirect to the custom login page
+
+    try:
+        # Get the logged-in tutor based on the username stored in the session
+        tutor = Tutor.objects.get(username=username)
+    except Tutor.DoesNotExist:
+        messages.error(request, 'Tutor not found. Please log in again.')
+        return redirect('tutors:tutor_login')
+
+    # Fetch transactions associated with the logged-in tutor
+    transactions = Transaction.objects.filter(tutor=tutor)
+
+    return render(request, 'transactions.html', {'transactions': transactions})
