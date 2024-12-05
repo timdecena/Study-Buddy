@@ -50,4 +50,8 @@ urlpatterns = [
     path('remove-student/<int:student_id>/', views.remove_student, name='remove_student'),
     # Profile Management
     path('profile/', tutor_profile, name='tutor_profile'),  # Added profile path
+
+    path('create-session/', views.create_session, name='create_session'),
+    path('edit-session/<int:session_id>/', views.edit_session, name='edit_session'),  # Update session
+    path('delete-session/<int:session_id>/', views.delete_session, name='delete_session'),  # Delete session
 ]

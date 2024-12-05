@@ -425,3 +425,38 @@ def view_sessions(request):
     # Fetch sessions associated with the logged-in tutor
     sessions = Session.objects.filter(tutor=tutor).select_related('student')  # Get sessions for the tutor
     return render(request, 'view_sessions.html', {'sessions': sessions})
+
+
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib import messages
+
+
+def edit_session(request, session_id):
+    session = get_object_or_404(Session, session_id=session_id)  # Use session_id instead of id
+
+    if request.method == 'POST':
+        form = SessionForm(request.POST, instance=session)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Session updated successfully.')
+            return redirect('tutors:view_sessions')
+        else:
+            messages.error(request, 'Please correct the errors below.')
+    else:
+        form = SessionForm(instance=session)
+
+    return render(request, 'edit_session.html', {'form': form})
+
+
+
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib import messages
+
+def delete_session(request, session_id):
+    if request.method == 'POST':
+        session = get_object_or_404(Session, session_id=session_id)  # Use session_id instead of id
+        session.delete()
+        messages.success(request, 'Session deleted successfully.')
+    return redirect('tutors:view_sessions')
+
+

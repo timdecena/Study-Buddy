@@ -14,3 +14,16 @@ class Session(models.Model):
 
     def __str__(self):
         return self.session_name
+    
+from django import forms
+from .models import Session
+
+class SessionForm(forms.ModelForm):
+    class Meta:
+        model = Session
+        fields = ['session_name', 'schedule_date', 'time_start', 'student', 'course']
+        widgets = {
+            'schedule_date': forms.DateInput(attrs={'type': 'date'}),
+            'time_start': forms.TimeInput(attrs={'type': 'time'}),
+        }
+
