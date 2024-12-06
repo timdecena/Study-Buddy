@@ -245,3 +245,45 @@ def delete_transaction_view(request, transaction_id):
     transaction = get_object_or_404(Transaction, pk=transaction_id)
     transaction.delete()
     return redirect('students:create_transaction')  # Or wherever you want to redirect
+
+from django.shortcuts import render
+from session.models import Session
+
+def student_sessions(request):
+    # Retrieve the username from the session
+    username = request.session.get('username')
+    if not username:
+        messages.error(request, 'You need to log in first.')
+        return redirect('students:student_login')
+
+    # Get the logged-in student
+    logged_in_student = get_object_or_404(Student, username=username)
+
+    # Fetch all sessions for the logged-in student
+    sessions = Session.objects.filter(student=logged_in_student).select_related('tutor', 'course')
+
+    return render(request, 'students/session.html', {
+        'sessions': sessions,
+    })
+    
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib import messages
+from tutors.models import Assignment
+from students.models import Student
+
+def assignment_list(request):
+    # Retrieve the username from the session
+    username = request.session.get('username')
+    if not username:
+        messages.error(request, 'You need to log in first.')
+        return redirect('students:student_login')
+
+    # Get the logged-in student
+    logged_in_student = get_object_or_404(Student, username=username)
+
+    # Fetch all assignments associated with this student
+    assignments = Assignment.objects.filter(student=logged_in_student).select_related('tutor')
+
+    return render(request, 'students/assignment.html', {
+        'assignments': assignments,
+    })
