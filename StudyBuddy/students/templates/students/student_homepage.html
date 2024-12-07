@@ -23,7 +23,7 @@
             text-align: center;
             padding: 40px; /* Increase padding for a larger header */
             height: 200px; /* Set a fixed height */
-            width: 100%; /* Make it span the full width of the page */
+            width: 80%; /* Make it span the full width of the page */
         }
         
         .header h1 {
@@ -115,7 +115,7 @@
             padding: 0;
         }
 
-        ul li {
+        .accepted-tutors {
             padding: 10px;
             border-bottom: 1px solid #ddd;
             color: black; /* Set text color to black */
@@ -164,9 +164,10 @@
         <nav class="sidebar">
             <h2>StudyBuddy</h2>
             <ul>
+                <li><a href="{% url 'students:student_homepage' %}">Dashboard</a></li>
                 <li><a href="{% url 'students:tutors_list' %}">View Available Tutors</a></li>
                 <li><a href="{% url 'students:create_transaction' %}">Create Transaction</a></li>
-                <li><a href="{% url 'students:create_transaction' %}">View Sessions</a></li>
+                <li><a href="{% url 'students:student_sessions' %}">View Sessions</a></li>
                 <li><a href="{% url 'students:assignment_list' %}">View Assignments</a></li>
             </ul>
         </nav>
@@ -188,18 +189,9 @@
             <p>Here’s a quick overview of your details.</p>
         </div>
 
-        <!-- Student Details -->
-        <div class="details">
-            <p><strong>Year:</strong> {{ student.year }}</p>
-            <p><strong>Course:</strong> {{ student.course }}</p>
-            <p><strong>Section:</strong> {{ student.section }}</p>
-        </div>
-
-
-
         <div class="container">
             <h2>Tutors Accepted</h2>
-            <ul>
+            <ul class="accepted-tutors">
                 {% for tutor in accepted_tutors %}
                     <li>
                         <strong>Name:</strong> {{ tutor.first_name }} {{ tutor.last_name }} <br>
@@ -212,7 +204,12 @@
             </ul>
         </div>
 
-        
+        <!-- Student Details -->
+        <div class="details">
+            <p><strong>Year:</strong> {{ student.year }}</p>
+            <p><strong>Course:</strong> {{ student.course }}</p>
+            <p><strong>Section:</strong> {{ student.section }}</p>
+        </div>
 
         <!-- Logout Button -->
         <div style="text-align: center;">

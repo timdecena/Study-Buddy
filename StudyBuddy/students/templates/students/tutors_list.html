@@ -4,22 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Available Tutors</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'tutors_dashboard.css' %}">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            height: 100vh;
-            color: #333;
-        }
+
 
         .container {
-            width: 80%;
-            max-width: 900px;
+            width: 100%;
+            max-width: 1600px;
             margin: 20px;
             background-color: #fff;
             border-radius: 8px;
@@ -38,7 +30,7 @@
             padding: 0;
         }
 
-        li {
+        .list_tutor {
             display: grid;
             grid-template-columns: 1fr 2fr;
             gap: 10px;
@@ -110,14 +102,22 @@
     </style>
 </head>
 <body>
+    <div class="dashboard-container">
+        <nav class="sidebar">
+            <h2>StudyBuddy</h2>
+            <ul>
+                <li><a href="{% url 'students:student_homepage' %}">Dashboard</a></li>
+                <li><a href="{% url 'students:tutors_list' %}">View Available Tutors</a></li>
+                <li><a href="{% url 'students:create_transaction' %}">Create Transaction</a></li>
+                <li><a href="{% url 'students:student_sessions' %}">View Sessions</a></li>
+                <li><a href="{% url 'students:assignment_list' %}">View Assignments</a></li>
+            </ul>
+        </nav>
     <div class="container">
-        <!-- Back Button -->
-        <a href="/students/homepage" class="back-btn">Back to Student Homepage</a>
-        
         <h1>Available Tutors</h1>
         <ul>
             {% for tutor in tutors %}
-                <li>
+                <li class="list_tutor">
                     <div class="tutor-info">
                         <span class="tutor-name">{{ tutor.first_name }} {{ tutor.last_name }}</span>
                         <span class="subject">{{ tutor.subject }}</span>
