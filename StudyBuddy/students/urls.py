@@ -18,4 +18,6 @@ urlpatterns = [
     path('create_transaction/', views.create_transaction, name='create_transaction'),
     path('edit-transaction/<int:transaction_id>/', views.update_transaction_view, name='edit_transaction'),
     path('delete-transaction/<int:transaction_id>/', views.delete_transaction_view, name='delete_transaction'),
+    path('sessions/', views.student_sessions, name='student_sessions'),
+    path('assignments/', views.assignment_list, name='assignment_list'),
 ]

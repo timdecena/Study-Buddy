@@ -130,21 +130,37 @@ def tutors_dashboard(request):
     return render(request, 'tutors_dashboard.html', context)
 
 
+from django.shortcuts import get_object_or_404, render, redirect
 from django.http import JsonResponse
-from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import Assignment
 from tutors.models import Tutor
+from students.models import Student
+from friend_requests.models import FriendRequest
+import json
 
 def assignment_page(request):
+    # Ensure the user is logged in
+    username = request.session.get('username')
+    if not username:
+        messages.error(request, 'You need to log in first.')
+        return redirect('tutors:tutor_login')
+
+    # Get the logged-in tutor
+    try:
+        tutor = Tutor.objects.get(username=username)
+    except Tutor.DoesNotExist:
+        messages.error(request, 'Tutor not found.')
+        return redirect('tutors:tutor_login')
+
     if request.method == "POST":
         # Handle DELETE
         if request.headers.get('Content-Type') == 'application/json':
             try:
-                body = json.loads(request.body)  # Parse JSON body
+                body = json.loads(request.body)
                 assignment_id = body.get('delete_id')
                 if assignment_id:
-                    assignment = get_object_or_404(Assignment, id=assignment_id)
+                    assignment = get_object_or_404(Assignment, id=assignment_id, tutor=tutor)
                     assignment.delete()
                     return JsonResponse({'success': True})
                 else:
@@ -154,13 +170,6 @@ def assignment_page(request):
 
         # Handle Create/Update
         try:
-            # Get the logged-in tutor
-            username = request.session.get('username')
-            if not username:
-                return JsonResponse({'success': False, 'error': 'User not logged in'}, status=401)
-
-            tutor = get_object_or_404(Tutor, username=username)
-
             assignment_id = request.POST.get('assignment_id')
             title = request.POST.get('title')
             description = request.POST.get('description')
@@ -169,60 +178,37 @@ def assignment_page(request):
             if not (title and description and student_id):
                 return JsonResponse({'success': False, 'error': 'All fields are required'}, status=400)
 
+            # Ensure the student is assigned to the logged-in tutor
             student = get_object_or_404(Student, student_id=student_id)
+            if not FriendRequest.objects.filter(
+                sender_student=student, receiver_tutor=tutor, status='accepted'
+            ).exists():
+                return JsonResponse({'success': False, 'error': 'Unauthorized student'}, status=403)
 
-            if assignment_id:  # Update
-                assignment = get_object_or_404(Assignment, id=assignment_id)
+            if assignment_id:  # Update existing assignment
+                assignment = get_object_or_404(Assignment, id=assignment_id, tutor=tutor)
                 assignment.title = title
                 assignment.description = description
                 assignment.student = student
-                assignment.tutor = tutor
-            else:  # Create
-                assignment = Assignment(
-                    title=title, 
-                    description=description, 
-                    student=student, 
-                    tutor=tutor
-                )
+            else:  # Create a new assignment
+                assignment = Assignment(title=title, description=description, student=student, tutor=tutor)
 
             assignment.save()
             return JsonResponse({'success': True})
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)}, status=400)
 
-    # For GET requests or unexpected methods
-    assignments = Assignment.objects.select_related('student', 'tutor').all()
-    accepted_students = Student.objects.all()  # Replace with filtered students as needed
-    return render(request, 'assignment.html', {
-        'assignments': assignments,
-        'accepted_students': accepted_students,
-    })
-
-def assignment_view(request):
-    tutor = get_object_or_404(Tutor, user=request.user)
+    # For GET requests, fetch assignments for the logged-in tutor
+    assignments = Assignment.objects.filter(tutor=tutor).select_related('student')
     accepted_students = FriendRequest.objects.filter(
         receiver_tutor=tutor, status='accepted'
-    ).values_list('sender_student', flat=True)
-    students = Student.objects.filter(id__in=accepted_students)
+    ).select_related('sender_student')
 
-    if request.method == 'POST':
-        student_id = request.POST.get('student_id')
-        title = request.POST.get('title')
-        description = request.POST.get('description')
-
-        if student_id and title and description:
-            student = get_object_or_404(Student, id=student_id)
-            Assignment.objects.create(
-                tutor=tutor, student=student, title=title, description=description
-            )
-            return JsonResponse({'success': True})
-        return JsonResponse({'success': False, 'error': 'Missing fields'})
-
-    assignments = Assignment.objects.filter(tutor=tutor)
-    return render(
-        request, 'assignment.html',
-        {'assignments': assignments, 'students': students}
-    )
+    # Pass only accepted students and tutor-specific assignments to the template
+    return render(request, 'assignment.html', {
+        'assignments': assignments,
+        'accepted_students': [req.sender_student for req in accepted_students],
+    })
 
 
 
