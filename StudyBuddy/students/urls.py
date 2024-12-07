@@ -20,4 +20,6 @@ urlpatterns = [
     path('delete-transaction/<int:transaction_id>/', views.delete_transaction_view, name='delete_transaction'),
     path('sessions/', views.student_sessions, name='student_sessions'),
     path('assignments/', views.assignment_list, name='assignment_list'),
+    path('submit-assignment/', views.submit_assignment, name='submit_assignment'),
+
 ]

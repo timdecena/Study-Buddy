@@ -24,6 +24,9 @@ class Assignment(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+    file_upload = models.FileField(upload_to='assignments/', null=True, blank=True)
+    grade = models.IntegerField(null=True, blank=True)  # Store grade out of 100
+    grade_submission_date = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.title} ({self.tutor})"

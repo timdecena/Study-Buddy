@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade Assignment</title>
+</head>
+<body>
+    <h1>Grade Assignment</h1>
+    <p><strong>Title:</strong> {{ assignment.title }}</p>
+    <p><strong>Description:</strong> {{ assignment.description }}</p>
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit Grade</button>
+    </form>
+
+    <h3>Uploaded File:</h3>
+    {% if assignment.file_upload %}
+        <a href="{{ assignment.file_upload.url }}" target="_blank">Download Assignment</a>
+    {% else %}
+        <p>No file uploaded yet.</p>
+    {% endif %}
+</body>
+</html>

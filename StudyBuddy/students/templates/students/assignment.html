@@ -5,17 +5,111 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Assignments</title>
     <style>
+        /* General Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f7faf9;
+            color: #333;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 36px;
+            color: #145231;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+
+        /* Table Styles */
         table {
-            width: 100%;
-            border-collapse: collapse;
+            width: 80%;
+            margin: 0 auto;
+            border-collapse: separate;
+            border-spacing: 0 15px; /* Adds spacing between rows */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            background-color: white;
         }
+
         th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-        }
-        th {
-            background-color: #f4f4f4;
+            padding: 15px 20px;
+            border-radius: 8px;
             text-align: left;
+            font-size: 16px;
+        }
+
+        th {
+            background-color: #145231;
+            color: white;
+        }
+
+        td {
+            background-color: #f9f9f9;
+        }
+
+        /* Hover Effects */
+        tr:hover td {
+            background-color: #e6f5e6;
+            transform: scale(1.02);
+            transition: all 0.3s ease;
+        }
+
+        /* No Assignments Message */
+        p {
+            font-size: 18px;
+            color: #ff6347;
+            font-weight: bold;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            table {
+                width: 100%;
+            }
+
+            th, td {
+                padding: 12px 15px;
+                font-size: 14px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+        }
+
+        /* File Upload Form */
+        .upload-form {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .upload-form input[type="file"] {
+            margin-bottom: 10px;
+        }
+
+        .upload-form button {
+            padding: 10px 20px;
+            background-color: #145231;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .upload-form button:hover {
+            background-color: #0d3a28;
+        }
+
+        .grade {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #4caf50;
         }
     </style>
 </head>
@@ -29,6 +123,7 @@
                     <th>Description</th>
                     <th>Tutor</th>
                     <th>Created At</th>
+                    <th>Grade</th>
                 </tr>
             </thead>
             <tbody>
@@ -36,14 +131,48 @@
                     <tr>
                         <td>{{ assignment.title }}</td>
                         <td>{{ assignment.description }}</td>
-                        <td>{{ assignment.tutor.last_name }}</td> <!-- Assuming Tutor has a 'name' field -->
+                        <td>{{ assignment.tutor.last_name }}</td>
                         <td>{{ assignment.created_at }}</td>
+                        <td>
+                            {% if assignment.grade %}
+                                {{ assignment.grade }} <!-- Display grade if available -->
+                            {% else %}
+                                <p>No grade yet</p> <!-- If no grade, show this message -->
+                            {% endif %}
+                        </td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
     {% else %}
         <p>You have no assignments.</p>
+    {% endif %}
+
+    <div class="upload-form">
+        <h2>Submit Your Assignment</h2>
+        <form method="POST" action="{% url 'students:submit_assignment' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for="assignment">Assignment:</label>
+            <select name="assignment_id" required>
+                <option value="">-- Select an Assignment --</option>
+                {% for assignment in assignments %}
+                    <option value="{{ assignment.id }}">{{ assignment.title }}</option>
+                {% endfor %}
+            </select>
+            <br><br>
+
+            <label for="file_upload">Upload File:</label>
+            <input type="file" name="file_upload" required>
+            <br><br>
+
+            <button type="submit">Submit Assignment</button>
+        </form>
+    </div>
+
+    {% if success %}
+        <div class="grade">
+            <p>Your assignment has been successfully submitted!</p>
+        </div>
     {% endif %}
 </body>
 </html>

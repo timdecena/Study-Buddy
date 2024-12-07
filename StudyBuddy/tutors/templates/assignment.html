@@ -74,33 +74,57 @@
                 </form>
             </section>
 
-            <!-- Existing Assignments Section -->
-            <section id="existing-assignments">
-                <h2>Existing Assignments</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Title</th>
-                            <th>Description</th>
-                            <th>Assigned To</th>
-                            <th>Actions</th>
+           <!-- Existing Assignments Section -->
+           <section id="existing-assignments">
+            <h2>Existing Assignments</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Assigned To</th>
+                        <th>File</th>
+                        <th>Grade</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="assignmentsTable">
+                    {% for assignment in assignments %}
+                        <tr data-id="{{ assignment.id }}">
+                            <td>{{ assignment.title }}</td>
+                            <td>{{ assignment.description }}</td>
+                            <td>{{ assignment.student.fullname }}</td>
+                            <td>
+                                {% if assignment.file_upload %}
+                                    <a href="{{ assignment.file_upload.url }}" target="_blank">
+                                        {{ assignment.file_upload.name|slice:"10:" }}
+                                    </a>
+                                {% else %}
+                                    No file uploaded
+                                {% endif %}
+                            </td>
+                            <td>
+                                <form method="POST" action="{% url 'tutors:update_grade' assignment.id %}">
+                                    {% csrf_token %}
+                                    <input type="number" name="grade" 
+                                           value="{{ assignment.grade|default_if_none:'' }}" 
+                                           min="0" max="100" required>
+                                    <button type="submit">Update Grade</button>
+                                </form>
+                            </td>
+                            <td class="actions">
+                                <button onclick="editAssignment({{ assignment.id }}, '{{ assignment.title }}', '{{ assignment.description }}', '{{ assignment.student.student_id }}')">
+                                    Edit
+                                </button>
+                                <button onclick="deleteAssignment({{ assignment.id }})">
+                                    Delete
+                                </button>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody id="assignmentsTable">
-                        {% for assignment in assignments %}
-                            <tr data-id="{{ assignment.id }}">
-                                <td>{{ assignment.title }}</td>
-                                <td>{{ assignment.description }}</td>
-                                <td>{{ assignment.student.fullname }}</td>
-                                <td class="actions">
-                                    <button onclick="editAssignment({{ assignment.id }}, '{{ assignment.title }}', '{{ assignment.description }}', '{{ assignment.student.student_id }}')">Edit</button>
-                                    <button onclick="deleteAssignment({{ assignment.id }})">Delete</button>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </section>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
         </main>
     </div>
 

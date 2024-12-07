@@ -44,6 +44,8 @@ urlpatterns = [
     # Assignment Management
     path('assignments/', assignment_page, name='assignment'),
     path('assignments/delete/', assignment_page, name='delete_assignment'),
+    path('update_grade/<int:assignment_id>/', views.update_grade, name='update_grade'),
+
 
 
     # Friend Request Handling

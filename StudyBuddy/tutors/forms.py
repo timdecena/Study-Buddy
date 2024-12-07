@@ -17,3 +17,11 @@ class TutorRegistrationForm(forms.ModelForm):
         widgets = {
             'password': forms.PasswordInput(),
         }
+
+from .models import Assignment
+
+class GradeSubmissionForm(forms.ModelForm):
+    class Meta:
+        model = Assignment
+        fields = ['grade']  # Only allow grade field to be updated
+    

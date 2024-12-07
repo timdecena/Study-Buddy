@@ -1,3 +1,4 @@
+from datetime import timezone
 from rest_framework import viewsets
 from session.models import Session
 from .forms import TutorRegistrationForm  # Make sure to create this form
@@ -138,6 +139,7 @@ from tutors.models import Tutor
 from students.models import Student
 from friend_requests.models import FriendRequest
 import json
+from django.core.exceptions import ValidationError
 
 def assignment_page(request):
     # Ensure the user is logged in
@@ -154,47 +156,61 @@ def assignment_page(request):
         return redirect('tutors:tutor_login')
 
     if request.method == "POST":
-        # Handle DELETE
+        # Handle DELETE request
         if request.headers.get('Content-Type') == 'application/json':
             try:
                 body = json.loads(request.body)
                 assignment_id = body.get('delete_id')
-                if assignment_id:
-                    assignment = get_object_or_404(Assignment, id=assignment_id, tutor=tutor)
-                    assignment.delete()
-                    return JsonResponse({'success': True})
-                else:
+                if not assignment_id:
                     return JsonResponse({'success': False, 'error': 'Invalid assignment ID'}, status=400)
+
+                assignment = get_object_or_404(Assignment, id=assignment_id, tutor=tutor)
+                assignment.delete()
+                return JsonResponse({'success': True})
             except Exception as e:
                 return JsonResponse({'success': False, 'error': str(e)}, status=400)
 
-        # Handle Create/Update
+        # Handle Create/Update assignment
         try:
             assignment_id = request.POST.get('assignment_id')
             title = request.POST.get('title')
             description = request.POST.get('description')
             student_id = request.POST.get('student_id')
 
-            if not (title and description and student_id):
-                return JsonResponse({'success': False, 'error': 'All fields are required'}, status=400)
+            # Validate required fields
+            if not all([title, description, student_id]):
+                return JsonResponse({'success': False, 'error': 'All fields are required.'}, status=400)
 
             # Ensure the student is assigned to the logged-in tutor
             student = get_object_or_404(Student, student_id=student_id)
             if not FriendRequest.objects.filter(
                 sender_student=student, receiver_tutor=tutor, status='accepted'
             ).exists():
-                return JsonResponse({'success': False, 'error': 'Unauthorized student'}, status=403)
+                return JsonResponse({'success': False, 'error': 'Unauthorized student.'}, status=403)
+
+            # Handle file upload
+            uploaded_file = request.FILES.get('file_upload')
 
             if assignment_id:  # Update existing assignment
                 assignment = get_object_or_404(Assignment, id=assignment_id, tutor=tutor)
                 assignment.title = title
                 assignment.description = description
                 assignment.student = student
+                if uploaded_file:
+                    assignment.file_upload = uploaded_file
             else:  # Create a new assignment
-                assignment = Assignment(title=title, description=description, student=student, tutor=tutor)
+                assignment = Assignment(
+                    title=title,
+                    description=description,
+                    student=student,
+                    tutor=tutor,
+                    file_upload=uploaded_file
+                )
 
             assignment.save()
             return JsonResponse({'success': True})
+        except ValidationError as e:
+            return JsonResponse({'success': False, 'error': e.message}, status=400)
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)}, status=400)
 
@@ -467,3 +483,39 @@ def tutor_transactions(request):
     transactions = Transaction.objects.filter(tutor=tutor)
 
     return render(request, 'transactions.html', {'transactions': transactions})
+
+from .forms import GradeSubmissionForm
+
+
+def grade_assignment(request, assignment_id):
+    assignment = Assignment.objects.get(id=assignment_id)
+    if request.method == "POST":
+        form = GradeSubmissionForm(request.POST, instance=assignment)
+        if form.is_valid():
+            form.instance.grade_submission_date = timezone.now()  # Set the grade submission date
+            form.save()
+            return redirect('tutors:assignments')  # Redirect to the tutor's assignment list
+    else:
+        form = GradeSubmissionForm(instance=assignment)
+
+    return render(request, 'tutors/grade_assignment.html', {'form': form, 'assignment': assignment})
+
+from django.http import HttpResponse
+
+
+def update_grade(request, assignment_id):
+    if request.method == "POST":
+        try:
+            assignment = get_object_or_404(Assignment, id=assignment_id)
+            grade = request.POST.get('grade')
+
+            # Validate grade
+            if grade is None or not grade.isdigit() or int(grade) < 0 or int(grade) > 100:
+                return HttpResponse("Invalid grade", status=400)
+
+            assignment.grade = int(grade)
+            assignment.save()
+
+            return redirect('tutors:assignment')  # Redirect back to the assignment page
+        except Exception as e:
+            return HttpResponse(f"Error updating grade: {str(e)}", status=500)

@@ -328,3 +328,29 @@ def assignment_list(request):
     return render(request, 'students/assignment.html', {
         'assignments': assignments,
     })
+
+from .forms import AssignmentSubmissionForm
+
+
+def submit_assignment(request):
+    if request.method == "POST":
+        assignment_id = request.POST.get('assignment_id')
+        uploaded_file = request.FILES.get('file_upload')
+
+        if not assignment_id or not uploaded_file:
+            messages.error(request, "Please select an assignment and upload a file.")
+            return redirect('students:student_homepage')
+
+        try:
+            assignment = get_object_or_404(Assignment, id=assignment_id)
+            # Save the uploaded file
+            assignment.file_upload = uploaded_file
+            assignment.save()
+            messages.success(request, "File uploaded successfully.")
+        except Exception as e:
+            messages.error(request, f"Error uploading file: {e}")
+
+        return redirect('students:student_homepage')
+    else:
+        messages.error(request, "Invalid request.")
+        return redirect('students:student_homepage')
