@@ -1,18 +1,16 @@
-{% extends 'base.html' %}
-
-{% block content %}
-<div class="container">
-    <!-- Include Sidebar (same as tutor_dashboard.html) -->
-    <ul>
-        <li><a href="#">Assigned Students</a></li>
-        <li><a href="{% url 'tutors:tutors_dashboard' %}">Home</a></li>
-        <li><a href="{% url 'tutors:create_session' %}">Create Session</a></li>
-        <li><a href="{% url 'tutors:assignment' %}">Assignments</a></li>
-        <li><a href="{% url 'tutors:tutor_transactions' %}">Transactions</a></li>
-        <li><a href="{% url 'tutors:tutor_profile' %}">Profile Settings</a></li>
-        <li><a href="{% url 'tutors:tutor_logout' %}" class="logout-btn">Logout</a></li>
-    </ul>
-    
+<div class="tutor-profile-container">
+    <nav class="sidebar">
+        <h2>StudyBuddy</h2>
+        <ul>
+            <li><a href="#">Assigned Students</a></li>
+            <li><a href="{% url 'tutors:tutors_dashboard' %}">Home</a></li>
+            <li><a href="{% url 'tutors:create_session' %}">Create Session</a></li>
+            <li><a href="{% url 'tutors:assignment' %}">Assignments</a></li>
+            <li><a href="{% url 'tutors:tutor_transactions' %}">Transactions</a></li>
+            <li><a href="{% url 'tutors:tutor_profile' %}">Profile Settings</a></li>
+            <li><a href="{% url 'tutors:tutor_logout' %}" class="logout-btn">Logout</a></li>
+        </ul>
+    </nav>
     <div class="content">
         <h1>Update Profile</h1>
         {% load static %}
@@ -41,7 +39,5 @@
             </div>
             <button type="submit" class="btn btn-primary">Update</button>
         </form>
-        <a href="{% url 'tutors:tutors_dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
     </div>
 </div>
-{% endblock %}
