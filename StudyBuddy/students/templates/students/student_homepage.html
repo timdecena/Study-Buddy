@@ -55,7 +55,7 @@
         }
 
         .logout-btn {
-            background-color: #f44336;
+            background-color: #ffffff;
             border-radius: 5px;
         }
 
@@ -169,6 +169,7 @@
                 <li><a href="{% url 'students:create_transaction' %}">Create Transaction</a></li>
                 <li><a href="{% url 'students:student_sessions' %}">View Sessions</a></li>
                 <li><a href="{% url 'students:assignment_list' %}">View Assignments</a></li>
+                <li><a href="{% url 'students:student_logout' %}" class="logout-btn">Logout</a></li>
             </ul>
         </nav>
     
@@ -214,7 +215,7 @@
         <!-- Logout Button -->
         <div style="text-align: center;">
             <a href="{% url 'students:edit_profile' student.pk %}" class="btn">Edit Profile</a>
-            <a href="{% url 'students:student_logout' %}" class="logout-btn">Logout</a>
+
         </div>
     </div>
 
