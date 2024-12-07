@@ -133,8 +133,8 @@
                 {{ form.fullname }}
                 
                 <label for="{{ form.course.id_for_label }}">Course</label>
-                {{ form.course }}
-                
+                {{ form.course }}  <!-- This renders the dropdown for courses -->
+
                 <label for="{{ form.year.id_for_label }}">Year</label>
                 {{ form.year }}
                 
@@ -159,9 +159,7 @@
                 
                 <button type="submit">Save</button>
             </form>
-            <a href="{% url 'students:student_login' %}">Go to Login</a>
-
-           
+            <a href="{% url 'students:student_login' %}" class="back-link">Go to Login</a>
         </div>
     </main>
 </body>

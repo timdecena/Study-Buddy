@@ -1,6 +1,7 @@
 from django import forms
 from .models import Student
 from tutors.models import Assignment
+from .models import Course
 
 
 class StudentForm(forms.ModelForm):
@@ -14,6 +15,9 @@ class StudentForm(forms.ModelForm):
     class Meta:
         model = Student
         fields = ['fullname', 'course', 'year', 'section', 'username', 'password', 'profile_image']
+    
+    course = forms.ModelChoiceField(queryset=Course.objects.all(), empty_label="Select Course")
+
 
 class AssignmentSubmissionForm(forms.ModelForm):
     class Meta:
