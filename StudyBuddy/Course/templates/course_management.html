@@ -189,12 +189,12 @@
         <!-- Form for adding/updating courses -->
         <div class="form-group">
             <input type="text" id="course_name" placeholder="Course Name">
-            <input type="text" id="course_code" placeholder="Course Code">
+            <input type="text" id="course_code" placeholder="Level">
             <input type="text" id="description" placeholder="Description">
             
             <!-- Subject Dropdown -->
             <select id="subject">
-                <option value="">Select Subject</option>
+                <option value="">Select Department</option>
                 {% for subject in form.fields.subject.queryset %}
                     <option value="{{ subject.subject_id }}">{{ subject.subject_name }}</option>
                 {% endfor %}

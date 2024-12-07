@@ -159,16 +159,16 @@
 
     <!-- Main Content --> 
     <div class="container">
-        <h1>Program Management</h1>
+        <h1>Department Management</h1>
         
         <form id="subject-form" method="post">
             {% csrf_token %}
             {{ form.as_p }}
             <input type="hidden" id="subject-id" name="subject_id" value=""> <!-- Hidden field to track edit mode -->
-            <button type="submit">Save Program</button>
+            <button type="submit">Save Department</button>
         </form>
 
-        <h2>All Programs</h2>
+        <h2>Studybuddy Departments</h2>
         <ul id="subject-list">
             {% for subject in subjects %}
                 <li id="subject-{{ subject.subject_id }}">
