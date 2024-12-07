@@ -15,7 +15,7 @@
             <h2>StudyBuddy</h2>
             <ul>
                 <li><a href="#">Assigned Students</a></li>
-                <li><a href="#" class="active">Home</a></li>
+                <li><a href="{% url 'tutors:tutors_dashboard' %}">Home</a></li>
                 <li><a href="{% url 'tutors:create_session' %}">Create Session</a></li>
                 <li><a href="{% url 'tutors:assignment' %}">Assignments</a></li>
                 <li><a href="{% url 'tutors:tutor_transactions' %}">Transactions</a></li>

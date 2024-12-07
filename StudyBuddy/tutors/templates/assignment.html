@@ -4,180 +4,105 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Assignment Management</title>
-    <style>
-        /* Global Styles */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
-            margin: 0;
-            padding: 0;
-            color: #333;
-        }
-        h1, h2 {
-            text-align: center;
-            color: #444;
-        }
-        h1 {
-            margin: 20px 0;
-        }
-        h2 {
-            margin: 20px 0;
-            color: #666;
-        }
-
-        /* Form Styles */
-        form {
-            max-width: 600px;
-            margin: 20px auto;
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        label {
-            font-weight: bold;
-            display: block;
-            margin-bottom: 5px;
-            color: #555;
-        }
-        input, textarea, select {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            background-color: #007bff;
-            color: #fff;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        /* Table Styles */
-        table {
-            width: 90%;
-            margin: 20px auto;
-            border-collapse: collapse;
-            background: #fff;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        th, td {
-            padding: 10px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        th {
-            background-color: #007bff;
-            color: #fff;
-            font-weight: bold;
-        }
-        tr:hover {
-            background-color: #f1f1f1;
-        }
-        .actions button {
-            background-color: #28a745;
-            margin-right: 5px;
-        }
-        .actions button:last-child {
-            background-color: #dc3545;
-        }
-        .actions button:hover {
-            opacity: 0.9;
-        }
-
-        /* List Styles */
-        ul {
-            max-width: 600px;
-            margin: 20px auto;
-            padding: 0;
-            list-style: none;
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        ul li {
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-        }
-        ul li:last-child {
-            border-bottom: none;
-        }
-        ul li span {
-            font-weight: bold;
-            color: #444;
-        }
-    </style>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'tutors_dashboard.css' %}">
 </head>
 <body>
-    <h1>Assignment Management</h1>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <h2>StudyBuddy</h2>
+            <ul>
+                <li><a href="#">Assigned Students</a></li>
+                <li><a href="{% url 'tutors:tutors_dashboard' %}">Home</a></li>
+                <li><a href="{% url 'tutors:create_session' %}">Create Session</a></li>
+                <li><a href="{% url 'tutors:assignment' %}">Assignments</a></li>
+                <li><a href="{% url 'tutors:tutor_transactions' %}">Transactions</a></li>
+                <li><a href="{% url 'tutors:tutor_profile' %}">Profile Settings</a></li>
+                <li><a href="{% url 'tutors:tutor_logout' %}" class="logout-btn">Logout</a></li>
+            </ul>
+            <!-- Search Bar -->
+            <form method="GET" action="{% url 'tutors:tutors_dashboard' %}">
+                <input type="text" name="query" value="{{ query }}" placeholder="Search tutors or students..." class="search-bar">
+                <button type="submit" class="search-btn">Search</button>
+            </form>
+        </nav>
 
-    <!-- Display Accepted Students -->
-    <h2>Accepted Students</h2>
-    <ul>
-        {% for student in accepted_students %}
-            <li><span>{{ student.fullname }}</span> - {{ student.course }}</li>
-        {% empty %}
-            <li>No accepted students.</li>
-        {% endfor %}
-    </ul>
+        <!-- Assignment Area -->
+        <main class="assignment-area">
+            <header>
+                <h1>Assignment Management</h1>
+            </header>
 
-    <!-- Add/Edit Form -->
-    <form method="POST" action="{% url 'tutors:assignment' %}" id="assignmentForm">
-        {% csrf_token %}
-        <input type="hidden" name="assignment_id" id="assignment_id">
+            <!-- Accepted Students Section -->
+            <section id="accepted-students">
+                <h2>Accepted Students</h2>
+                <ul>
+                    {% for student in accepted_students %}
+                        <li><span>{{ student.fullname }}</span> - {{ student.course }}</li>
+                    {% empty %}
+                        <li>No accepted students.</li>
+                    {% endfor %}
+                </ul>
+            </section>
 
-        <!-- Assign To Dropdown -->
-        <label for="student">Assign To:</label>
-        <select name="student_id" id="student" required>
-            <option value="">-- Select a Student --</option>
-            {% for student in accepted_students %}
-                <option value="{{ student.student_id }}">{{ student.fullname }}</option>
-            {% endfor %}
-        </select>
+            <!-- Create Assignment Section -->
+            <section id="create-assignment">
+                <h2>Create Assignment</h2>
+                <form method="POST" action="{% url 'tutors:assignment' %}" id="assignmentForm">
+                    {% csrf_token %}
+                    <input type="hidden" name="assignment_id" id="assignment_id">
 
-        <!-- Assignment Title -->
-        <label for="title">Title:</label>
-        <input type="text" name="title" id="title" placeholder="Enter assignment title" required>
+                    <!-- Assign To Dropdown -->
+                    <label for="student">Assign To:</label>
+                    <select name="student_id" id="student" required>
+                        <option value="">-- Select a Student --</option>
+                        {% for student in accepted_students %}
+                            <option value="{{ student.student_id }}">{{ student.fullname }}</option>
+                        {% endfor %}
+                    </select>
 
-        <!-- Assignment Description -->
-        <label for="description">Description:</label>
-        <textarea name="description" id="description" rows="4" placeholder="Enter assignment description" required></textarea>
+                    <!-- Assignment Title -->
+                    <label for="title">Title:</label>
+                    <input type="text" name="title" id="title" placeholder="Enter assignment title" required>
 
-        <button type="submit">Save Assignment</button>
-    </form>
+                    <!-- Assignment Description -->
+                    <label for="description">Description:</label>
+                    <textarea name="description" id="description" rows="4" placeholder="Enter assignment description" required></textarea>
 
-    <!-- Assignment Table -->
-    <h2>Existing Assignments</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Assigned To</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody id="assignmentsTable">
-            {% for assignment in assignments %}
-                <tr data-id="{{ assignment.id }}">
-                    <td>{{ assignment.title }}</td>
-                    <td>{{ assignment.description }}</td>
-                    <td>{{ assignment.student.fullname }}</td>
-                    <td class="actions">
-                        <button onclick="editAssignment({{ assignment.id }}, '{{ assignment.title }}', '{{ assignment.description }}', '{{ assignment.student.student_id }}')">Edit</button>
-                        <button onclick="deleteAssignment({{ assignment.id }})">Delete</button>
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                    <button type="submit">Save Assignment</button>
+                </form>
+            </section>
+
+            <!-- Existing Assignments Section -->
+            <section id="existing-assignments">
+                <h2>Existing Assignments</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Description</th>
+                            <th>Assigned To</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="assignmentsTable">
+                        {% for assignment in assignments %}
+                            <tr data-id="{{ assignment.id }}">
+                                <td>{{ assignment.title }}</td>
+                                <td>{{ assignment.description }}</td>
+                                <td>{{ assignment.student.fullname }}</td>
+                                <td class="actions">
+                                    <button onclick="editAssignment({{ assignment.id }}, '{{ assignment.title }}', '{{ assignment.description }}', '{{ assignment.student.student_id }}')">Edit</button>
+                                    <button onclick="deleteAssignment({{ assignment.id }})">Delete</button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
 
     <script>
         // Edit Assignment function

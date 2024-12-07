@@ -1,0 +1,252 @@
+/* General Styling */
+body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f3f2f1; /* Soft gray background */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+}
+
+/* Main Container */
+.main-container {
+    width: 100%;
+    max-width: 1400px;
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+}
+
+/* Sidebar Styling */
+.sidebar {
+    width: 280px;
+    background-color: #ffffff; /* White background */
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: sticky;
+    top: 20px;
+    height: fit-content;
+}
+
+.sidebar h2 {
+    font-size: 24px;
+    color: #004d26;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    width: 100%;
+}
+
+.sidebar li {
+    margin-bottom: 15px;
+}
+
+.sidebar a {
+    text-decoration: none;
+    color: #444444;
+    font-weight: 600;
+    padding: 12px 20px;
+    border-radius: 8px;
+    display: block;
+    text-align: center;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.sidebar a.active,
+.sidebar a:hover {
+    background-color: #004d26;
+    color: white;
+}
+
+.sidebar .logout-btn {
+    color: #d93025;
+}
+
+.sidebar .search-bar {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d1d1d1;
+    border-radius: 8px;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+.sidebar .search-bar:focus {
+    outline: none;
+    border-color: #004d26;
+    box-shadow: 0 0 0 2px rgba(0, 77, 38, 0.2);
+}
+
+.sidebar .search-btn {
+    padding: 12px;
+    width: 100%;
+    background-color: #004d26;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar .search-btn:hover {
+    background-color: #006b39;
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Section Styling */
+section {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Header Styling */
+header {
+    margin-bottom: 20px;
+    text-align: center;
+    border-bottom: 2px solid #e1e1e1;
+    padding-bottom: 10px;
+}
+
+header h1 {
+    color: #004d26;
+    font-size: 28px;
+}
+
+/* Assignment Form */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+form label {
+    font-weight: bold;
+    color: #004d26;
+}
+
+form input, 
+form textarea, 
+form select, 
+form button {
+    font-size: 14px;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #d1d1d1;
+}
+
+form input:focus,
+form textarea:focus,
+form select:focus {
+    outline: none;
+    border-color: #004d26;
+    box-shadow: 0 0 0 2px rgba(0, 77, 38, 0.2);
+}
+
+form button {
+    background-color: #004d26;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+form button:hover {
+    background-color: #006b39;
+}
+
+/* Assignment Table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+thead {
+    background-color: #004d26;
+    color: white;
+}
+
+thead th {
+    padding: 12px;
+    text-align: left;
+    font-size: 14px;
+}
+
+tbody tr {
+    background-color: #ffffff;
+    border-bottom: 1px solid #e1e1e1;
+    transition: background-color 0.3s ease;
+}
+
+tbody tr:hover {
+    background-color: #f9f9f9;
+}
+
+tbody td {
+    padding: 12px;
+    font-size: 14px;
+}
+
+.actions button {
+    margin-right: 10px;
+    padding: 8px 12px;
+    background-color: #004d26;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background-color 0.3s ease;
+}
+
+.actions button:hover {
+    background-color: #006b39;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .main-container {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+    }
+
+    .main-content {
+        padding: 0;
+    }
+
+    table {
+        font-size: 12px;
+    }
+
+    .actions button {
+        font-size: 10px;
+        padding: 6px 8px;
+    }
+}
