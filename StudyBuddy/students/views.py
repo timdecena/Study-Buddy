@@ -122,9 +122,50 @@ def student_logout(request):  # Rename to match the URL pattern
     return redirect('home')  # Update 'home' if needed
 
 def tutors_list(request):
-    # Assuming you have a Tutor model to query
+    # Fetch all tutors
     tutors = Tutor.objects.all()
-    return render(request, 'students/tutors_list.html', {'tutors': tutors})
+
+    # Get the current logged-in user's role and username
+    user_role = request.session.get('user_role')
+    username = request.session.get('username')
+
+    # Initialize friend_request_status
+    friend_request_status = {}
+
+    # Check if the user is a student or a tutor
+    if user_role == 'student':
+        # Fetch the logged-in student
+        sender_student = Student.objects.get(username=username)
+
+        # Get friend requests sent by the student
+        friend_requests = FriendRequest.objects.filter(sender_student=sender_student)
+
+        # Build a dictionary to map tutor IDs to request statuses
+        friend_request_status = {
+            req.receiver_tutor.id: req.status
+            for req in friend_requests if req.receiver_tutor
+        }
+    elif user_role == 'tutor':
+        # Fetch the logged-in tutor
+        sender_tutor = Tutor.objects.get(username=username)
+
+        # Get friend requests sent by the tutor (if applicable)
+        friend_requests = FriendRequest.objects.filter(sender_tutor=sender_tutor)
+
+        # Build a dictionary to map student IDs to request statuses (if needed)
+        friend_request_status = {
+            req.receiver_student.id: req.status
+            for req in friend_requests if req.receiver_student
+        }
+
+    # Add the request status to each tutor
+    for tutor in tutors:
+        tutor.request_status = friend_request_status.get(tutor.id, None)
+
+    # Pass the tutors and friend_request_status to the template
+    return render(request, 'students/tutors_list.html', {
+        'tutors': tutors,
+    })
 
 # students/views.py
 
