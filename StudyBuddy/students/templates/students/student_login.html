@@ -6,7 +6,7 @@
     <title>Student Login</title>
     
     {% load static %}
-    <link rel="stylesheet" href="{% static 'student_login.css' %}">
+    <link rel="stylesheet" href="{% static 'tutor_login.css' %}">
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -87,7 +87,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h2>Login as Student</h2>
+            <h1>Login as Student</h1>
         </div>
         <form method="POST" action="{% url 'students:student_login' %}">
             {% csrf_token %}

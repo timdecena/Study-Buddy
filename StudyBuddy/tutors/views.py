@@ -308,7 +308,7 @@ def create_session(request):
             session.tutor = logged_in_tutor
             session.save()
             messages.success(request, 'Session created successfully.')
-            return redirect('tutors:tutors_dashboard')
+            return redirect('tutors:create_session')
         else:
             messages.error(request, 'Please correct the errors below.')
     else:
@@ -318,7 +318,11 @@ def create_session(request):
         ).values_list('sender_student__student_id', flat=True)  # Adjust for custom primary key
         form.fields['student'].queryset = Student.objects.filter(student_id__in=accepted_students)
 
-    return render(request, 'create_session.html', {'form': form})
+    # Fetch sessions associated with the logged-in tutor
+    sessions = Session.objects.filter(tutor=logged_in_tutor).select_related('student')
+    
+    return render(request, 'create_session.html', {'form': form, 'sessions': sessions})
+
 
 
 
@@ -425,7 +429,7 @@ def view_sessions(request):
 
     # Fetch sessions associated with the logged-in tutor
     sessions = Session.objects.filter(tutor=tutor).select_related('student')  # Get sessions for the tutor
-    return render(request, 'view_sessions.html', {'sessions': sessions})
+    return render(request, 'create_session.html', {'sessions': sessions})
 
 
 from django.shortcuts import render, get_object_or_404, redirect
@@ -440,7 +444,7 @@ def edit_session(request, session_id):
         if form.is_valid():
             form.save()
             messages.success(request, 'Session updated successfully.')
-            return redirect('tutors:view_sessions')
+            return redirect('tutors:create_session')
         else:
             messages.error(request, 'Please correct the errors below.')
     else:
@@ -458,7 +462,7 @@ def delete_session(request, session_id):
         session = get_object_or_404(Session, session_id=session_id)  # Use session_id instead of id
         session.delete()
         messages.success(request, 'Session deleted successfully.')
-    return redirect('tutors:view_sessions')
+    return redirect('tutors:create_session')
 
 
 from django.contrib import messages
