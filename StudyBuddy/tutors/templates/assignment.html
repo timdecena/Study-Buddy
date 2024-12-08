@@ -136,10 +136,6 @@
                 <li><a href="{% url 'tutors:tutor_logout' %}" class="logout-btn">Logout</a></li>
             </ul>
             <!-- Search Bar -->
-            <form method="GET" action="{% url 'tutors:tutors_dashboard' %}">
-                <input type="text" name="query" value="{{ query }}" placeholder="Search tutors or students..." class="search-bar">
-                <button type="submit" class="search-btn">Search</button>
-            </form>
         </nav>
 
         <!-- Assignment Area -->
