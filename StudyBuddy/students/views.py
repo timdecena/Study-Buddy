@@ -222,7 +222,7 @@ def handle_friend_request(request, request_id, action):
 
     friend_request.save()
     messages.success(request, 'Tutor added successfully!')
-    return redirect('tutors:view_tutors' if request.session.get('user_role') == 'tutor' else 'students:student_homepage')
+    return redirect('tutors:view_tutors' if request.session.get('user_role') == 'tutor' else 'students:view_tutors')
    
 
 # views.py

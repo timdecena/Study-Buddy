@@ -351,6 +351,7 @@ def tutor_profile(request):
             tutor.password = new_password  # Replace with proper password hashing in production
 
         tutor.save()
+        messages.success(request, 'Your profile has been successfully updated!')
 
         return redirect('tutors:tutor_profile')
 
