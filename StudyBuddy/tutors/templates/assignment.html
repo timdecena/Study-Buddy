@@ -1,6 +1,121 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <head>
+        ...
+        <style>
+            /* Center Assignment Area */
+            .assignment-area {
+                max-width: 900px; /* Limit width for better readability */
+                margin: 50px auto; /* Center horizontally and add vertical spacing */
+                background-color: #ffffff; /* Clean white background */
+                border-radius: 10px; /* Smooth rounded corners */
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); /* Elegant shadow effect */
+                padding: 30px; /* Add generous padding */
+            }
+    
+            /* Section Titles */
+            .assignment-area h1, 
+            .assignment-area h2 {
+                color: #004d26; /* Consistent theme color */
+                font-size: 24px; /* Slightly larger font for hierarchy */
+                font-weight: 600;
+                margin-bottom: 20px;
+                text-align: center; /* Center-align headings */
+            }
+    
+            /* Section Containers */
+            .assignment-area section {
+                margin-bottom: 40px; /* Space between sections */
+            }
+    
+            /* Form Styling */
+            #create-assignment form {
+                display: flex;
+                flex-direction: column;
+                gap: 15px; /* Spacing between fields */
+            }
+    
+            #create-assignment form label {
+                font-weight: bold;
+                color: #444444;
+            }
+    
+            #create-assignment form input,
+            #create-assignment form select,
+            #create-assignment form textarea {
+                padding: 10px;
+                border: 1px solid #d1d1d1;
+                border-radius: 6px;
+                font-size: 16px;
+            }
+    
+            #create-assignment form button {
+                align-self: center;
+                padding: 12px 24px;
+                background-color: #004d26;
+                color: white;
+                border: none;
+                border-radius: 6px;
+                font-size: 16px;
+                font-weight: bold;
+                cursor: pointer;
+                transition: background-color 0.3s ease-in-out;
+            }
+    
+            #create-assignment form button:hover {
+                background-color: #006b39;
+            }
+    
+            /* Table Styling */
+            #existing-assignments table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+    
+            #existing-assignments th,
+            #existing-assignments td {
+                text-align: left;
+                padding: 12px;
+                border-bottom: 1px solid #e0e0e0;
+            }
+    
+            #existing-assignments th {
+                background-color: #004d26;
+                color: white;
+                font-weight: bold;
+            }
+    
+            #existing-assignments tr:hover {
+                background-color: #f6f6f6;
+            }
+    
+            /* Actions Buttons */
+            .actions button {
+                padding: 8px 12px;
+                background-color: #004d26;
+                color: white;
+                border: none;
+                border-radius: 6px;
+                font-size: 14px;
+                cursor: pointer;
+                margin-right: 5px;
+                transition: background-color 0.3s ease-in-out;
+            }
+    
+            .actions button:hover {
+                background-color: #006b39;
+            }
+    
+            /* Feedback Message */
+            #feedback p {
+                text-align: center;
+                margin: 10px 0;
+                font-size: 14px;
+            }
+        </style>
+    </head>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Assignment Management</title>
