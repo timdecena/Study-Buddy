@@ -6,12 +6,12 @@ from friend_requests.models import FriendRequest
 
 class TransactionForm(forms.ModelForm):
     PAYMENT_METHOD_CHOICES = [
-        ('gcash', 'GCash'),
-        ('paymaya', 'PayMaya'),
-        ('credit_card', 'Credit Card'),
-        ('bank_transfer', 'Bank Transfer'),
-        ('paypal', 'PayPal'),
-        ('cash', 'Cash'),
+        ('GCash', 'GCash'),
+        ('PayMaya', 'PayMaya'),
+        ('Credit Card', 'Credit Card'),
+        ('Bank Transfer', 'Bank Transfer'),
+        ('PayPal', 'PayPal'),
+        ('Cash', 'Cash'),
     ]
 
     payment_method = forms.ChoiceField(
