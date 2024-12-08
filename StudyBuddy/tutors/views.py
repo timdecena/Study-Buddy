@@ -321,35 +321,41 @@ def create_session(request):
 
 
 
-
 def tutor_profile(request):
     """
     Displays and updates the tutor profile.
     """
     if not request.session.get('username'):
-        
         return redirect('tutors:tutor_login')
 
     try:
         tutor = Tutor.objects.get(username=request.session['username'])
     except Tutor.DoesNotExist:
-        
         return redirect('tutors:tutor_login')
 
     if request.method == 'POST':
         tutor.first_name = request.POST.get('first_name', tutor.first_name)
         tutor.last_name = request.POST.get('last_name', tutor.last_name)
         tutor.email = request.POST.get('email', tutor.email)
-        tutor.username = request.POST.get('username', tutor.username)
+        new_username = request.POST.get('username', tutor.username)
         new_password = request.POST.get('password')
 
+        # Update username if changed
+        if new_username and new_username != tutor.username:
+            tutor.username = new_username
+            # Update session username
+            request.session['username'] = new_username
+
+        # Update password if provided
         if new_password:
             tutor.password = new_password  # Replace with proper password hashing in production
+
         tutor.save()
-        
+
         return redirect('tutors:tutor_profile')
 
     return render(request, 'tutor_profile.html', {'tutor': tutor})
+
 
     
 @login_required
