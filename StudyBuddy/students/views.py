@@ -221,7 +221,8 @@ def handle_friend_request(request, request_id, action):
         
 
     friend_request.save()
-    return redirect('tutors:tutors_dashboard' if request.session.get('user_role') == 'tutor' else 'students:student_homepage')
+    messages.success(request, 'Tutor added successfully!')
+    return redirect('tutors:view_tutors' if request.session.get('user_role') == 'tutor' else 'students:student_homepage')
    
 
 # views.py
@@ -251,7 +252,7 @@ def create_transaction(request):
             transaction = form.save(commit=False)
             transaction.student = logged_in_student
             transaction.save()
-            
+            messages.success(request, 'Transaction created successfully!')
             return redirect('students:create_transaction')
        
     else:
