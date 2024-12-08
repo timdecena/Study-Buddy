@@ -112,6 +112,31 @@
                 margin: 10px 0;
                 font-size: 14px;
             }
+            .modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    max-width: 600px;
+    width: 90%;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+
+
+            
         </style>
     </head>
     
@@ -127,7 +152,7 @@
         <nav class="sidebar">
             <h2>StudyBuddy</h2>
             <ul>
-                <li><a href="#">Assigned Students</a></li>
+
                 <li><a href="{% url 'tutors:tutors_dashboard' %}">Home</a></li>
                 <li><a href="{% url 'tutors:create_session' %}">Create Session</a></li>
                 <li><a href="{% url 'tutors:assignment' %}">Assignments</a></li>
@@ -236,8 +261,75 @@
         </main>
     </div>
 
+   
+
+<!-- Trigger Edit -->
+<button onclick="editAssignment(1, 'Sample Title', 'Sample Description', 101)">Edit Assignment</button>
+
+<!-- Edit Assignment Modal -->
+<div id="editAssignmentModal" class="modal-overlay">
+    <div class="modal-content">
+        <h2>Edit Assignment</h2>
+        <form id="editAssignmentForm">
+            {% csrf_token %}
+            <input type="hidden" name="assignment_id" id="edit_assignment_id">
+            <label for="edit_student">Assign To:</label>
+            <select name="student_id" id="edit_student" required>
+                <option value="">-- Select a Student --</option>
+                {% for student in accepted_students %}
+                    <option value="{{ student.student_id }}">{{ student.fullname }}</option>
+                {% endfor %}
+            </select>
+            <label for="edit_title">Title:</label>
+            <input type="text" name="title" id="edit_title" placeholder="Enter assignment title" required>
+            <label for="edit_description">Description:</label>
+            <textarea name="description" id="edit_description" rows="4" placeholder="Enter assignment description" required></textarea>
+            <button type="submit">Save Changes</button>
+        </form>
+        <button onclick="closeModal()">Close</button>
+    </div>
+</div>
+
+<!-- Modal Background Overlay -->
+<div id="modalOverlay" style="
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom right, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.9));
+    z-index: 999;
+    backdrop-filter: blur(5px);
+    transition: opacity 0.3s ease-in-out;"
+    onclick="closeModal()">
+</div>
+
+
     <script>
         const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        document.getElementById("editAssignmentForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+
+    const response = await fetch("{% url 'tutors:assignment' %}", {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": csrfToken,
+        },
+        body: formData,
+    });
+
+    const result = await response.json();
+    if (result.success) {
+        alert("Assignment updated successfully!");
+        closeModal();
+        location.reload(); // Refresh the assignments list
+    } else {
+        alert(`Error: ${result.error}`);
+    }
+});
 
         // AJAX Save Assignment
         document.getElementById("assignmentForm").addEventListener("submit", async function(e) {
@@ -265,32 +357,59 @@
 
         // Delete Assignment function
         async function deleteAssignment(id) {
-            if (confirm("Are you sure you want to delete this assignment?")) {
-                const response = await fetch('/tutors/assignments/delete/', {
-                    method: "POST",
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': csrfToken,
-                    },
-                    body: JSON.stringify({ delete_id: id }),
-                });
+    if (confirm("Are you sure you want to delete this assignment?")) {
+        try {
+            const response = await fetch("{% url 'tutors:delete_assignment' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": csrfToken,
+                },
+                body: JSON.stringify({ delete_id: id }),
+            });
 
-                const result = await response.json();
-                if (result.success) {
-                    location.reload();
-                } else {
-                    alert('Failed to delete the assignment.');
-                }
+            const result = await response.json();
+            if (response.ok && result.success) {
+                alert('Assignment deleted successfully!');
+                location.reload();
+            } else {
+                alert(result.error || "Failed to delete the assignment.");
             }
+        } catch (error) {
+            console.error("Error deleting assignment:", error);
+            alert("An error occurred. Please try again.");
         }
+    }
+}
+
 
         // Pre-fill Edit Fields
         function editAssignment(id, title, description, studentId) {
-            document.getElementById("assignment_id").value = id;
-            document.getElementById("student").value = studentId;
-            document.getElementById("title").value = title;
-            document.getElementById("description").value = description;
-        }
+    // Populate modal fields
+    document.getElementById("edit_assignment_id").value = id;
+    document.getElementById("edit_title").value = title;
+    document.getElementById("edit_description").value = description;
+    document.getElementById("edit_student").value = studentId;
+
+    // Show modal
+    const modal = document.getElementById("editAssignmentModal");
+    modal.style.display = "flex";
+    modal.style.opacity = "1";
+}
+
+function closeModal() {
+    const modal = document.getElementById("editAssignmentModal");
+    modal.style.display = "none";
+    modal.style.opacity = "0";
+}
+
+// Optional: Close modal on clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById("editAssignmentModal");
+    if (event.target === modal) {
+        closeModal();
+    }
+};
     </script>
 </body>
 </html>
