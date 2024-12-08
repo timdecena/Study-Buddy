@@ -36,7 +36,6 @@ def tutor_login(request):
                 # Store tutor's details in session
                 request.session['user_role'] = 'Tutor'
                 request.session['username'] = tutor.username
-                messages.success(request, 'Login successful.')
                 return redirect('tutors:tutors_dashboard')  # Correct namespace usage
             else:
                 messages.error(request, 'Invalid username or password.')
@@ -51,7 +50,7 @@ def tutor_logout(request):
     Logs out the tutor and redirects to the home page.
     """
     logout(request)
-    messages.success(request, 'You have successfully logged out.')
+    
     return redirect('/')
 
 
@@ -82,14 +81,14 @@ def tutors_dashboard(request):
     # Fetch the username from session data
     username = request.session.get('username')
     if not username:
-        messages.error(request, 'You need to log in first.')
+        
         return redirect('tutors:tutor_login')
     
     # Retrieve the logged-in tutor
     try:
         tutor = Tutor.objects.get(username=username)  # Get tutor by username from session
     except Tutor.DoesNotExist:
-        messages.error(request, 'Tutor not found.')
+       
         return redirect('tutors:tutor_login')
 
     # Handle search query for tutors and students
@@ -145,14 +144,14 @@ def assignment_page(request):
     # Ensure the user is logged in
     username = request.session.get('username')
     if not username:
-        messages.error(request, 'You need to log in first.')
+        
         return redirect('tutors:tutor_login')
 
     # Get the logged-in tutor
     try:
         tutor = Tutor.objects.get(username=username)
     except Tutor.DoesNotExist:
-        messages.error(request, 'Tutor not found.')
+        
         return redirect('tutors:tutor_login')
 
     if request.method == "POST":
@@ -236,7 +235,7 @@ def accept_friend_request(request, id):
     friend_request.status = 'accepted'
     friend_request.save()
 
-    messages.success(request, 'Friend request accepted.')
+    
     return redirect('tutors:tutors_dashboard')
 
 def reject_friend_request(request, id):
@@ -247,7 +246,7 @@ def reject_friend_request(request, id):
     friend_request.status = 'rejected'
     friend_request.save()
 
-    messages.success(request, 'Friend request rejected.')
+    
     return redirect('tutors:tutors_dashboard')
 
 from django.shortcuts import get_object_or_404, redirect
@@ -260,12 +259,12 @@ def handle_friend_request(request, id, action):
 
     if action == 'accept':
         friend_request.status = 'accepted'
-        messages.success(request, 'Friend request accepted.')
+        
     elif action == 'reject':
         friend_request.status = 'rejected'
-        messages.success(request, 'Friend request rejected.')
+        
     else:
-        messages.error(request, 'Invalid action.')
+        messages.error(request, '')
 
     friend_request.save()
     return redirect('tutors:tutors_dashboard')
@@ -280,10 +279,8 @@ def tutor_register(request):
         if form.is_valid():
             # Save the new tutor to the database
             form.save()
-            messages.success(request, 'Registration successful. You can now log in.')
+            
             return redirect('tutors:tutor_login')  # Redirect to the login page after registration
-        else:
-            messages.error(request, 'Please correct the errors below.')
     else:
         form = TutorRegistrationForm()
 
@@ -292,13 +289,13 @@ def tutor_register(request):
 def create_session(request):
     username = request.session.get('username')
     if not username:
-        messages.error(request, 'You need to log in first.')
+        
         return redirect('tutors:tutor_login')
     
     try:
         logged_in_tutor = Tutor.objects.get(username=username)
     except Tutor.DoesNotExist:
-        messages.error(request, 'Tutor not found.')
+        
         return redirect('tutors:tutor_login')
 
     if request.method == 'POST':
@@ -307,10 +304,9 @@ def create_session(request):
             session = form.save(commit=False)
             session.tutor = logged_in_tutor
             session.save()
-            messages.success(request, 'Session created successfully.')
+            
             return redirect('tutors:create_session')
-        else:
-            messages.error(request, 'Please correct the errors below.')
+        
     else:
         form = SessionForm()
         accepted_students = FriendRequest.objects.filter(
@@ -331,13 +327,13 @@ def tutor_profile(request):
     Displays and updates the tutor profile.
     """
     if not request.session.get('username'):
-        messages.error(request, "Please log in to access your profile.")
+        
         return redirect('tutors:tutor_login')
 
     try:
         tutor = Tutor.objects.get(username=request.session['username'])
     except Tutor.DoesNotExist:
-        messages.error(request, "Tutor not found.")
+        
         return redirect('tutors:tutor_login')
 
     if request.method == 'POST':
@@ -350,7 +346,7 @@ def tutor_profile(request):
         if new_password:
             tutor.password = new_password  # Replace with proper password hashing in production
         tutor.save()
-        messages.success(request, "Profile updated successfully!")
+        
         return redirect('tutors:tutor_profile')
 
     return render(request, 'tutor_profile.html', {'tutor': tutor})
@@ -387,7 +383,7 @@ def remove_student(request, student_id):
             # Ensure the user is logged in
             username = request.session.get('username')
             if not username:
-                messages.error(request, "You must be logged in to perform this action.")
+                
                 return redirect('tutors:tutor_login')  # Redirect to login if not logged in
 
             # Get the logged-in tutor
@@ -399,15 +395,15 @@ def remove_student(request, student_id):
             student.save()
 
             # Provide success feedback
-            messages.success(request, f"Student {student.fullname} has been successfully removed.")
+            
             return redirect('tutors:tutors_dashboard')  # Redirect to the dashboard
 
         except Student.DoesNotExist:
-            messages.error(request, "Student not found or not associated with you.")
+           
             return redirect('tutors:tutors_dashboard')
 
         except Exception as e:
-            messages.error(request, f"An error occurred: {str(e)}")
+            
             return redirect('tutors:tutors_dashboard')
     else:
         return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=400)
@@ -417,14 +413,14 @@ def view_sessions(request):
     # Fetch the username from session data
     username = request.session.get('username')
     if not username:
-        messages.error(request, 'You need to log in first.')
+        
         return redirect('tutors:tutor_login')
 
     # Retrieve the logged-in tutor
     try:
         tutor = Tutor.objects.get(username=username)  # Fetch the tutor using username from the session
     except Tutor.DoesNotExist:
-        messages.error(request, 'Tutor not found.')
+        
         return redirect('tutors:tutor_login')
 
     # Fetch sessions associated with the logged-in tutor
@@ -443,10 +439,8 @@ def edit_session(request, session_id):
         form = SessionForm(request.POST, instance=session)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Session updated successfully.')
+            
             return redirect('tutors:create_session')
-        else:
-            messages.error(request, 'Please correct the errors below.')
     else:
         form = SessionForm(instance=session)
 
@@ -461,7 +455,7 @@ def delete_session(request, session_id):
     if request.method == 'POST':
         session = get_object_or_404(Session, session_id=session_id)  # Use session_id instead of id
         session.delete()
-        messages.success(request, 'Session deleted successfully.')
+        
     return redirect('tutors:create_session')
 
 
@@ -473,14 +467,14 @@ def tutor_transactions(request):
     # Check if the tutor is logged in using the session
     username = request.session.get('username')
     if not username:
-        messages.error(request, 'You need to log in first.')
+        
         return redirect('tutors:tutor_login')  # Redirect to the custom login page
 
     try:
         # Get the logged-in tutor based on the username stored in the session
         tutor = Tutor.objects.get(username=username)
     except Tutor.DoesNotExist:
-        messages.error(request, 'Tutor not found. Please log in again.')
+        
         return redirect('tutors:tutor_login')
 
     # Fetch transactions associated with the logged-in tutor

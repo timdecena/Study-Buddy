@@ -24,7 +24,7 @@ def send_friend_request(request, receiver_type, receiver_id):
         friend_request = FriendRequest(sender_student=sender_student, receiver_tutor=receiver_tutor)
 
     friend_request.save()
-    messages.success(request, 'Friend request sent successfully!')
+   
     return redirect('students:student_homepage' if sender_student else 'tutors:tutors_dashboard')
 
 
@@ -34,10 +34,10 @@ def handle_friend_request(request, request_id, action):
 
     if action == 'accept':
         friend_request.status = 'accepted'
-        messages.success(request, 'Friend request accepted!')
+        
     elif action == 'decline':
         friend_request.status = 'declined'
-        messages.info(request, 'Friend request declined.')
+        
 
     friend_request.save()
     return redirect('students:student_homepage' if request.session['user_role'] == 'student' else 'tutors:tutors_dashboard')

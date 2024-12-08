@@ -25,7 +25,7 @@ def student_login(request):
             if student.password == password:  # Use secure password checking here
                 request.session['username'] = student.username
                 request.session['user_role'] = 'student'
-                messages.success(request, "Login Successful")
+                
                 return redirect('students:student_homepage')  # Corrected URL name
             else:
                 messages.error(request, "Invalid username or password")
@@ -59,11 +59,11 @@ def student_homepage(request):
         
         except Student.DoesNotExist:
             # Handle the case where the username does not match any student record
-            messages.error(request, "Student profile not found.")
+            
             return redirect('students:login')
     else:
         # If the user is not authorized, display an error message and redirect to the login page
-        messages.error(request, "You are not authorized to access this page.")
+        
         return redirect('students:login')
 
 
@@ -109,7 +109,7 @@ def student_delete(request, pk):
     student = get_object_or_404(Student, pk=pk)
     if request.method == 'POST':
         student.delete()
-        messages.success(request, "Student deleted successfully!")
+        
         return redirect('students:student_list')
     return render(request, 'students/student_confirm_delete.html', {'student': student})
 
@@ -117,7 +117,7 @@ def student_logout(request):  # Rename to match the URL pattern
     # Clear the session
     request.session.flush()
     # Optional: Add a logout success message
-    messages.success(request, "You have been logged out successfully.")
+    
     # Redirect to the default homepage
     return redirect('home')  # Update 'home' if needed
 
@@ -189,7 +189,7 @@ def edit_profile(request, pk):
         form = StudentForm(request.POST, request.FILES, instance=student)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Profile updated successfully!')
+            
             return redirect('students:student_homepage')
     else:
         form = StudentForm(instance=student)
@@ -215,10 +215,10 @@ def handle_friend_request(request, request_id, action):
         elif friend_request.sender_tutor:
             friend_request.receiver_student.accepted_tutors.add(friend_request.sender_tutor)
 
-        messages.success(request, 'Friend request accepted!')
+        
     elif action == 'decline':
         friend_request.status = 'declined'
-        messages.info(request, 'Friend request declined.')
+        
 
     friend_request.save()
     return redirect('tutors:tutors_dashboard' if request.session.get('user_role') == 'tutor' else 'students:student_homepage')
@@ -228,7 +228,7 @@ def handle_friend_request(request, request_id, action):
 def student_transactions(request):
     username = request.session.get('username')
     if not username:
-        messages.error(request, 'You need to log in first.')
+        
         return redirect('students:student_login')
     
     # Fetch transactions of the logged-in student
@@ -239,7 +239,7 @@ def student_transactions(request):
 def create_transaction(request):
     username = request.session.get('username')
     if not username:
-        messages.error(request, 'You need to log in first.')
+        
         return redirect('students:student_login')
     
     # Get the logged-in student
@@ -251,10 +251,9 @@ def create_transaction(request):
             transaction = form.save(commit=False)
             transaction.student = logged_in_student
             transaction.save()
-            messages.success(request, 'Transaction created successfully.')
+            
             return redirect('students:create_transaction')
-        else:
-            messages.error(request, 'Please correct the errors below.')
+       
     else:
         form = TransactionForm(student=logged_in_student)
 
@@ -294,7 +293,7 @@ def student_sessions(request):
     # Retrieve the username from the session
     username = request.session.get('username')
     if not username:
-        messages.error(request, 'You need to log in first.')
+        
         return redirect('students:student_login')
 
     # Get the logged-in student
@@ -316,7 +315,7 @@ def assignment_list(request):
     # Retrieve the username from the session
     username = request.session.get('username')
     if not username:
-        messages.error(request, 'You need to log in first.')
+        
         return redirect('students:student_login')
 
     # Get the logged-in student
@@ -338,7 +337,7 @@ def submit_assignment(request):
         uploaded_file = request.FILES.get('file_upload')
 
         if not assignment_id or not uploaded_file:
-            messages.error(request, "Please select an assignment and upload a file.")
+            
             return redirect('students:student_homepage')
 
         try:
@@ -346,11 +345,10 @@ def submit_assignment(request):
             # Save the uploaded file
             assignment.file_upload = uploaded_file
             assignment.save()
-            messages.success(request, "File uploaded successfully.")
+            
         except Exception as e:
-            messages.error(request, f"Error uploading file: {e}")
+            messages.error(request, f"")
 
         return redirect('students:student_homepage')
     else:
-        messages.error(request, "Invalid request.")
         return redirect('students:student_homepage')
